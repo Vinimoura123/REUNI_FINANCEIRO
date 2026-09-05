@@ -98,43 +98,62 @@ export function FinanceProvider({ children }) {
   const applyServerData = (data) => {
     if (!data || typeof data !== 'object') return
     const incomingTimestamp = data.updatedAt || 0
-    if (incomingTimestamp && incomingTimestamp <= lastServerTimestamp.current) {
+
+    // Verificar se o cliente local possui dados salvos
+    const hasLocalData = 
+      demandasRef.current.length > 0 ||
+      arrecadacoesRef.current.length > 0 ||
+      transacoesRef.current.length > 0 ||
+      bazarItemsRef.current.length > 0 ||
+      keepNotesRef.current.length > 0 ||
+      inventarioItemsRef.current.length > 0
+
+    // Se a resposta do servidor for vazia ou updatedAt = 0 (ex: reinício do servidor no Render)
+    if (!incomingTimestamp || incomingTimestamp === 0) {
+      if (hasLocalData) {
+        // Se o cliente tem dados mas o servidor está limpo, sincroniza os dados locais para o servidor!
+        pushStateToServer()
+      }
       return
     }
 
-    if (incomingTimestamp) {
-      lastServerTimestamp.current = incomingTimestamp
+    // Ignorar respostas do servidor que sejam mais antigas ou iguais ao timestamp local
+    if (incomingTimestamp <= lastServerTimestamp.current) {
+      return
     }
+
+    // Se o servidor for mais novo que a nossa gravação local, aplica os dados do servidor
+    lastServerTimestamp.current = incomingTimestamp
 
     if (Array.isArray(data.demandas)) {
       demandasRef.current = data.demandas
       setDemandas(data.demandas)
-      localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(data.demandas))
+      try { localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(data.demandas)) } catch (e) {}
     }
     if (Array.isArray(data.arrecadacoes)) {
       arrecadacoesRef.current = data.arrecadacoes
       setArrecadacoes(data.arrecadacoes)
-      localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(data.arrecadacoes))
+      try { localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(data.arrecadacoes)) } catch (e) {}
     }
     if (Array.isArray(data.transacoes)) {
       transacoesRef.current = data.transacoes
       setTransacoes(data.transacoes)
-      localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(data.transacoes))
+      try { localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(data.transacoes)) } catch (e) {}
     }
     if (Array.isArray(data.bazarItems)) {
       bazarItemsRef.current = data.bazarItems
       setBazarItems(data.bazarItems)
-      localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(data.bazarItems))
+      try { localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(data.bazarItems)) } catch (e) {}
     }
     if (Array.isArray(data.keepNotes)) {
       keepNotesRef.current = data.keepNotes
       setKeepNotes(data.keepNotes)
-      localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(data.keepNotes))
+      try { localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(data.keepNotes)) } catch (e) {}
     }
     if (Array.isArray(data.inventarioItems)) {
       inventarioItemsRef.current = data.inventarioItems
       setInventarioItems(data.inventarioItems)
-      localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems))
+      try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems)) } catch (e) {}
     }
 
     setLastSaved(`Ao vivo: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`)
@@ -158,16 +177,7 @@ export function FinanceProvider({ children }) {
     keepNotesRef.current = nextKeepNotes
     inventarioItemsRef.current = nextInventarioItems
 
-    const fullPayload = {
-      demandas: nextDemandas,
-      arrecadacoes: nextArrecadacoes,
-      transacoes: nextTransacoes,
-      bazarItems: nextBazarItems,
-      keepNotes: nextKeepNotes,
-      inventarioItems: nextInventarioItems,
-      updatedAt: now
-    }
-
+    // 1. GARANTIR SALVAMENTO NO LOCALSTORAGE PRIMEIRO (PERSISTÊNCIA INDESTRUTÍVEL)
     try {
       localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(nextDemandas))
       localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(nextArrecadacoes))
@@ -179,6 +189,17 @@ export function FinanceProvider({ children }) {
 
     setLastSaved(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
 
+    // 2. SINCRONIZAR COM O SERVIDOR BACKEND (SE DISPONÍVEL)
+    const fullPayload = {
+      demandas: nextDemandas,
+      arrecadacoes: nextArrecadacoes,
+      transacoes: nextTransacoes,
+      bazarItems: nextBazarItems,
+      keepNotes: nextKeepNotes,
+      inventarioItems: nextInventarioItems,
+      updatedAt: now
+    }
+
     fetch('/api/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -188,12 +209,20 @@ export function FinanceProvider({ children }) {
 
   // Real-time EventSource connection & initial load & polling heartbeat
   useEffect(() => {
+    // Sincronizar inicialmente com dados do servidor se houver
     fetch('/api/data')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Servidor sem rota estática')
+        return res.json()
+      })
       .then(data => {
         applyServerData(data)
       })
-      .catch(() => {})
+      .catch(() => {
+        // Se a API /api/data der erro ou offline, garante a sincronização dos dados locais
+        const hasLocal = demandasRef.current.length > 0 || transacoesRef.current.length > 0
+        if (hasLocal) pushStateToServer()
+      })
 
     let eventSource
     try {
@@ -208,12 +237,15 @@ export function FinanceProvider({ children }) {
 
     const intervalId = setInterval(() => {
       fetch('/api/data')
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) return null
+          return res.json()
+        })
         .then(data => {
-          applyServerData(data)
+          if (data) applyServerData(data)
         })
         .catch(() => {})
-    }, 1500)
+    }, 2000)
 
     return () => {
       if (eventSource) eventSource.close()
