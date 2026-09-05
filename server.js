@@ -23,6 +23,7 @@ if (!fs.existsSync(dbPath)) {
     transacoes: [],
     bazarItems: [],
     keepNotes: [],
+    inventarioItems: [],
     updatedAt: 0
   }, null, 2), 'utf-8')
 }

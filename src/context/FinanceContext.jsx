@@ -7,12 +7,14 @@ const STORAGE_KEY_ARRECADACAO = 'reuni_arrecadacoes_v2'
 const STORAGE_KEY_TRANSACOES = 'reuni_transacoes_v2'
 const STORAGE_KEY_BAZAR = 'reuni_bazar_v2'
 const STORAGE_KEY_KEEP = 'reuni_keep_v2'
+const STORAGE_KEY_INVENTARIO = 'reuni_inventario_v2'
 
 const DEFAULT_DEMANDAS = []
 const DEFAULT_ARRECADACAO = []
 const DEFAULT_TRANSACOES = []
 const DEFAULT_BAZAR = []
 const DEFAULT_KEEP = []
+const DEFAULT_INVENTARIO = []
 
 export function FinanceProvider({ children }) {
   const [lastSaved, setLastSaved] = useState(null)
@@ -63,6 +65,15 @@ export function FinanceProvider({ children }) {
     }
   })
 
+  const [inventarioItems, setInventarioItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_INVENTARIO)
+      return saved !== null ? JSON.parse(saved) : DEFAULT_INVENTARIO
+    } catch (e) {
+      return DEFAULT_INVENTARIO
+    }
+  })
+
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('reuni_theme') || 'dark'
   })
@@ -73,12 +84,14 @@ export function FinanceProvider({ children }) {
   const transacoesRef = useRef(transacoes)
   const bazarItemsRef = useRef(bazarItems)
   const keepNotesRef = useRef(keepNotes)
+  const inventarioItemsRef = useRef(inventarioItems)
 
   useEffect(() => { demandasRef.current = demandas }, [demandas])
   useEffect(() => { arrecadacoesRef.current = arrecadacoes }, [arrecadacoes])
   useEffect(() => { transacoesRef.current = transacoes }, [transacoes])
   useEffect(() => { bazarItemsRef.current = bazarItems }, [bazarItems])
   useEffect(() => { keepNotesRef.current = keepNotes }, [keepNotes])
+  useEffect(() => { inventarioItemsRef.current = inventarioItems }, [inventarioItems])
 
   const lastServerTimestamp = useRef(0)
 
@@ -118,6 +131,11 @@ export function FinanceProvider({ children }) {
       setKeepNotes(data.keepNotes)
       localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(data.keepNotes))
     }
+    if (Array.isArray(data.inventarioItems)) {
+      inventarioItemsRef.current = data.inventarioItems
+      setInventarioItems(data.inventarioItems)
+      localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems))
+    }
 
     setLastSaved(`Ao vivo: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`)
   }
@@ -131,12 +149,14 @@ export function FinanceProvider({ children }) {
     const nextTransacoes = updatedState.transacoes !== undefined ? updatedState.transacoes : transacoesRef.current
     const nextBazarItems = updatedState.bazarItems !== undefined ? updatedState.bazarItems : bazarItemsRef.current
     const nextKeepNotes = updatedState.keepNotes !== undefined ? updatedState.keepNotes : keepNotesRef.current
+    const nextInventarioItems = updatedState.inventarioItems !== undefined ? updatedState.inventarioItems : inventarioItemsRef.current
 
     demandasRef.current = nextDemandas
     arrecadacoesRef.current = nextArrecadacoes
     transacoesRef.current = nextTransacoes
     bazarItemsRef.current = nextBazarItems
     keepNotesRef.current = nextKeepNotes
+    inventarioItemsRef.current = nextInventarioItems
 
     const fullPayload = {
       demandas: nextDemandas,
@@ -144,6 +164,7 @@ export function FinanceProvider({ children }) {
       transacoes: nextTransacoes,
       bazarItems: nextBazarItems,
       keepNotes: nextKeepNotes,
+      inventarioItems: nextInventarioItems,
       updatedAt: now
     }
 
@@ -153,6 +174,7 @@ export function FinanceProvider({ children }) {
       localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(nextTransacoes))
       localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(nextBazarItems))
       localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(nextKeepNotes))
+      localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(nextInventarioItems))
     } catch (e) {}
 
     setLastSaved(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
@@ -567,25 +589,67 @@ export function FinanceProvider({ children }) {
     pushStateToServer({ keepNotes: updated })
   }
 
+  // Inventário Handlers
+  const addInventarioItem = (item) => {
+    const newItem = {
+      ...item,
+      id: Date.now().toString(),
+      quantidade: Number(item.quantidade) || 1,
+      valorEstimadoEconomizado: Number(item.valorEstimadoEconomizado) || 0,
+      dataCadastro: new Date().toISOString().split('T')[0]
+    }
+    const updated = [newItem, ...inventarioItemsRef.current]
+    inventarioItemsRef.current = updated
+    setInventarioItems(updated)
+    pushStateToServer({ inventarioItems: updated })
+  }
+
+  const updateInventarioItem = (id, updatedFields) => {
+    const updated = inventarioItemsRef.current.map(item => {
+      if (item.id === id) {
+        return { 
+          ...item, 
+          ...updatedFields,
+          quantidade: updatedFields.quantidade !== undefined ? Number(updatedFields.quantidade) : item.quantidade,
+          valorEstimadoEconomizado: updatedFields.valorEstimadoEconomizado !== undefined ? Number(updatedFields.valorEstimadoEconomizado) : item.valorEstimadoEconomizado
+        }
+      }
+      return item
+    })
+    inventarioItemsRef.current = updated
+    setInventarioItems(updated)
+    pushStateToServer({ inventarioItems: updated })
+  }
+
+  const deleteInventarioItem = (id) => {
+    const updated = inventarioItemsRef.current.filter(item => item.id !== id)
+    inventarioItemsRef.current = updated
+    setInventarioItems(updated)
+    pushStateToServer({ inventarioItems: updated })
+  }
+
   const resetToDefault = () => {
     demandasRef.current = []
     arrecadacoesRef.current = []
     transacoesRef.current = []
     bazarItemsRef.current = []
     keepNotesRef.current = []
+    inventarioItemsRef.current = []
 
     setDemandas([])
     setArrecadacoes([])
     setTransacoes([])
     setBazarItems([])
     setKeepNotes([])
+    setInventarioItems([])
 
     pushStateToServer({
       demandas: [],
       arrecadacoes: [],
       transacoes: [],
       bazarItems: [],
-      keepNotes: []
+      keepNotes: [],
+      inventarioItems: []
     })
   }
 
@@ -595,19 +659,22 @@ export function FinanceProvider({ children }) {
     transacoesRef.current = []
     bazarItemsRef.current = []
     keepNotesRef.current = []
+    inventarioItemsRef.current = []
 
     setDemandas([])
     setArrecadacoes([])
     setTransacoes([])
     setBazarItems([])
     setKeepNotes([])
+    setInventarioItems([])
 
     pushStateToServer({
       demandas: [],
       arrecadacoes: [],
       transacoes: [],
       bazarItems: [],
-      keepNotes: []
+      keepNotes: [],
+      inventarioItems: []
     })
   }
 
@@ -635,6 +702,7 @@ export function FinanceProvider({ children }) {
       transacoes,
       bazarItems,
       keepNotes,
+      inventarioItems,
       theme,
       lastSaved,
       toggleTheme,
@@ -660,6 +728,9 @@ export function FinanceProvider({ children }) {
       togglePinKeepNote,
       deleteKeepNote,
       toggleChecklistItem,
+      addInventarioItem,
+      updateInventarioItem,
+      deleteInventarioItem,
       resetToDefault,
       clearAllData,
       totalArrecadado,

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { 
   LayoutDashboard, Wallet, ArrowRightLeft, HandCoins, Building2, 
   ShoppingBag, StickyNote, Sun, Moon, RotateCcw, CheckCircle2, 
-  Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers
+  Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes
 } from 'lucide-react'
 import { FinanceProvider, useFinance } from './context/FinanceContext'
 import { cn } from './lib/utils'
@@ -15,12 +15,14 @@ import Arrecadacao from './pages/Arrecadacao'
 import Bazar from './pages/Bazar'
 import Informacoes from './pages/Informacoes'
 import Caixa from './pages/Caixa'
+import Inventario from './pages/Inventario'
 
 const NAV_ITEMS = [
   { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
   { name: 'Planejamento de Demandas', path: '/demandas', icon: Building2 },
   { name: 'Arrecadação Estratégica', path: '/arrecadacao', icon: HandCoins },
   { name: 'Curadoria do Bazar', path: '/bazar', icon: ShoppingBag },
+  { name: 'Inventário de Materiais', path: '/inventario', icon: Boxes },
   { name: 'Administração de Informações', path: '/informacoes', icon: StickyNote },
   { name: 'Gestão de Caixa', path: '/caixa', icon: ArrowRightLeft },
 ]
@@ -281,6 +283,7 @@ export default function App() {
             <Route path="/demandas" element={<Demandas />} />
             <Route path="/arrecadacao" element={<Arrecadacao />} />
             <Route path="/bazar" element={<Bazar />} />
+            <Route path="/inventario" element={<Inventario />} />
             <Route path="/informacoes" element={<Informacoes />} />
             <Route path="/caixa" element={<Caixa />} />
           </Routes>
