@@ -727,6 +727,36 @@ export function FinanceProvider({ children }) {
   const metaArrecadacaoTotal = arrecadacoes
     .reduce((sum, a) => sum + Number(a.meta), 0)
 
+  const uploadDocument = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = async () => {
+        try {
+          const base64 = reader.result
+          const res = await fetch('/api/documents/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              fileName: file.name,
+              fileType: file.type,
+              base64
+            })
+          })
+          const data = await res.json()
+          if (data.success) {
+            resolve(data)
+          } else {
+            reject(new Error(data.error || 'Erro ao realizar upload'))
+          }
+        } catch (err) {
+          reject(err)
+        }
+      }
+      reader.onerror = error => reject(error)
+      reader.readAsDataURL(file)
+    })
+  }
+
   return (
     <FinanceContext.Provider value={{
       demandas,
@@ -738,6 +768,7 @@ export function FinanceProvider({ children }) {
       theme,
       lastSaved,
       toggleTheme,
+      uploadDocument,
       addDemanda,
       updateDemanda,
       deleteDemanda,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
-import { Upload, X, CheckCircle2, FileText, Plus } from 'lucide-react'
+import { Upload, X, CheckCircle2, FileText, Loader2, HardDrive } from 'lucide-react'
 import { COMISSOES } from '../constants/comissoes'
 
 const CATEGORIAS_COMPROVANTE = [
@@ -13,7 +13,7 @@ const CATEGORIAS_COMPROVANTE = [
 ]
 
 export default function UploadComprovanteModal({ isOpen, onClose }) {
-  const { transacoes, addTransacao, attachComprovanteToTransacao } = useFinance()
+  const { transacoes, addTransacao, attachComprovanteToTransacao, uploadDocument } = useFinance()
 
   const [modo, setModo] = useState('existente') // 'existente' | 'novo'
   const [transacaoId, setTransacaoId] = useState('')
@@ -25,42 +25,30 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
   const [categoria, setCategoria] = useState('Rifa')
   
   const [comprovanteUrl, setComprovanteUrl] = useState('')
+  const [nomeArquivo, setNomeArquivo] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
+  const [savedOnSSD, setSavedOnSSD] = useState(false)
 
-  const handleImageUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      const img = new Image()
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        const maxDim = 800
-        let width = img.width
-        let height = img.height
+    setIsUploading(true)
+    setNomeArquivo(file.name)
 
-        if (width > height) {
-          if (width > maxDim) {
-            height *= maxDim / width
-            width = maxDim
-          }
-        } else {
-          if (height > maxDim) {
-            width *= maxDim / height
-            height = maxDim
-          }
-        }
-
-        canvas.width = width
-        canvas.height = height
-        const ctx = canvas.getContext('2d')
-        ctx.drawImage(img, 0, 0, width, height)
-        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75)
-        setComprovanteUrl(compressedBase64)
+    try {
+      // Se for imagem, podemos otimizar ou subir direto; para PDF/outros enviamos direto
+      const result = await uploadDocument(file)
+      if (result && result.url) {
+        setComprovanteUrl(result.url)
+        setSavedOnSSD(Boolean(result.savedOnSSD))
       }
-      img.src = event.target.result
+    } catch (err) {
+      alert(`Erro ao fazer upload do documento: ${err.message}`)
+      setComprovanteUrl('')
+    } finally {
+      setIsUploading(false)
     }
-    reader.readAsDataURL(file)
   }
 
   const handleSubmit = (e) => {
@@ -89,12 +77,14 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
     setTipo('Entrada')
     setCategoria('Rifa')
     setComprovanteUrl('')
+    setNomeArquivo('')
+    setSavedOnSSD(false)
 
     onClose()
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Central de Uploads: Anexar Comprovante">
+    <Modal isOpen={isOpen} onClose={onClose} title="Central de Uploads: Anexar Comprovante / Nota Fiscal">
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Toggle Mode */}
         <div className="grid grid-cols-2 p-1 bg-secondary/60 rounded-xl gap-1 text-xs font-semibold">
@@ -207,21 +197,36 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
         {/* Upload Box */}
         <div>
           <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-            Selecione o Comprovante (Imagem / Print PIX / Recibo) *
+            Selecione o Comprovante (PDF / Imagem / Print PIX / Nota Fiscal) *
           </label>
 
-          {comprovanteUrl ? (
-            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-emerald-500/10 p-3 flex items-center gap-3">
-              <img src={comprovanteUrl} alt="Comprovante" className="w-20 h-20 object-cover rounded-xl border border-emerald-500/20" />
+          {isUploading ? (
+            <div className="p-6 border-2 border-dashed border-primary/50 rounded-2xl bg-primary/5 flex flex-col items-center justify-center gap-2 text-xs text-primary font-semibold">
+              <Loader2 className="w-7 h-7 animate-spin" />
+              <span>Gravando documento no SSD D:\REUNI_STORAGE...</span>
+            </div>
+          ) : comprovanteUrl ? (
+            <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-emerald-500/10 p-3.5 flex items-center gap-3">
+              <div className="p-3 bg-emerald-500/20 text-emerald-400 rounded-xl">
+                <FileText className="w-6 h-6" />
+              </div>
               <div className="flex-1 min-w-0">
-                <span className="text-xs font-bold text-emerald-400 block truncate flex items-center gap-1">
-                  <CheckCircle2 className="w-4 h-4" /> Comprovante Carregado
+                <span className="text-xs font-bold text-emerald-400 block truncate flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{nomeArquivo || 'Comprovante Anexado'}</span>
                 </span>
-                <span className="text-[10px] text-muted-foreground block">Pronto para salvar no histórico</span>
+                <span className="text-[10px] text-muted-foreground block flex items-center gap-1 mt-0.5">
+                  <HardDrive className="w-3 h-3 text-emerald-500" />
+                  {savedOnSSD ? 'Salvo no SSD 1TB (D:\\REUNI_STORAGE)' : 'Salvo no Repositório de Documentos'}
+                </span>
               </div>
               <button
                 type="button"
-                onClick={() => setComprovanteUrl('')}
+                onClick={() => {
+                  setComprovanteUrl('')
+                  setNomeArquivo('')
+                  setSavedOnSSD(false)
+                }}
                 className="p-2 text-muted-foreground hover:text-red-500 rounded-lg hover:bg-secondary transition-colors"
                 title="Remover Comprovante"
               >
@@ -231,9 +236,9 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
           ) : (
             <label className="flex flex-col items-center justify-center gap-2 p-6 border-2 border-dashed border-border rounded-2xl bg-secondary/20 hover:bg-secondary/40 cursor-pointer transition-all text-xs text-muted-foreground font-medium text-center">
               <Upload className="w-7 h-7 text-primary" />
-              <span>Clique aqui ou arraste para enviar foto ou print do PIX</span>
-              <span className="text-[10px] opacity-70">Suporta JPG, PNG, WEBP e capturas de tela do celular</span>
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              <span>Clique aqui ou arraste para enviar PDF, Foto ou Nota Fiscal</span>
+              <span className="text-[10px] opacity-70">Suporta PDF, JPG, PNG, WEBP e Documentos anexados</span>
+              <input type="file" accept="image/*,.pdf" onChange={handleFileUpload} className="hidden" />
             </label>
           )}
         </div>
@@ -249,7 +254,7 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
           </button>
           <button
             type="submit"
-            disabled={!comprovanteUrl}
+            disabled={!comprovanteUrl || isUploading}
             className="px-5 py-2 text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-colors flex items-center gap-1.5 shadow-sm"
           >
             <Upload className="w-4 h-4" />
@@ -260,3 +265,4 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
     </Modal>
   )
 }
+
