@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { Plus, Search, Trash2, CheckCircle, Clock, AlertCircle, Filter, Edit3 } from 'lucide-react'
+import { Plus, Search, Trash2, CheckCircle, Clock, AlertCircle, Filter, Edit3, FileSpreadsheet } from 'lucide-react'
 import { useFinance } from '../context/FinanceContext'
 import AddDemandaModal from '../components/AddDemandaModal'
+import ImportPlanilhaModal from '../components/ImportPlanilhaModal'
 import { COMISSOES } from '../constants/comissoes'
 
 export default function Demandas() {
   const { demandas, deleteDemanda, updateDemandaStatus } = useFinance()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [demandaToEdit, setDemandaToEdit] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedComissao, setSelectedComissao] = useState('Todas')
@@ -34,13 +36,22 @@ export default function Demandas() {
             Levantamento de necessidades econômicas por comissão (Capítulo 6.2 - Bíblia REUNI)
           </p>
         </div>
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground hover:opacity-90 rounded-xl text-sm font-semibold transition-all shadow-sm self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4" />
-          Nova Demanda
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button 
+            onClick={() => setIsImportModalOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-2.5 bg-secondary text-foreground hover:bg-secondary/80 rounded-xl text-xs font-semibold transition-all border border-border"
+          >
+            <FileSpreadsheet className="w-4 h-4 text-primary" />
+            Importar Planilha
+          </button>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground hover:opacity-90 rounded-xl text-sm font-semibold transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Demanda
+          </button>
+        </div>
       </div>
 
       {/* Filters Bar */}
@@ -212,6 +223,11 @@ export default function Demandas() {
           setDemandaToEdit(null)
         }} 
         demandaToEdit={demandaToEdit}
+      />
+      <ImportPlanilhaModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        defaultModule="demandas"
       />
     </div>
   )

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { 
   LayoutDashboard, Wallet, ArrowRightLeft, HandCoins, Building2, 
   ShoppingBag, StickyNote, Sun, Moon, RotateCcw, CheckCircle2, 
-  Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes
+  Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes, FileSpreadsheet
 } from 'lucide-react'
 import { FinanceProvider, useFinance } from './context/FinanceContext'
 import { cn } from './lib/utils'
@@ -17,6 +17,9 @@ import Informacoes from './pages/Informacoes'
 import Caixa from './pages/Caixa'
 import Inventario from './pages/Inventario'
 
+// Modals
+import ImportPlanilhaModal from './components/ImportPlanilhaModal'
+
 const NAV_ITEMS = [
   { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
   { name: 'Planejamento de Demandas', path: '/demandas', icon: Building2 },
@@ -27,7 +30,7 @@ const NAV_ITEMS = [
   { name: 'Gestão de Caixa', path: '/caixa', icon: ArrowRightLeft },
 ]
 
-function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems }) {
+function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, onOpenImport }) {
   const location = useLocation()
   const { theme, toggleTheme, resetToDefault, clearAllData, lastSaved } = useFinance()
 
@@ -128,6 +131,32 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems }) 
           </div>
         )}
 
+        {/* Botão de Importação de Planilha CSV / Excel */}
+        {!isCollapsed ? (
+          <button
+            onClick={() => {
+              if (closeMobile) closeMobile()
+              onOpenImport()
+            }}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-all shadow-xs"
+            title="Importar Planilha CSV / Excel"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>Importar Planilha CSV / Excel</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              if (closeMobile) closeMobile()
+              onOpenImport()
+            }}
+            className="w-full flex items-center justify-center p-2.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl text-xs font-semibold transition-colors"
+            title="Importar Planilha CSV / Excel"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+          </button>
+        )}
+
         {/* Botões de Ação Rápida */}
         <div className={cn("flex items-center justify-between pt-1", isCollapsed ? "flex-col gap-2" : "")}>
           <button
@@ -183,6 +212,7 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems }) 
 function Layout({ children }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const location = useLocation()
 
   // Fechar menu mobile ao mudar de rota
@@ -248,6 +278,7 @@ function Layout({ children }) {
           toggleCollapse={() => {}} 
           closeMobile={() => setIsMobileOpen(false)}
           navItems={NAV_ITEMS}
+          onOpenImport={() => setIsImportModalOpen(true)}
         />
       </div>
 
@@ -261,6 +292,7 @@ function Layout({ children }) {
           toggleCollapse={() => setIsCollapsed(!isCollapsed)} 
           closeMobile={() => {}}
           navItems={NAV_ITEMS}
+          onOpenImport={() => setIsImportModalOpen(true)}
         />
       </aside>
 
@@ -268,6 +300,12 @@ function Layout({ children }) {
       <main className="flex-1 p-4 sm:p-6 md:p-10 min-w-0 overflow-y-auto max-w-7xl mx-auto w-full transition-all duration-300">
         {children}
       </main>
+
+      {/* Modal de Importação de Planilha */}
+      <ImportPlanilhaModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+      />
 
     </div>
   )
