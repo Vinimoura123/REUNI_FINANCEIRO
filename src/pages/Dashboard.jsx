@@ -1,8 +1,6 @@
-import React, { useState } from 'react'
-import { TrendingUp, TrendingDown, Target, Wallet, Plus, ArrowUpRight, ArrowDownRight, CheckCircle2, Clock } from 'lucide-react'
+import React from 'react'
+import { TrendingUp, TrendingDown, Target, Wallet, ArrowUpRight, ArrowDownRight, CheckCircle2, Clock } from 'lucide-react'
 import { useFinance } from '../context/FinanceContext'
-import AddDemandaModal from '../components/AddDemandaModal'
-import AddArrecadacaoModal from '../components/AddArrecadacaoModal'
 
 function StatCard({ title, amount, icon: Icon, subtitle, type = 'normal' }) {
   const colorStyles = {
@@ -43,9 +41,6 @@ export default function Dashboard() {
     updateDemandaStatus
   } = useFinance()
 
-  const [isDemandaModalOpen, setIsDemandaModalOpen] = useState(false)
-  const [isArrecadacaoModalOpen, setIsArrecadacaoModalOpen] = useState(false)
-
   const demandasInegociaveis = demandas.filter(d => d.prioridade === 'Inegociável')
   const percentualMetaArrecadacao = metaArrecadacaoTotal > 0 
     ? Math.min(100, (totalArrecadado / metaArrecadacaoTotal) * 100) 
@@ -54,29 +49,11 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-border/60">
-        <div>
-          <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Visão Geral Financeira</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Garantidor Material & Planejamento da REUNI 2026 (UFBA)
-          </p>
-        </div>
-        <div className="flex gap-3">
-          <button 
-            onClick={() => setIsDemandaModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-xl text-sm font-semibold transition-all shadow-xs"
-          >
-            <Plus className="w-4 h-4" />
-            Nova Demanda
-          </button>
-          <button 
-            onClick={() => setIsArrecadacaoModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-primary-foreground hover:opacity-90 rounded-xl text-sm font-semibold transition-all shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Nova Captação
-          </button>
-        </div>
+      <div className="pb-4 border-b border-border/60">
+        <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Visão Geral Financeira</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Painel de Atualizações, Garantidor Material & Planejamento da REUNI 2026 (UFBA)
+        </p>
       </div>
 
       {/* KPI Cards */}
@@ -218,10 +195,7 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
-
-      {/* Modals */}
-      <AddDemandaModal isOpen={isDemandaModalOpen} onClose={() => setIsDemandaModalOpen(false)} />
-      <AddArrecadacaoModal isOpen={isArrecadacaoModalOpen} onClose={() => setIsArrecadacaoModalOpen(false)} />
     </div>
   )
 }
+
