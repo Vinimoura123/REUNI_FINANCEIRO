@@ -76,26 +76,6 @@ export default function Informacoes() {
         </button>
       </div>
 
-      {/* Google Keep Quick Input Bar */}
-      <div className="max-w-2xl mx-auto my-4">
-        <div 
-          onClick={handleOpenNewNote}
-          className="p-3.5 px-5 rounded-2xl border border-border/80 bg-card glass-panel shadow-sm hover:shadow-md cursor-pointer transition-all flex items-center justify-between gap-4 text-muted-foreground group"
-        >
-          <span className="text-sm font-medium group-hover:text-foreground">
-            Criar uma nota ou lista de tarefas...
-          </span>
-
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg hover:bg-secondary hover:text-foreground transition-colors" title="Nova checklist">
-              <CheckSquare className="w-4 h-4" />
-            </div>
-            <div className="p-1.5 rounded-lg hover:bg-secondary hover:text-foreground transition-colors" title="Nova foto/anexo">
-              <Upload className="w-4 h-4" />
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Search & Tag Filter Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
