@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
+import { COMISSOES } from '../constants/comissoes'
 
 export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null }) {
   const { addDemanda, updateDemanda } = useFinance()
   
   const [formData, setFormData] = useState({
-    comissao: 'Comunicação',
+    comissao: COMISSOES[0],
     item: '',
     custo: '',
     prioridade: 'Inegociável',
@@ -18,7 +19,7 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
   useEffect(() => {
     if (demandaToEdit) {
       setFormData({
-        comissao: demandaToEdit.comissao || 'Comunicação',
+        comissao: demandaToEdit.comissao || COMISSOES[0],
         item: demandaToEdit.item || '',
         custo: demandaToEdit.custo || '',
         prioridade: demandaToEdit.prioridade || 'Inegociável',
@@ -28,7 +29,7 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
       })
     } else {
       setFormData({
-        comissao: 'Comunicação',
+        comissao: COMISSOES[0],
         item: '',
         custo: '',
         prioridade: 'Inegociável',
@@ -67,13 +68,11 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
             onChange={(e) => setFormData({ ...formData, comissao: e.target.value })}
             className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
           >
-            <option value="Comunicação">Comunicação</option>
-            <option value="Estrutura">Estrutura</option>
-            <option value="Programação">Programação</option>
-            <option value="Recreação">Recreação</option>
-            <option value="Alimentação">Alimentação</option>
-            <option value="Acolhimento">Acolhimento</option>
-            <option value="Geral/Coordenação">Geral / Coordenação</option>
+            {COMISSOES.map((comissao) => (
+              <option key={comissao} value={comissao}>
+                {comissao}
+              </option>
+            ))}
           </select>
         </div>
 

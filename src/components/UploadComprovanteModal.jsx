@@ -2,6 +2,15 @@ import React, { useState } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
 import { Upload, X, CheckCircle2, FileText, Plus } from 'lucide-react'
+import { COMISSOES } from '../constants/comissoes'
+
+const CATEGORIAS_COMPROVANTE = [
+  'Rifa',
+  'Bazar',
+  'Doação',
+  'Parceria',
+  ...COMISSOES
+]
 
 export default function UploadComprovanteModal({ isOpen, onClose }) {
   const { transacoes, addTransacao, attachComprovanteToTransacao } = useFinance()
@@ -184,13 +193,11 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
                   onChange={(e) => setCategoria(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:ring-2 focus:ring-primary outline-none"
                 >
-                  <option value="Rifa">Rifa</option>
-                  <option value="Bazar">Bazar</option>
-                  <option value="Doação">Doação</option>
-                  <option value="Parceria">Parceria</option>
-                  <option value="Comunicação">Comunicação</option>
-                  <option value="Estrutura">Estrutura</option>
-                  <option value="Recreação">Recreação</option>
+                  {CATEGORIAS_COMPROVANTE.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

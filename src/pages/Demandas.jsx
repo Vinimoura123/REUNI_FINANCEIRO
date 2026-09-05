@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Plus, Search, Trash2, CheckCircle, Clock, AlertCircle, Filter, Edit3 } from 'lucide-react'
 import { useFinance } from '../context/FinanceContext'
 import AddDemandaModal from '../components/AddDemandaModal'
+import { COMISSOES } from '../constants/comissoes'
 
 export default function Demandas() {
   const { demandas, deleteDemanda, updateDemandaStatus } = useFinance()
@@ -11,7 +12,7 @@ export default function Demandas() {
   const [selectedComissao, setSelectedComissao] = useState('Todas')
   const [selectedPrioridade, setSelectedPrioridade] = useState('Todas')
 
-  const comissoesUnicas = ['Todas', ...new Set(demandas.map(d => d.comissao))]
+  const comissoesUnicas = ['Todas', ...new Set([...COMISSOES, ...demandas.map(d => d.comissao)])]
 
   const demandasFiltradas = demandas.filter(d => {
     const matchesSearch = d.item.toLowerCase().includes(searchTerm.toLowerCase()) || 

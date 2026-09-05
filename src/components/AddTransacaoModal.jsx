@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
+import { COMISSOES } from '../constants/comissoes'
+
+const CATEGORIAS_TRANSACAO = [
+  'Geral',
+  'Rifa',
+  'Doação',
+  'Parceria',
+  'Bazar',
+  ...COMISSOES
+]
 
 export default function AddTransacaoModal({ isOpen, onClose, transacaoToEdit = null }) {
   const { addTransacao, updateTransacao } = useFinance()
@@ -116,14 +126,11 @@ export default function AddTransacaoModal({ isOpen, onClose, transacaoToEdit = n
               onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
               className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
             >
-              <option value="Geral">Geral</option>
-              <option value="Rifa">Rifa</option>
-              <option value="Doação">Doação</option>
-              <option value="Parceria">Parceria</option>
-              <option value="Comunicação">Comunicação</option>
-              <option value="Estrutura">Estrutura</option>
-              <option value="Recreação">Recreação</option>
-              <option value="Programação">Programação</option>
+              {CATEGORIAS_TRANSACAO.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
             </select>
           </div>
         </div>
