@@ -1,0 +1,3895 @@
+Manual de operações da Recepção Unificada dos Bacharelados Interdisciplinares
+Salvador, 2026
+
+-- 1 of 99 --
+
+Sumário
+1. Introdução e Apresentação Do Projeto............................................................................... 6
+2. Objetivo.................................................................................................................................. 7
+3. Estrutura................................................................................................................................ 9
+3.1. Espaços Fundamentais para a Existência da REUNI..................................................... 9
+3.2. Como Funciona a Reserva de Salas e Espaços no IHAC.............................................10
+3.3. Pessoas-Chave Dentro da GERAF.........................................................................10
+3.4. Reservas em Sábados, Recessos e Horários Especiais.................................................11
+3.5. Organização de Dados dos Membros...........................................................................12
+3.6. Seleções da Comissão Organizadora e da Monitoria................................................... 12
+3.7. Reservas de Auditórios Externos ao IHAC..................................................................13
+3.8. Produção de Materiais e Problemas com a Portaria.....................................................13
+3.9. Solicitação de Equipamentos e Materiais à GERAF....................................................14
+3.10. Mesas, Cadeiras e Apoio Estrutural Interno.............................................................. 15
+3.10.1. Solicitação de Mesas e Cadeiras à CMP........................................................... 16
+3.10.2. Complementação com Aluguel......................................................................... 16
+3.11. Ambientação, Identidade Visual e Produção Artística...............................................17
+3.13. Limitações Elétricas do IHAC................................................................................... 18
+4. Programação........................................................................................................................18
+4.1. Construção da Programação Geral da Semana............................................................ 19
+4.2. Escolha de Temáticas e Mesas..................................................................................... 20
+4.3. Escolha e Convite de Convidados................................................................................20
+4.4. Convites, Contato e Acompanhamento dos Convidados............................................. 21
+4.5. Recepção Institucional e Acompanhamento de Convidados....................................... 22
+4.5.1. Formas de Recepção........................................................................................... 22
+4.5.2. Responsável pelo Acompanhamento.................................................................. 22
+4.6. Camarins, Salas e Estrutura de Apoio..........................................................................23
+4.8. Oficinas Temáticas e Atividades Criativas...................................................................24
+4.9. Gestão da Feirinha da REUNI......................................................................................24
+4.9.1. Relação com Feirantes Durante o Evento........................................................... 25
+5. Comunicação....................................................................................................................... 25
+5.1. Público-Alvo................................................................................................................ 26
+5.2. Pré-SISU e SISU.......................................................................................................... 27
+5.3. Pós-SISU Imediato.......................................................................................................28
+5.4. Divulgação da Data Oficial e Apresentação Clara da REUNI.....................................28
+5.5. Equilíbrio Entre Programação e Recreação................................................................. 29
+
+-- 2 of 99 --
+
+5.6. Responsabilidade Estratégica da Comissão................................................................. 30
+5.7. Posts Procedimentais Obrigatórios.............................................................................. 30
+5.8. Comunicação Institucional e Imagem Pública............................................................. 31
+5.9. Cobertura Durante o Evento.........................................................................................31
+5.10. Pós-REUNI................................................................................................................ 32
+5.11. Espaços Interativos, Ações Visuais de Engajamento e Operacionalização de
+Dinâmicas Fotográficas.......................................................................................................33
+5.11.1. Comunicação Como Responsável Pela Idealização e Execução.......................33
+5.12. Integração Entre Registro e Produção de Conteúdo Espontâneo...............................34
+5.13. Planejamento Material e Operacional........................................................................ 35
+5.13.1. Relação com a Subcomissão de Estrutura: Produção Material x Operação......35
+5.14. Compromisso Institucional e Qualidade da Experiência........................................... 36
+5.15.1. Prioridade Orçamentária................................................................................... 37
+5.16. Comunicação Não É Espaço de Autopromoção........................................................ 38
+5.17. Cobertura Integral, Responsividade Operacional e Compromisso Institucional com o
+Registro da REUNI............................................................................................................. 39
+5.17.1. Registro de Convidados.................................................................................... 39
+5.17.2. Cobertura de Atividades....................................................................................40
+6. Financeiro............................................................................................................................ 40
+6.1. Compreensão Estrutural: O Financeiro Como Garantidor Material da REUNI.......... 41
+6.2. Levantamento de Demandas, Previsão de Custos e Construção de Cenário Econômico
+41
+6.3. Construção do Plano Financeiro.................................................................................. 42
+6.4. Arrecadação Estratégica...............................................................................................42
+6.5. Doações, Contribuições Solidárias e Busca Ativa....................................................... 43
+6.6. Parcerias, Apoios Externos e Expansão Institucional.................................................. 44
+6.7. Editais, Fomento e Oportunidades Institucionais.........................................................44
+6.8. Gestão de Caixa, Registro e Transparência..................................................................45
+6.9. Formalização Jurídica, CNPJ e Proteção Institucional................................................ 45
+6.10. Superação da Política de Caixa Zerado e Construção de Reserva Permanente......... 46
+6.11. Relação com Outras Subcomissões e Responsabilidade Coletiva............................. 46
+6.12. Ética Financeira, Voluntariado e Proteção dos Membros.......................................... 47
+6.13 Orçamentos................................................................................................................. 47
+7. Credenciamento...................................................................................................................49
+7.1. Relação Institucional, Direção do IHAC e Assinaturas............................................... 50
+7.2. GERE........................................................................................................................... 50
+7.3. Site de Inscrição: A Porta de Entrada Digital da REUNI............................................ 51
+7.4. Inscrições......................................................................................................................52
+7.5. Formulários, Anexos e Documentação: Organização Para Continuidade................... 52
+7.6. Monitores de Credenciamento..................................................................................... 53
+7.7. Operação Presencial e Controle de Fluxo.................................................................... 53
+
+-- 3 of 99 --
+
+7.8. Certificação e Pós-REUNI........................................................................................... 54
+8. Monitoria............................................................................................................................. 54
+8.1. Reformulação Integral do Edital de Monitoria............................................................ 55
+8.2. Centralização Documental e Gestão Institucional de Dados....................................... 55
+8.3. Diagnóstico de Demandas Intercomissionais e Dimensionamento De Recursos
+Humanos............................................................................................................................. 56
+8.4. Organização Das Seleções........................................................................................... 57
+8.5. Treinamento, Formação e Preparação dos Monitores Selecionados............................58
+8.6. Gestão Operacional Durante a Reuni........................................................................... 58
+8.7. Certificação, Consolidação Documental e Pós-Evento................................................59
+8.10. Alerta Institucional.....................................................................................................59
+9. Festa......................................................................................................................................61
+9.1. Legitimidade Política e Aprovação Institucional......................................................... 61
+9.2. Portaria Nº 094/2025....................................................................................................62
+9.3. Segurança, Coseg e Plano Operacional de Risco.........................................................64
+9.4. Defesa Civil, Bombeiros e Conformidade Emergencial.............................................. 65
+9.5. Estrutura Técnica......................................................................................................... 65
+9.6. Financeiro e Festa........................................................................................................ 66
+9.7. Fornecedores, Alimentação e Bebidas......................................................................... 68
+9.8. Curadoria Cultural, Atrações e Produção Artística......................................................69
+9.9. Limpeza, Patrimônio e Devolução do Espaço............................................................. 71
+Insumos necessários:........................................................................................................... 71
+9.10. Medida Emergencial Para Novos Ingressos...............................................................71
+9.10.1 Determinação:.................................................................................................... 71
+9.11. Responsabilidade Operacional Durante a Execução.................................................. 72
+10. Recreação........................................................................................................................... 72
+10.1. Metodologia Base.......................................................................................................73
+10.2. Critérios Obrigatórios Para Criação de Provas e Dinâmicas......................................73
+10.3. Postura Operacional e Política da Recreação.............................................................75
+10.4 Recreação e Programação........................................................................................... 76
+10.5 Microfone, Linguagem e Conduta.............................................................................. 77
+10.6. Publicização Interna Das Provas................................................................................ 78
+10.7. Recreação e Estrutura.................................................................................................78
+10.8. DRAG RACE B.I.......................................................................................................79
+10.8.1. Comunicação deverá realizar:........................................................................... 80
+10.9. Operações históricas e dinâmicas tradicionais da REUNI......................................... 81
+10.9.1. Caça-bandeira....................................................................................................81
+10.9.2. Cupido............................................................................................................... 82
+10.9.3. Grito de guerra.................................................................................................. 82
+10.9.4. Prova de caracterização.....................................................................................82
+10.9.5. Consulta à comissão anterior e memória metodológica....................................83
+
+-- 4 of 99 --
+
+11. Saúde, segurança e Inclusão............................................................................................. 83
+11.1. Protocolos de emergência, intercorrências médicas e resposta imediata................... 84
+11.2. Kits de primeiros socorros, materiais médicos e estrutura mínima de assistência.....85
+11.3. Apoio estratégico à comissão de festa e exigências ampliadas de segurança............ 85
+11.4. Inclusão, acessibilidade e articulação institucional....................................................86
+11.5. Perfil técnico dos membros e diretrizes de composição.............................................87
+11.6. Implementação inicial, avaliação e atualização obrigatória.......................................87
+12. Secretaria Geral.................................................................................................................88
+12.1. Perfil técnico, competências e conhecimentos indispensáveis...................................88
+12.2. Convocação do novo ciclo e manutenção da continuidade organizacional............... 89
+12.3. Organização administrativa, atas, frequência e registro formal................................. 90
+12.4. Padronização documental, identidade institucional e uso da marca REUNI............. 90
+12.5. Reformulação anual do projeto e elaboração do edital da Comissão Organizadora.. 91
+12.6. Organização das seleções e apoio logístico institucional...........................................91
+12.7. E-mails, ofícios, contatos institucionais e gestão central de acessos......................... 92
+12.8. Fiscalização da execução do manual e garantia de cumprimento institucional......... 92
+12.9. Princípio fundamental da Secretaria Geral.................................................................93
+12.10. Senhas e contas........................................................................................................ 93
+12.11. Contatos....................................................................................................................95
+
+-- 5 of 99 --
+
+1. Introdução e Apresentação Do Projeto
+A Recepção Unificada Interdisciplinar (REUNI) constitui uma organização estudantil
+autônoma dedicada ao acolhimento dos novos estudantes dos Bacharelados Interdisciplinares
+(BI) da Universidade Federal da Bahia (UFBA) desde o momento da matrícula até a primeira
+semana de atividades acadêmicas. Sua principal atividade é a realização de uma semana de
+recepção, na qual são ofertadas programações informativas, acadêmicas, culturais e de
+integração.
+Idealizada e executada por estudantes e egressos dos Bacharelados Interdisciplinares, a
+REUNI possui natureza autônoma e independente, sendo regida por sua Comissão
+Organizadora e orientada por acordos coletivos internos. Durante os dias do evento, a
+Comissão conta com o apoio de monitoria voluntária para atender às demandas operacionais e
+de suporte aos ingressantes.
+O propósito central da REUNI é facilitar a ambientação dos novos bacharelandos à
+dinâmica universitária, promovendo a inserção inicial na vida acadêmica e a familiarização
+com a estrutura e cultura institucional dos Bacharelados Interdisciplinares e da UFBA. Nesse
+contexto, busca-se apresentar aos calouros as especificidades do Instituto de Humanidades,
+Artes e Ciências Professor Milton Santos (IHAC), bem como estimular reflexões sobre
+percurso formativo, vida estudantil, organização universitária e atuação social.
+Com 15 anos de realização contínua, a REUNI consolidou-se como um dos principais
+instrumentos de acolhimento estudantil da universidade, registrando expansão progressiva de
+participação e consolidando relevância na integração discente. Os resultados recentes
+evidenciam esse movimento: em 2024 foram registrados 1.039 participantes e em 2025
+contabilizou-se 1.227 estudantes, números auditados pela plataforma oficial GERE. Esses
+dados se aproximam do contingente anual estimado de ingressantes nos Bacharelados
+Interdisciplinares via SiSU, demonstrando a efetividade do programa na cobertura de seu
+público-alvo estratégico.
+A REUNI não se restringe à recepção de calouros. O evento converte-se em um
+espaço de convivência, informação qualificada, networking acadêmico e entretenimento
+cultural, contribuindo para a formação de identidade, pertencimento e memória universitária.
+
+-- 6 of 99 --
+
+Essa característica torna o ambiente especialmente relevante para estudantes ativos da
+graduação, jovens em processo de formação intelectual, cultural e social.
+O presente projeto apresenta os objetivos, fundamentos e estrutura geral da REUNI
+2026, descrevendo sua metodologia de execução, perfil de público, capacidades
+organizacionais, agenda programática e possibilidades de articulação institucional. Em razão
+de sua maturidade organizativa e alcance estudantil, a edição de 2026 também se abre à
+celebração de parcerias, patrocínios e apoios institucionais, mantendo como princípio a
+legitimidade do ambiente acadêmico e a valorização da experiência universitária.
+2. Objetivo
+Este Manual Operacional tem como objetivo central sistematizar, organizar, preservar e
+orientar o funcionamento integral da Recepção Unificada Interdisciplinar (REUNI),
+consolidando em um único documento as diretrizes, responsabilidades, metodologias,
+estruturas organizacionais, processos institucionais, aprendizados históricos e protocolos
+necessários para sua execução qualificada, contínua e coerente com os princípios políticos,
+pedagógicos e organizacionais que fundamentam o projeto. Ao longo de 15 anos de atuação
+contínua, a REUNI consolidou-se como uma das mais relevantes iniciativas de acolhimento,
+integração e formação voltadas aos ingressantes dos Bacharelados Interdisciplinares da
+Universidade Federal da Bahia, deixando de ser apenas um evento de recepção para se afirmar
+como uma estrutura complexa, multidimensional e institucionalmente estratégica para a
+democratização do acesso à informação universitária, fortalecimento da permanência
+estudantil e construção de uma cultura de acolhimento mais ética, inclusiva e politicamente
+comprometida. Diante dessa consolidação, torna-se indispensável a existência de um
+instrumento formal capaz de registrar de maneira clara e detalhada como a REUNI deve
+funcionar, quais são suas finalidades, como suas comissões se organizam, quais
+responsabilidades competem a cada setor, quais práticas devem ser mantidas, quais erros
+históricos precisam ser evitados e quais caminhos operacionais devem ser seguidos para
+garantir continuidade, qualidade e segurança institucional.
+Este manual existe, portanto, para impedir que a REUNI dependa exclusivamente da memória
+informal de membros antigos, de lideranças passageiras ou de processos improvisados que
+fragilizem sua continuidade. Sua função é transformar a experiência acumulada por diferentes
+gerações organizadoras em memória institucional estruturada, acessível e operacionalizável,
+
+-- 7 of 99 --
+
+assegurando que cada novo ciclo da Comissão Organizadora não precise reconstruir
+integralmente seus processos, mas possa partir de bases consolidadas, aprendizados
+acumulados e diretrizes claras. Isso significa que o manual não se limita a descrever funções;
+ele busca orientar estrategicamente a operacionalização da REUNI, padronizar
+procedimentos, fortalecer sua institucionalidade, garantir coerência entre suas práticas e seu
+projeto político-pedagógico e reduzir lacunas que possam comprometer a execução do evento
+ou descaracterizar sua missão.
+Sua finalidade prática é servir como referência oficial para todas as subcomissões, lideranças
+e membros, oferecendo parâmetros objetivos sobre planejamento, organização,
+documentação, segurança, comunicação, gestão financeira, acolhimento, recreação,
+programação, monitoria, credenciamento, festa, saúde, inclusão e secretaria geral. Ao
+estabelecer essas diretrizes, o manual protege a REUNI contra descontinuidade
+organizacional, perda de memória, repetição de falhas, centralização indevida de informações,
+improvisação excessiva e fragilidade institucional. Em outras palavras, ele existe para garantir
+que a REUNI permaneça sendo um projeto maior que seus membros individuais, preservando
+sua identidade, sua missão e sua qualidade independentemente das mudanças anuais de
+gestão.
+Além de sua função organizacional interna, este manual também possui objetivo político e
+institucional. Ele reafirma que a REUNI não é apenas uma atividade recreativa ou recepção
+informal, mas um projeto estratégico de acolhimento estudantil, formação cidadã,
+democratização informacional e fortalecimento da universidade pública. Ao registrar seus
+princípios, métodos e responsabilidades, o manual protege a essência da REUNI enquanto
+iniciativa comprometida com o combate a práticas excludentes, à reprodução de trotes
+violentos, à desinformação institucional e à precarização do ingresso universitário. Sua
+existência reforça a compreensão de que acolher estudantes de maneira qualificada exige
+planejamento, responsabilidade, memória, estrutura e compromisso político.
+Assim, este Manual Operacional serve simultaneamente como instrumento de formação,
+organização, continuidade, consulta, fiscalização e preservação institucional. Ele orienta
+novas gestões, organiza o presente, protege o futuro e consolida o passado. Seu objetivo é
+garantir que a REUNI continue sendo executada com excelência, responsabilidade, segurança
+e fidelidade aos seus propósitos fundamentais: informar, acolher, integrar, fortalecer vínculos,
+reduzir desigualdades de acesso à informação, promover pertencimento e contribuir para que
+
+-- 8 of 99 --
+
+o ingresso na Universidade Federal da Bahia seja menos marcado por ansiedade,
+desorientação ou exclusão, e mais caracterizado por autonomia, apoio coletivo, pertencimento
+e formação crítica. Em síntese, este manual existe para assegurar que a REUNI não apenas
+aconteça, mas aconteça de forma cada vez mais estruturada, eficiente, coerente e
+institucionalmente fortalecida.
+3. Estrutura
+A Subcomissão de Estrutura é responsável por toda a sustentação material, espacial e
+logística da REUNI. Isso significa que praticamente todas as atividades do evento dependem
+direta ou indiretamente dela para acontecer. Seu trabalho envolve desde os primeiros contatos
+institucionais para garantir espaços e equipamentos até a montagem final, ambientação
+estética, suporte técnico e acompanhamento operacional durante todos os dias da REUNI.
+Embora exista uma liderança própria da Estrutura, muitos dos processos institucionais
+são conduzidos em parceria com a Secretaria Geral. Por isso, este capítulo busca orientar
+especialmente futuras gestões da Secretaria sobre como funcionam os fluxos institucionais
+relacionados à reserva de espaços, acesso ao prédio, solicitação de materiais e articulação com
+os setores administrativos da UFBA.
+3.1. Espaços Fundamentais para a Existência da REUNI
+A operação da REUNI depende diretamente da liberação de dois espaços específicos
+do IHAC:
+● Vão do IHAC;
+● Sala Aquário/Galeria.
+Esses dois ambientes funcionam como núcleo operacional do evento. O Vão concentra
+circulação, acolhimento, feiras, mesas, atividades integrativas e boa parte da programação
+cotidiana. Já a Sala Aquário/Galeria funciona como base de apoio estrutural da comissão,
+sendo utilizada para armazenamento de materiais, produção artística, montagem, pintura,
+organização logística e apoio operacional durante todo o período da REUNI.
+Sem esses espaços, a estrutura do evento se torna praticamente inviável. Por isso, a
+reserva deles deve ser uma das primeiras ações realizadas após a definição oficial das datas da
+REUNI. Quanto maior a antecedência, menores as chances de conflitos com aulas, eventos
+acadêmicos ou reservas externas, o que reduz drasticamente problemas futuros e facilita
+negociações institucionais.
+
+-- 9 of 99 --
+
+3.2. Como Funciona a Reserva de Salas e Espaços no IHAC
+As reservas institucionais do IHAC são feitas através da GERAF (Gerência Administrativa do
+IHAC), principalmente pelo e-mail:
+● gerenciaadmihac@ufba.br
+Além disso, o IHAC possui um portal institucional onde é possível: consultar salas
+disponíveis; verificar horários vagos; acessar formulários; acompanhar possibilidades de
+reserva.
+Portal de Reserva de Espaços do IHAC: https://ihac.ufba.br/pt/reservadeespacos
+A dinâmica de marcação tende a ser relativamente tranquila quando realizada com
+antecedência. O maior erro operacional costuma ser deixar essas solicitações para perto da
+data do evento, pois isso aumenta muito as chances de encontrar salas já ocupadas ou
+enfrentar resistência para remanejamentos.
+3.3. Pessoas-Chave Dentro da GERAF
+Dentro da administração do IHAC, algumas pessoas acabam sendo fundamentais para o
+funcionamento da REUNI ao longo dos anos.
+Luciano
+Historicamente, Luciano é o servidor mais indicado para lidar com:
+● reservas;
+● ajustes;
+● remanejamentos;
+● desmarcações;
+● liberações operacionais.
+Ele já conhece a dinâmica da REUNI, entende as necessidades do evento e normalmente
+conduz esses processos de forma mais prática e menos burocrática. Sempre que houver
+necessidade de reorganizar reservas ou resolver conflitos de salas, ele costuma ser o melhor
+primeiro contato.
+Pérola Cavalcante Dourado
+Contatos:
+● perola.dourado@ufba.br
+● gerenciaadmihac@ufba.br
+Pérola, enquanto gerente administrativa, também auxilia nas reservas e liberações
+institucionais. Entretanto, costuma evitar desmarcações diretas para não gerar desgaste com
+professores ou setores acadêmicos.
+
+-- 10 of 99 --
+
+Por isso, quando existir necessidade de liberar uma sala já ocupada, o procedimento mais
+eficiente normalmente é:
+● entrar em contato diretamente com o professor responsável;
+● confirmar que a atividade não ocorrerá;
+● encaminhar essa confirmação para a GERAF;
+● solicitar formalmente a desmarcação.
+Luciano geralmente já conhece esse fluxo e costuma operacionalizar isso com mais facilidade.
+Izadora
+Historicamente, Izadora, que frequentemente atua no período da tarde junto à GERAF,
+costuma auxiliar bastante nesses processos ligados ao almoxarifado e à liberação de materiais.
+Manter boa comunicação com ela normalmente facilita muito o andamento dessas
+solicitações.
+3.4. Reservas em Sábados, Recessos e Horários Especiais
+As atividades da REUNI frequentemente acontecem fora do horário administrativo
+tradicional, especialmente aos sábados e durante períodos de recesso acadêmico. Isso exige
+atenção especial aos procedimentos de acesso ao IHAC.
+Atividades antes das 12h
+Quando as atividades ocorrerem:
+● aos sábados;
+● antes das 12h;
+Normalmente basta:
+● comunicar via e-mail;
+● solicitar a sala;
+● informar necessidade de entrada no prédio.
+Nesses casos, a própria GERAF costuma encaminhar as liberações necessárias.
+Atividades após às 12h
+Quando as atividades ocorrerem:
+● após as 12h;
+● fora do expediente regular;
+● em horários excepcionais;
+Normalmente torna-se necessário preencher formulários da COSEG para autorização formal
+de funcionamento e acesso ao prédio.
+
+-- 11 of 99 --
+
+Esse detalhe é extremamente importante porque muitos problemas operacionais da REUNI
+historicamente surgem justamente da falta de autorização formal para entrada no IHAC em
+horários não convencionais.
+3.5. Organização de Dados dos Membros
+Para facilitar qualquer solicitação institucional, a Secretaria Geral deve manter sempre
+organizadas listas contendo:
+● nome completo;
+● CPF;
+● matrícula;
+● telefone;
+de:
+● membros da Comissão Organizadora;
+● monitores;
+● colaboradores principais.
+Esses dados são constantemente solicitados:
+● pela portaria;
+● pela GERAF;
+● pela COSEG;
+● em listas de acesso;
+● em autorizações institucionais.
+Ter essas informações organizadas evita atrasos e improvisos durante os períodos mais
+intensos da organização.
+3.6. Seleções da Comissão Organizadora e da Monitoria
+Mesmo quando o Vão do IHAC aparentemente estiver vazio, a recomendação é sempre
+formalizar a reserva por e-mail para:
+● seleções da C.O.;
+● seleções de monitoria;
+● entrevistas;
+● dinâmicas presenciais.
+Isso evita:
+● conflitos inesperados;
+● ocupações simultâneas;
+● interrupções durante as seleções;
+● desgastes institucionais.
+A formalização simples por e-mail normalmente já resolve o problema preventivamente.
+
+-- 12 of 99 --
+
+3.7. Reservas de Auditórios Externos ao IHAC
+Algumas atividades da REUNI utilizam auditórios externos, principalmente quando há
+necessidade de comportar público maior ou atividades específicas.
+Envie a data, formulário correspondente preenchido, horário e previsão de público ao enviar a
+solicitação.
+TERMO_RESPONSABILIDADE_AUDIO_VIDEO_PAF3
+Auditório B — Escola de Teatro
+A reserva é feita pelo e-mail:
+● prod.teatro@ufba.br
+Entretanto, recomenda-se confirmar posteriormente com Kito:
+● contatos atualizados;
+● procedimentos mais recentes;
+● fluxos utilizados nas últimas edições.
+Auditório do PAF III
+A solicitação costuma ser feita diretamente pelo e-mail:
+● paf3@ufba.br
+Historicamente, o processo tende a ser simples quando solicitado com antecedência.
+3.8. Produção de Materiais e Problemas com a Portaria
+Se a reserva de espaços costuma ser relativamente tranquila, o mesmo não acontece com os
+acessos para produção de materiais e montagem estrutural.
+Historicamente, a maior dificuldade da Estrutura não é conseguir a autorização institucional,
+mas garantir que:
+● a portaria esteja informada;
+● os nomes estejam registrados;
+● os horários tenham sido repassados corretamente.
+Isso acontece principalmente:
+● aos sábados;
+● em períodos de recesso;
+● em horários noturnos;
+● quando há poucos técnicos trabalhando.
+
+-- 13 of 99 --
+
+Os desencontros de informação são relativamente comuns.
+Estratégia Mais Eficiente
+A experiência das últimas edições mostra que o melhor caminho é:
+● definir previamente datas fixas;
+● estabelecer horários relativamente constantes;
+● alinhar tudo antecipadamente com GERAF e portaria.
+Dias úteis normalmente funcionam muito melhor.
+Já aos sábados, qualquer falha de comunicação tende a gerar:
+● atrasos;
+● bloqueios de entrada;
+● desgaste com seguranças;
+● perda de tempo operacional.
+3.9. Solicitação de Equipamentos e Materiais à GERAF
+Além dos espaços, a Estrutura também é responsável pela solicitação de:
+● equipamentos técnicos;
+● materiais de escritório;
+● insumos operacionais.
+Entre os equipamentos mais utilizados estão:
+● caixas de som;
+● microfones;
+● tripés;
+● projetores;
+● cabos;
+● extensões;
+● filtros de linha.
+Já os materiais de produção incluem:
+● papel;
+● EVA;
+● cola;
+● tesouras;
+● fitas;
+● canetas;
+● materiais de ambientação.
+Essas solicitações devem ser feitas com antecedência porque parte significativa do material
+pode ser fornecida pelo almoxarifado institucional, reduzindo bastante os custos da REUNI.
+
+-- 14 of 99 --
+
+É responsabilidade da Subcomissão de Estrutura realizar, antes do início operacional da
+REUNI, um levantamento completo dos materiais, equipamentos e insumos disponíveis para
+utilização no evento. Esse processo deve envolver tanto a verificação quantitativa quanto a
+avaliação do estado de conservação dos materiais já pertencentes à REUNI, identificando
+quais itens ainda estão utilizáveis, quais necessitam de manutenção ou reforma e quais já não
+possuem condições adequadas de uso.
+Esse mapeamento deve contemplar todos os recursos estruturais da organização, incluindo
+materiais de decoração, equipamentos técnicos, extensões, cabos, caixas de som, elementos
+cenográficos, placas, letras, bonecos, ferramentas, materiais de montagem e demais itens
+utilizados historicamente pela comissão.
+Após esse levantamento, a Estrutura deve organizar uma previsão detalhada contendo:
+● materiais que a REUNI já possui em condições adequadas de uso;
+● materiais que precisam de reparo, manutenção ou adaptação;
+● materiais insuficientes para a demanda da edição;
+● materiais inexistentes que precisarão ser adquiridos.
+Essas informações devem ser encaminhadas à Comissão Financeira com antecedência
+suficiente para permitir:
+● elaboração de orçamentos;
+● planejamento de compras;
+● organização de prioridades;
+● captação de recursos;
+● definição de gastos viáveis dentro da realidade financeira da REUNI.
+A qualidade desse levantamento impacta diretamente a capacidade de planejamento do
+Financeiro e reduz significativamente improvisos, gastos emergenciais e problemas estruturais
+durante a execução do evento.
+INVENTÁRIO REUNI 2025 	MATERIALC.OESTRUTURA
+3.10. Mesas, Cadeiras e Apoio Estrutural Interno
+Parte da estrutura física da REUNI costuma ser montada utilizando:
+● mesas do Centro Acadêmico;
+● mesas de madeira espalhadas pelo IHAC;
+● mesa grande da sala do C.A.;
+● cadeiras institucionais.
+Essa utilização deve sempre ser comunicada previamente à GERAF para evitar conflitos
+internos.
+Além disso, Junior, funcionário terceirizado do IHAC, costuma auxiliar bastante em:
+● movimentações;
+
+-- 15 of 99 --
+
+● ajustes;
+● emergências;
+● apoio operacional.
+Ele já conhece a dinâmica da REUNI e frequentemente ajuda a resolver problemas de última
+hora.
+3.10.1. Solicitação de Mesas e Cadeiras à CMP
+Para complementar a estrutura do evento, a REUNI tradicionalmente solicita mesas e cadeiras
+plásticas à Coordenação de Material e Patrimônio (CMP) da UFBA.
+Contatos historicamente utilizados:
+● elieide.orrico@ufba.br
+● patrimonio.cmp@ufba.br
+● rafaele.romero@ufba.br
+● anarmm@ufba.br
+As solicitações normalmente são feitas por:
+● e-mail;
+● ofício institucional.
+Devem conter:
+● quantitativos;
+● período de uso;
+● local de entrega;
+● responsáveis.
+● 	OFÍCIO N° 05/2026_REUNI
+Historicamente, o maior quantitativo já conseguido foi:
+● 20 mesas plásticas;
+● 200 cadeiras plásticas.
+3.10.2. Complementação com Aluguel
+Mesmo com apoio da CMP, normalmente ainda é necessário complementar a estrutura através
+de aluguel externo.
+A experiência acumulada da REUNI mostra que o melhor modelo é:
+● utilizar prioritariamente o material institucional;
+● complementar apenas o necessário.
+Em média:
+
+-- 16 of 99 --
+
+● 200 a 300 cadeiras alugadas costumam ser suficientes.
+Quantidades muito maiores normalmente geram sobra estrutural e desperdício financeiro.
+Também se recomenda:
+● entrega na segunda pela manhã;
+● retirada na sexta à noite.
+Isso reduz conflitos com montagem e desmontagem, o uso de cadeiras plásticas traz uma
+eficiência enorme na montagem e desmontagem geral do evento, podendo assim até talvez
+possuímos um enxugamento na quantidade de monitores.
+3.11. Ambientação, Identidade Visual e Produção Artística
+A Estrutura não atua apenas na logística. Ela também é responsável pela materialização
+estética da REUNI.
+Entre suas funções estão:
+● reformar bonecos;
+● restaurar letras da REUNI;
+● reorganizar o Cupido;
+● produzir decoração;
+● construir cenários;
+● integrar ambientação visual.
+Essa atuação acontece em diálogo constante com:
+● Comunicação;
+● Programação;
+● identidade visual da edição.
+Por isso, a Estrutura acaba sendo uma comissão simultaneamente técnica e criativa
+3.12. Relação com Programação e Feirantes
+Após a definição da disposição espacial realizada pela Programação, a Estrutura deve:
+● organizar mesas;
+● garantir circulação;
+● verificar energia;
+● assegurar viabilidade estrutural.
+Depois disso, a Programação normalmente assume a relação direta com feirantes.
+A Estrutura permanece apenas garantindo:
+● suporte físico;
+● estabilidade operacional;
+
+-- 17 of 99 --
+
+● resolução de problemas estruturais.
+3.13. Limitações Elétricas do IHAC
+A REUNI não possui:
+● geradores;
+● sistema próprio de energia;
+● reforço elétrico dedicado.
+Por isso, é necessário evitar:
+● sobrecargas;
+● equipamentos excessivos;
+● ligações improvisadas.
+A orientação geral é que apenas os equipamentos essenciais de som permaneçam ligados
+continuamente.
+16. Uso de Botijão, Tia Val e Bombeiros
+Caso operações com:
+● botijão;
+● fogo;
+● preparação de alimentos;
+voltem a acontecer, especialmente em situações envolvendo Tia Val, recomenda-se
+fortemente a contratação de:
+● 1 a 2 bombeiros civis por dia de evento.
+Isso se torna ainda mais importante considerando:
+● limitações elétricas do IHAC;
+● ausência de estrutura própria;
+● riscos institucionais;
+● circulação intensa de público.
+4. Programação
+A Subcomissão de Programação é responsável pela construção intelectual, organizacional e
+experiencial da REUNI. Enquanto outras comissões sustentam a estrutura física, operacional
+ou comunicacional do evento, Programação é a comissão que define o que efetivamente
+acontecerá durante a semana da REUNI. Seu trabalho envolve pensar mesas, atividades,
+oficinas, convidados, horários, fluxos, experiências e dinâmicas capazes de transformar a
+
+-- 18 of 99 --
+
+semana em um espaço simultaneamente informativo, acolhedor, interessante e atrativo para os
+estudantes.
+Mais do que apenas organizar horários, Programação atua diretamente na construção da
+identidade política, acadêmica e cultural da edição. É essa comissão que garante que os
+objetivos do projeto da REUNI sejam traduzidos em atividades reais, capazes de atender os
+eixos temáticos definidos institucionalmente e ao mesmo tempo gerar engajamento genuíno
+do público.
+Por isso, Programação precisa constantemente equilibrar:
+● informação e entretenimento;
+● acolhimento e dinamismo;
+● institucionalidade e criatividade;
+● debates acadêmicos e integração social.
+A base conceitual da atuação da comissão pode ser observada tanto no Projeto da REUNI
+quanto no Edital da Comissão Organizadora, especialmente nos eixos temáticos definidos
+para a edição. É a partir desses eixos que toda a programação da semana deve ser construída.
+4.1. Construção da Programação Geral da Semana
+A primeira grande tarefa da Subcomissão de Programação é definir quais atividades irão
+compor a REUNI. Isso envolve pensar:
+Programação REUNI 2026
+● mesas;
+● palestras;
+● rodas de conversa;
+● oficinas;
+● dinâmicas;
+● atividades culturais;
+● momentos de integração;
+● ações institucionais;
+● espaços de acolhimento;
+● momentos recreativos.
+Toda essa construção deve dialogar diretamente com os eixos temáticos previstos no
+. A programação precisa garantir que os estudantes	PROJETO REUNI (2026).docx
+tenham acesso tanto às informações fundamentais sobre universidade, BI, assistência
+estudantil e sobrevivência acadêmica quanto a experiências culturais, integrativas e
+recreativas que tornem a semana interessante e acolhedora.
+Por isso, Programação não deve pensar apenas em “encher horários”, mas em construir uma
+narrativa para a semana da REUNI. A distribuição das mesas e atividades precisa considerar:
+● ritmo do público;
+● horários de maior circulação;
+● equilíbrio entre atividades densas e leves;
+● cansaço dos estudantes;
+
+-- 19 of 99 --
+
+● capacidade de engajamento;
+● diversidade temática;
+● alternância entre informação e integração.
+Uma programação excessivamente pesada tende a afastar estudantes. Da mesma forma, uma
+programação apenas recreativa enfraquece o caráter formativo da REUNI. O equilíbrio entre
+essas dimensões é uma das principais responsabilidades da comissão.
+4.2. Escolha de Temáticas e Mesas
+Após compreender os eixos temáticos do projeto, Programação deve iniciar a escolha das
+mesas e atividades que irão materializar esses temas.
+Isso significa pensar:
+● quais debates são importantes para os ingressantes;
+● quais dúvidas precisam ser respondidas;
+● quais temas mobilizam estudantes;
+● quais assuntos geram identificação;
+● quais pautas precisam ser discutidas politicamente;
+● quais formatos tornam essas discussões mais acessíveis.
+A escolha das mesas deve considerar tanto a função institucional da REUNI quanto o
+potencial de engajamento do público. Uma boa programação é aquela que consegue informar
+sem se tornar cansativa e acolher sem perder profundidade.
+Além disso, a comissão deve distribuir cuidadosamente os horários das atividades ao longo da
+semana, pensando:
+● duração das mesas;
+● tempo de deslocamento;
+● montagem de espaços;
+● alimentação;
+● momentos de descanso;
+● fluxo natural do público.
+Programação é a comissão que organiza o tempo da REUNI. Portanto, qualquer erro de
+planejamento de horários normalmente afeta diretamente todas as outras subcomissões.
+4.3. Escolha e Convite de Convidados
+Depois da definição das mesas e atividades, a comissão deve decidir quem serão os
+convidados responsáveis por compor essas atividades.
+Esse processo não deve considerar apenas disponibilidade ou proximidade com a organização.
+Programação precisa pensar estrategicamente:
+● quem agrega ao debate;
+● quem dialoga com estudantes;
+● quem possui domínio da temática;
+● quem desperta interesse do público;
+
+-- 20 of 99 --
+
+● quem fortalece institucionalmente a REUNI;
+● quem gera engajamento e circulação.
+A REUNI não deve convidar pessoas apenas pelo título ou formalidade institucional. É
+importante pensar em convidados capazes de produzir identificação real com os estudantes e
+tornar as atividades interessantes de acompanhar.
+Além dos convidados institucionais e acadêmicos, Programação também deve buscar:
+● projetos;
+● coletivos;
+● artistas;
+● iniciativas estudantis;
+● experiências culturais;
+● oficinas criativas;
+● ações diferenciadas;
+que tornem a programação mais viva e atrativa.
+Mesmo que Comunicação falhe em divulgar determinadas atividades, Programação deve
+trabalhar para que a própria qualidade da programação gere interesse espontâneo nos
+estudantes.
+4.4. Convites, Contato e Acompanhamento dos Convidados
+A Subcomissão de Programação é responsável pelo contato direto com os convidados da
+REUNI.
+Isso inclui:
+● realizar convites;
+● apresentar a proposta da atividade;
+● alinhar horários;
+● confirmar disponibilidade;
+● organizar necessidades estruturais;
+● acompanhar respostas;
+● garantir presença.
+Por isso, o líder da comissão deve designar um responsável específico para cada convidado.
+Esse responsável terá função de:
+● realizar o convite;
+● manter contato;
+● acompanhar dúvidas;
+● orientar sobre horários;
+● recepcionar o convidado;
+● acompanhar sua estadia na REUNI.
+Essa divisão evita desorganização e impede que convidados fiquem sem assistência durante o
+evento.
+
+-- 21 of 99 --
+
+4.5. Recepção Institucional e Acompanhamento de Convidados
+Programação é a comissão responsável por receber e acompanhar os convidados da REUNI,
+especialmente:
+● palestrantes;
+● convidados institucionais;
+● representantes externos;
+● artistas;
+● participantes especiais.
+A única exceção costuma ser Recreação, já que essa comissão historicamente possui
+autonomia suficiente para selecionar, cuidar e conduzir seus próprios convidados lúdicos e
+recreativos.
+Todos os demais convidados normalmente ficam sob responsabilidade da Programação.
+4.5.1. Formas de Recepção
+A forma como a REUNI receberá cada convidado depende:
+● da importância institucional;
+● da duração da participação;
+● das necessidades específicas;
+● da complexidade da atividade.
+●
+Existem diferentes possibilidades:
+● recepção rápida apenas para participação em mesa;
+● acompanhamento parcial;
+● acompanhamento exclusivo durante todo o dia;
+● apoio institucional ampliado.
+●
+Cabe à Programação definir isso estrategicamente.
+4.5.2. Responsável pelo Acompanhamento
+O membro designado para determinado convidado será responsável por:
+● acompanhar sua chegada;
+● orientar deslocamentos;
+● organizar necessidades;
+● intermediar comunicação;
+● garantir cumprimento dos horários;
+● auxiliar durante sua permanência.
+Caso exista necessidade de montagem específica — como camarim, sala de apoio ou espaço
+reservado — o responsável pelo convidado terá autonomia para organizar isso junto à
+Estrutura.
+
+-- 22 of 99 --
+
+4.6. Camarins, Salas e Estrutura de Apoio
+Em situações que exijam:
+● camarins;
+● salas reservadas;
+● espaços de descanso;
+● apoio institucional;
+Programação deve solicitar à Estrutura uma sala adequada.
+A partir disso:
+● Estrutura destinará o espaço;
+● monitores da Estrutura reorganizarão a sala conforme necessidade;
+● Programação definirá como o ambiente deverá funcionar.
+Entretanto, é importante lembrar que toda a atuação da REUNI é voluntária. Portanto:
+● a comissão não deve incentivar gastos pessoais;
+● nenhum membro deve ser pressionado a gastar dinheiro próprio;
+● todas as montagens devem ser pensadas considerando exclusivamente o caixa da
+REUNI.
+Isso inclui:
+● alimentação;
+● decoração;
+● apoio institucional;
+● materiais de recepção.
+Toda decisão deve respeitar a realidade financeira do evento.
+4.7. Mediação das Mesas Durante a REUNI
+Durante os dias de evento, Programação não encerra seu trabalho após a montagem da grade.
+Pelo contrário: a comissão se torna responsável pela condução direta das atividades.
+Isso inclui:
+● mediação das mesas;
+● controle de horários;
+● interlocução entre público e convidados;
+● organização de falas;
+● acompanhamento do fluxo das atividades.
+O mediador funciona como ponte entre:
+● convidado;
+● comissão;
+
+-- 23 of 99 --
+
+● estudantes;
+● dinâmica da atividade.
+É responsabilidade da Programação garantir que:
+● as temáticas sejam efetivamente discutidas;
+● os objetivos da atividade sejam cumpridos;
+● a atividade permaneça organizada;
+● os horários sejam respeitados.
+Uma mesa atrasada afeta diretamente toda a programação do restante do dia.
+4.8. Oficinas Temáticas e Atividades Criativas
+Além das mesas tradicionais, Programação também é responsável pela idealização de oficinas
+e atividades temáticas.
+Essas oficinas devem ser construídas com base:
+● na criatividade dos membros;
+● nas demandas estudantis;
+● nos eixos da REUNI;
+● no potencial de engajamento.
+As oficinas funcionam como espaço importante para:
+● integração;
+● experiências práticas;
+● construção coletiva;
+● aproximação entre estudantes;
+● diversificação da programação.
+A comissão deve constantemente buscar formatos interessantes e não limitar a REUNI apenas
+ao modelo tradicional de palestra.
+4.9. Gestão da Feirinha da REUNI
+A Subcomissão de Programação também é responsável pela organização integral da feirinha
+da REUNI.
+Isso inclui:
+● elaboração 	do 	formulário 	de 	inscrição;
+https://docs.google.com/forms/d/1-mzc0zsqomogPngm2d9P1fHkUZkJpNiiWXcvFH3
+ELJ0/edit
+● construção do edital; EDITAL Feirinha da REUNI .pdf
+● definição de regras;
+● seleção de feirantes;
+● organização de vagas;
+● distribuição de dias;
+● definição de valores;
+
+-- 24 of 99 --
+
+● acompanhamento dos participantes.
+Mesmo quando Comunicação não consegue divulgar adequadamente a feirinha, Programação
+deve realizar busca ativa de feirantes para garantir boa adesão e diversidade de participantes.
+A comissão deve pensar estrategicamente:
+● tipos de feirantes;
+● equilíbrio entre categorias;
+● circulação;
+● compatibilidade com o espaço;
+● dinâmica da semana.
+4.9.1. Relação com Feirantes Durante o Evento
+Programação também é responsável por:
+● manter contato com feirantes;
+● informar dias e horários;
+● orientar funcionamento;
+● receber participantes;
+● solucionar dúvidas;
+● acompanhar problemas.
+Depois que a Estrutura realiza a alocação física das mesas, a Programação assume a relação
+direta com os feirantes e acompanha suas necessidades durante toda a semana.
+Isso inclui:
+● organização diária;
+● ajustes;
+● comunicação;
+● mediação de conflitos;
+● suporte operacional básico.
+A feirinha é parte importante da experiência social e econômica da REUNI, portanto seu
+funcionamento adequado depende diretamente da atuação organizada da Programação.
+5. Comunicação
+A Subcomissão de Comunicação ocupa uma das posições mais estratégicas dentro da
+estrutura organizacional da REUNI porque é ela a responsável por transformar o projeto
+político, extensionista, formativo e operacional da REUNI em presença pública real. Antes
+que qualquer estudante participe de uma mesa, se inscreva em monitoria, conheça a feirinha,
+vá a uma oficina ou viva qualquer experiência concreta dentro do evento, ele primeiro
+encontra a REUNI pela forma como ela se apresenta. Isso significa que a Comunicação não é
+apenas uma comissão de divulgação: ela é a principal tradutora institucional da REUNI para o
+público externo.
+
+-- 25 of 99 --
+
+Partindo dos referenciais do Projeto e do Edital, é fundamental compreender que a REUNI
+não existe apenas como uma semana de atividades, mas como uma iniciativa de acolhimento,
+permanência, democratização da informação, integração estudantil e formação universitária,
+especialmente voltada para ingressantes da UFBA. Dessa forma, a Comunicação precisa
+operar não apenas para “divulgar um evento”, mas para garantir que os objetivos centrais da
+REUNI sejam compreendidos, desejados e acessíveis.
+Se o projeto busca informar, a Comunicação precisa informar com clareza.
+Se o projeto busca acolher, a Comunicação precisa transmitir acolhimento.
+Se o projeto busca integrar, a Comunicação precisa construir pertencimento.
+Por isso, sua atuação envolve simultaneamente:
+● divulgação institucional;
+● formação informativa;
+● acolhimento prévio;
+● construção de identidade visual;
+● narrativa pública;
+● gestão de redes;
+● produção de conteúdo;
+● relação direta com estudantes;
+● cobertura audiovisual;
+● memória histórica;
+● fortalecimento institucional;
+● captação simbólica para parceiros.
+A Comunicação não apenas divulga a REUNI: ela constrói o caminho para que a REUNI
+exista no imaginário estudantil antes mesmo de existir fisicamente.
+5.1. Público-Alvo
+O primeiro ponto estrutural da Subcomissão de Comunicação é compreender profundamente
+o público definido pelo próprio propósito da REUNI.
+A REUNI é pensada prioritariamente para estudantes ingressantes, em especial jovens,
+geralmente entre 17 e 25 anos, recém-chegados à Universidade Federal da Bahia,
+frequentemente em situação de dúvida, ansiedade, insegurança ou desconhecimento sobre:
+● o que é o BI;
+● o que é o IHAC;
+● como funciona a universidade;
+● como acessar oportunidades;
+● como construir permanência;
+● como se integrar socialmente;
+● como sobreviver à experiência universitária inicial.
+
+-- 26 of 99 --
+
+Isso significa que a Comunicação não pode operar presumindo familiaridade institucional.
+Um dos erros mais recorrentes historicamente é comunicar a REUNI a partir da lógica de
+quem já a conhece, utilizando termos, dinâmicas ou propostas como se fossem
+autoexplicativas.
+Para o público ingressante, frequentemente não são.
+Por isso, toda ação da Comunicação deve partir de uma pergunta central:
+“Esse estudante entende o que estamos dizendo, por que isso importa e como isso pode ajudar
+sua vida universitária?”
+Comunicar bem significa traduzir.
+5.2. Pré-SISU e SISU
+O período que antecede o SISU e os próprios dias de SISU representam uma das etapas mais
+importantes de toda a estratégia comunicacional da REUNI.
+Nesse momento, milhares de futuros ingressantes estão buscando informações sobre:
+● cursos;
+● BI;
+● IHAC;
+● ingresso;
+● rotina universitária;
+● possibilidades acadêmicas.
+A Subcomissão de Comunicação deve compreender que, nesse período, sua prioridade
+máxima não é necessariamente divulgar a REUNI como evento, mas consolidar a REUNI
+como referência de informação confiável.
+Isso significa produzir conteúdos explicativos, acessíveis e potencialmente viralizáveis sobre:
+● o que é o Bacharelado Interdisciplinar;
+● como funciona o IHAC;
+● dúvidas frequentes;
+● universidade pública;
+● ingresso;
+● expectativas acadêmicas;
+● adaptação.
+Essa atuação está profundamente alinhada ao caráter extensionista do projeto, pois
+democratiza acesso à informação antes mesmo da entrada formal desses estudantes.
+A lógica estratégica é clara:
+primeiro a REUNI informa,
+
+-- 27 of 99 --
+
+depois a REUNI acolhe,
+depois a REUNI converte esse público em participação ativa.
+5.3. Pós-SISU Imediato
+Nos últimos dias do SISU e imediatamente após sua conclusão, a Comunicação deve priorizar
+fortemente a divulgação do grupo de WhatsApp da REUNI.
+Esse grupo não deve ser entendido como simples ferramenta acessória, mas como uma
+estrutura central de conversão entre alcance e pertencimento.
+É através dele que estudantes:
+● tiram dúvidas;
+● recebem acolhimento;
+● constroem confiança;
+● encontram apoio;
+● se conectam com outros ingressantes;
+● transformam curiosidade em vínculo real.
+Por isso, a Comunicação precisa compreender que sua função institucional não se limita à
+postagem.
+Todos os membros devem atuar também como ponte ativa entre estudantes e REUNI,
+respondendo dúvidas, conversando, acolhendo e orientando. A comissão não comunica
+apenas por publicações, ela comunica pela relação.
+Comunicação institucional é também presença humana.
+5.4. Divulgação da Data Oficial e Apresentação Clara da REUNI
+Após a definição da data da REUNI, a comissão entra em uma nova etapa estratégica:
+apresentar a REUNI em sua totalidade.
+Divulgar apenas a data não basta.
+Divulgar apenas nomes de atividades não basta.
+Divulgar apenas atrações também não basta.
+Historicamente, uma falha recorrente é presumir que estudantes entendem o significado de
+elementos como:
+● feirinha;
+● oficinas;
+● acolhimento;
+● mesas;
+● gincanas;
+● programação;
+
+-- 28 of 99 --
+
+● Drag Race B.I.
+Na prática, muitos não entendem.
+Por isso, a Comunicação precisa equilibrar:
+Conteúdos de engajamento:
+● memes;
+● trends;
+● humor;
+● viralização.
+Conteúdos explicativos:
+● o que é a REUNI;
+● por que ela existe;
+● como funciona;
+● o que cada atividade significa;
+● por que participar.
+A REUNI precisa ser comunicada não apenas como evento, mas como experiência
+universitária essencial.
+5.5. Equilíbrio Entre Programação e Recreação
+O Projeto da REUNI estabelece múltiplas dimensões de formação:
+● informar;
+● acolher;
+● integrar.
+Por isso, Comunicação precisa apresentar tanto Programação quanto Recreação como
+dimensões complementares.
+Programação:
+mesas, oficinas, sobrevivência acadêmica, informação, formação política e universitária.
+Recreação:
+acolhimento, integração social, ludicidade, gincanas, shows, Drag Race B.I e pertencimento
+coletivo.
+A REUNI funciona porque une essas dimensões.
+Quem chega buscando informação encontra acolhimento.
+Quem chega buscando diversão encontra formação.
+
+-- 29 of 99 --
+
+Se a Comunicação prioriza apenas recreação, esvazia profundidade institucional.
+Se prioriza apenas programação, reduz atratividade e alcance.
+Comunicar a REUNI corretamente significa mostrar sua completude.
+5.6. Responsabilidade Estratégica da Comissão
+Não é responsabilidade das demais comissões lembrar à Comunicação que determinadas
+ações precisam ser divulgadas adequadamente.
+Estrutura, Programação, Recreação, Financeiro e Secretaria possuem suas próprias
+atribuições.
+Cabe à Comunicação:
+● planejar estratégias;
+● construir cronogramas;
+● antecipar campanhas;
+● estruturar narrativa;
+● organizar calendário;
+● definir formatos;
+● transformar ações em comunicação pública.
+Outras comissões podem solicitar demandas específicas, mas a responsabilidade pela tradução
+estratégica dessas demandas é da Comunicação.
+A comissão precisa ser propositiva, não apenas executora.
+5.7. Posts Procedimentais Obrigatórios
+Existem conteúdos essenciais e previsíveis que não podem depender de improviso.
+A Comunicação deve manter previamente organizados templates, modelos e bases para:
+● Edital da Comissão Organizadora;
+● Resultado da Comissão Organizadora;
+● Edital de Monitoria;
+● Resultado de Monitoria;
+● Edital da Feirinha;
+● Resultado da Feirinha;
+● Programação Oficial;
+● Rifas;
+● Divulgação da Data;
+● Divulgação do Drag Race B.I;
+● Post de Apoiadores e Parceiros.
+
+-- 30 of 99 --
+
+Além disso, outras comissões poderão demandar campanhas específicas, mas essas postagens
+são procedimentais e obrigatórias.
+A ausência de preparação prévia compromete funcionamento organizacional.
+5.8. Comunicação Institucional e Imagem Pública
+A Comunicação também é responsável por sustentar a imagem institucional da REUNI
+perante:
+● estudantes;
+● IHAC;
+● UFBA;
+● parceiros;
+● apoiadores;
+● possíveis patrocinadores.
+A REUNI precisa ser apresentada como:
+● evento grande;
+● institucionalmente relevante;
+● organizado;
+● confiável;
+● necessário;
+● referência para ingressantes.
+Essa imagem fortalece:
+● arrecadação;
+● credibilidade;
+● apoio;
+● legitimidade.
+A Secretaria Geral pode apoiar especialmente na articulação com o Núcleo de Comunicação
+do IHAC, 	, incluindo Lista Todos e colaborações institucionais,	comunicacao.ihac@ufba.br
+mas a responsabilidade operacional permanece com a Comunicação.
+5.9. Cobertura Durante o Evento
+Durante os dias da REUNI, a comissão assume uma segunda dimensão fundamental:
+deixa de apenas atrair e passa a registrar.
+Isso significa documentar:
+● mesas;
+● oficinas;
+● acolhimento;
+
+-- 31 of 99 --
+
+● feirinha;
+● gincanas;
+● convidados;
+● bastidores;
+● entrevistas;
+● relatos;
+● experiências espontâneas.
+Esse material não serve apenas para postagem momentânea, ele constitui patrimônio histórico
+da REUNI.
+A cobertura deve pensar:
+● stories;
+● reels;
+● vlogs;
+● entrevistas;
+● bastidores;
+● registros fotográficos;
+● recaps;
+● memória institucional.
+5.10. Pós-REUNI
+A Comunicação não termina quando a edição acaba.
+Nos dias, semanas e meses seguintes, a comissão deve manter a REUNI viva através de:
+● retrospectivas;
+● fotos;
+● vídeos;
+● depoimentos;
+● relatos;
+● melhores momentos;
+● registros históricos.
+Isso mantém o perfil ativo, fortalece a memória coletiva, auxilia próximas edições e consolida
+a REUNI como tradição.
+Se antes da REUNI a Comunicação informa,
+durante a REUNI ela registra,
+e depois da REUNI ela perpetua.
+Essa continuidade é o que transforma a REUNI de um evento pontual em uma estrutura
+permanente de acolhimento, memória e formação para futuras gerações de ingressantes.
+
+-- 32 of 99 --
+
+5.11. Espaços Interativos, Ações Visuais de Engajamento e Operacionalização
+de Dinâmicas Fotográficas
+Dentro da lógica da Subcomissão de Comunicação enquanto responsável não apenas pela
+divulgação e registro, mas também pela construção da experiência visual, simbólica e
+compartilhável da REUNI, é fundamental compreender que determinadas ações presenciais de
+imagem, interação e produção de memória também são atribuições diretas da comissão.
+Isso significa que Comunicação não atua apenas no ambiente digital ou posterior ao registro ,
+ela também é responsável por idealizar, organizar e operacionalizar mecanismos presenciais
+que incentivem produção espontânea de conteúdo, fortalecimento de identidade estudantil,
+circulação da marca REUNI e ampliação do alcance orgânico do evento.
+Entre essas ações estão espaços e dinâmicas como:
+● murais fotográficos;
+● espaços instagramáveis;
+● placas e plaquinhas de cursos;
+● frases como “Mãe, tô na UFBA”;
+● molduras;
+● cenários visuais;
+● espaços de pintura;
+● pintagem temática;
+● ações visuais de acolhimento;
+● elementos de identificação estudantil;
+● experiências estéticas compartilháveis.
+Essas atividades não devem ser tratadas como elementos secundários ou meramente
+decorativos. Elas cumprem funções estratégicas de:
+● acolhimento simbólico;
+● celebração da entrada universitária;
+● engajamento espontâneo;
+● produção de memória;
+● fortalecimento visual da REUNI;
+● ampliação de circulação nas redes sociais;
+● construção de pertencimento.
+5.11.1. Comunicação Como Responsável Pela Idealização e Execução
+Por envolverem diretamente imagem, narrativa pública, memória e compartilhamento, essas
+ações são de responsabilidade da Subcomissão de Comunicação.
+Isso significa que cabe à comissão:
+● pensar conceito;
+● definir estética;
+● planejar formatos;
+● organizar materiais necessários;
+
+-- 33 of 99 --
+
+● operacionalizar montagem;
+● garantir funcionamento durante o evento;
+● orientar uso;
+● integrar essas ações à estratégia de cobertura.
+Embora outras comissões possam eventualmente apoiar em demandas estruturais ou
+materiais, a responsabilidade central pela existência, organização e funcionamento dessas
+experiências é da Comunicação.
+Não basta desejar que existam espaços de foto ou ações visuais, Comunicação deve garantir
+que eles aconteçam.
+5.12. Integração Entre Registro e Produção de Conteúdo Espontâneo
+Um dos grandes diferenciais dessas ações é que elas não apenas geram registros oficiais da
+REUNI, mas incentivam o próprio público a produzir e compartilhar conteúdo.
+Quando um estudante tira foto em um espaço como:
+“Mãe, tô na UFBA”,
+utiliza uma plaquinha de curso,
+participa de pintagens,
+ou interage com ações visuais temáticas,
+ele não está apenas vivenciando uma atividade recreativa — ele está também ampliando
+organicamente a presença da REUNI nas redes, fortalecendo sua imagem e contribuindo para
+sua divulgação.
+Isso transforma essas ações em ferramentas estratégicas de comunicação descentralizada.
+Ou seja:
+Comunicação não apenas registra, comunicação também cria condições para que a própria
+comunidade produza divulgação.
+Esses espaços possuem também uma função profundamente simbólica.
+Para muitos ingressantes, a entrada na universidade representa conquista histórica,
+transformação familiar e realização pessoal. Elementos como:
+● “Mãe, tô na UFBA”;
+● identificação de curso;
+● pinturas;
+● fotos temáticas;
+materializam emocionalmente esse momento.
+Por isso, essas ações devem ser tratadas como parte da experiência de acolhimento da REUNI,
+e não apenas como entretenimento visual.
+São ferramentas de pertencimento.
+
+-- 34 of 99 --
+
+5.13. Planejamento Material e Operacional
+Para garantir eficiência, Comunicação deve prever com antecedência:
+● tintas;
+● pincéis;
+● plaquinhas;
+● impressões;
+● molduras;
+● painéis;
+● cartazes;
+● cenários;
+● materiais de pintura corporal ou facial;
+● logística de aplicação;
+● responsáveis por condução.
+Essas demandas devem ser levantadas previamente e articuladas junto à Estrutura e ao
+Financeiro quando necessário, mas a responsabilidade pela previsão, idealização e solicitação
+parte da Comunicação.
+Ou seja: Estrutura pode apoiar materialmente,Financeiro pode prever custos mas
+Comunicação deve saber o que quer, por que quer e como vai usar.
+5.13.1. Relação com a Subcomissão de Estrutura: Produção Material x
+Operação
+Embora a responsabilidade estratégica e operacional dessas ações seja da Comunicação, isso
+não significa necessariamente que a própria comissão precise fabricar fisicamente todos os
+materiais.
+A Comunicação pode — e frequentemente deve — solicitar apoio da Subcomissão de
+Estrutura para produção material, montagem física ou suporte técnico de determinados
+elementos, especialmente quando envolver:
+● construção de painéis;
+● impressão em larga escala;
+● montagem de cenários;
+● produção de placas;
+● instalação de estruturas;
+● logística de materiais.
+Nesse sentido, a divisão correta de funções é:
+Comunicação:
+● concebe;
+● planeja;
+● solicita;
+● define função;
+
+-- 35 of 99 --
+
+● organiza uso;
+● opera a dinâmica.
+Estrutura:
+● produz materialmente quando solicitado;
+● apoia execução física;
+● auxilia montagem conforme demanda.
+Ou seja:
+Estrutura pode produzir o material mas a responsabilidade pela existência da ação, sua
+funcionalidade e sua execução prática continua sendo da Comunicação.
+Comunicação não pode transferir integralmente essa função para Estrutura, pois o objetivo
+dessas ações está diretamente ligado à estratégia de imagem e engajamento, que é
+competência comunicacional.
+5.14. Compromisso Institucional e Qualidade da Experiência
+Assim como posts, cobertura e registros não podem ser improvisados, essas ações também
+não devem existir de forma desorganizada, mal planejada ou esteticamente desconectada.
+Elas compõem a imagem pública da REUNI.
+Por isso, precisam dialogar com:
+● identidade visual da edição;
+● proposta institucional;
+● público-alvo;
+● experiência de acolhimento;
+● estratégia de divulgação.
+Quando bem executadas, essas ações:
+● fortalecem memória;
+● aumentam engajamento;
+● ampliam alcance;
+● geram identificação;
+● qualificam experiência.
+5.15. Estratégias de Viabilidade, Planejamento Material e Custos Operacionais
+da Subcomissão de Comunicação
+A Subcomissão de Comunicação também precisa compreender que sua atuação não depende
+apenas de criatividade, estratégia narrativa ou capacidade de produção de conteúdo, mas
+igualmente de planejamento material e responsabilidade orçamentária.
+Por operar diretamente com imagem, divulgação, registro, identidade visual e produção de
+materiais, Comunicação frequentemente lida com demandas que podem variar entre custos
+
+-- 36 of 99 --
+
+simples e investimentos significativamente mais elevados. Por isso, uma das funções
+estratégicas da comissão é compreender a diferença entre necessidades viáveis dentro da
+realidade financeira da REUNI e demandas desejáveis, mas financeiramente incompatíveis
+com a estrutura do projeto em determinado momento.
+Em termos práticos, isso significa que Comunicação deve pensar de forma estratégica:
+não apenas “o que seria ideal ter”, mas “o que é possível construir com responsabilidade
+dentro da realidade financeira da edição”.
+5.15.1. Prioridade Orçamentária
+Historicamente, a REUNI opera a partir de orçamento limitado e precisa distribuir recursos
+entre múltiplas subcomissões, garantindo funcionamento estrutural, programação,
+acolhimento, recreação, identidade visual e sustentabilidade operacional.
+Dessa forma, a Comunicação deve compreender que, salvo em contextos de excepcional
+fortalecimento financeiro (“boom” financeiro), não é prioridade institucional a aquisição de
+equipamentos de altíssimo custo, como:
+● câmeras profissionais de alto valor;
+● celulares dedicados exclusivamente à comissão;
+● equipamentos audiovisuais excessivamente sofisticados;
+● grandes investimentos tecnológicos permanentes fora da realidade do evento.
+Isso não significa que a Comunicação não deva sonhar com expansão, mas que precisa
+trabalhar a partir de critérios de viabilidade.
+A lógica central é: a REUNI não deve comprometer sua sustentabilidade por compras que
+ultrapassem sua capacidade real.
+Embora certos equipamentos de alto custo normalmente não sejam prioridade, existem
+materiais, serviços e ferramentas que costumam ser financeiramente mais realizáveis e podem
+gerar impacto significativo na qualidade operacional da Comunicação.
+Entre eles:
+● microfones de lapela;
+● cabos;
+● extensões;
+● iluminação básica;
+● ring lights;
+● suportes;
+● tripés simples;
+● armazenamento em drive;
+● serviços de nuvem;
+● plataformas de organização;
+● ferramentas de design;
+● impressão de materiais de divulgação;
+● ferramentas para metas visuais (publicidades da META);
+
+-- 37 of 99 --
+
+● materiais de produção de espaços interativos;
+● alguns serviços específicos para construção de painéis, placas ou peças de campanha.
+Esses elementos, por serem mais acessíveis, frequentemente representam investimentos
+estratégicos de alta relação custo-benefício.
+A Subcomissão de Comunicação identifica suas necessidades, pesquisar custos, levantar
+possibilidades e encaminhar essas previsões ao Financeiro.
+Isso significa que Comunicação deve:
+● mapear demandas;
+● definir prioridades;
+● realizar orçamentos;
+● pesquisar fornecedores;
+● levantar custos médios;
+● avaliar urgência;
+● organizar previsões;
+● repassar informações ao Financeiro com antecedência.
+O Financeiro não pode prever sozinho aquilo que Comunicação não especifica.
+Assim como Estrutura levanta materiais físicos e Programação prevê necessidades de
+operação, Comunicação deve compreender que parte de sua responsabilidade é transformar
+necessidade criativa em planejamento financeiro concreto.
+5.16. Comunicação Não É Espaço de Autopromoção
+Um princípio ético e organizacional fundamental da Subcomissão de Comunicação é
+compreender que sua função é registrar e fortalecer a REUNI — não promover
+individualmente membros da própria comissão.
+Isso significa que a cobertura não deve ser orientada por:
+● excesso de exposição de membros específicos;
+● foco desproporcional em bastidores pessoais;
+● centralização em amizades;
+● registros voltados à autopromoção;
+● produção de imagem individual em detrimento da memória coletiva.
+Embora bastidores e participação da própria comissão possam aparecer pontualmente, o foco
+central deve sempre permanecer no evento, no público, nas atividades e na missão
+institucional da REUNI.
+A Comunicação representa a imagem oficial da REUNI, não um espaço de promoção pessoal.
+
+-- 38 of 99 --
+
+5.17. Cobertura Integral, Responsividade Operacional e Compromisso
+Institucional com o Registro da REUNI
+Dentro da responsabilidade da Subcomissão de Comunicação enquanto repositório histórico,
+memória institucional e cobertura oficial da REUNI, é fundamental estabelecer um princípio
+operacional central: a cobertura da REUNI deve ser integral, equilibrada e institucionalmente
+comprometida com o evento como um todo, e não com interesses pessoais, preferências
+internas ou visibilidade seletiva.
+Isso significa que Comunicação não pode atuar de forma parcial, cobrindo excessivamente
+determinadas atividades, convidados ou comissões enquanto negligencia outras dimensões
+igualmente importantes da programação geral. A REUNI é uma construção coletiva e
+multidimensional, e sua memória institucional precisa refletir essa totalidade.
+Por isso, é dever da comissão garantir, de forma organizada e intencional, que exista registro
+visual e fotográfico adequado de:
+● todos os convidados;
+● todas as mesas;
+● todas as oficinas;
+● todas as atividades recreativas;
+● todas as ações institucionais;
+● feirinha;
+● bastidores relevantes;
+● momentos de acolhimento;
+● apresentações;
+● dinâmicas estratégicas.
+A ausência de registro de determinadas atividades compromete não apenas a memória daquela
+edição, mas também a percepção pública de sua importância, podendo gerar apagamento de
+esforços organizacionais ou impressão de desigualdade entre comissões.
+5.17.1. Registro de Convidados
+Todos os convidados da REUNI — sejam institucionais, acadêmicos, culturais, recreativos ou
+independentes — devem possuir registro fotográfico e, sempre que possível, audiovisual
+adequado.
+Isso é importante porque:
+● fortalece memória institucional;
+● valoriza presença do convidado;
+● facilita divulgação posterior;
+● qualifica imagem pública;
+● demonstra organização;
+● permite acervo histórico.
+A presença de um convidado sem registro representa perda institucional.
+
+-- 39 of 99 --
+
+5.17.2. Cobertura de Atividades
+Da mesma forma, todas as atividades devem receber atenção proporcional e estratégica.
+A Comunicação não deve priorizar apenas atividades consideradas “mais bonitas”, “mais
+viralizáveis” ou “mais próximas de membros específicos”. Programação, Recreação,
+Estrutura, Feirinha, acolhimento e demais ações precisam ser entendidas como partes
+igualmente constitutivas da REUNI.
+Isso exige planejamento prévio de cobertura, divisão de funções e capacidade responsiva.
+Ser responsivo significa:
+● acompanhar mudanças de horário;
+● adaptar-se a demandas em tempo real;
+● registrar momentos relevantes conforme acontecem;
+● não perder atividades importantes por desorganização;
+● manter presença ativa ao longo de toda a programação.
+6. Financeiro
+A Subcomissão de Financeiro ocupa uma posição estrutural dentro da organização da REUNI
+porque é responsável por garantir que os objetivos políticos, extensionistas, pedagógicos,
+institucionais e operacionais previstos no Projeto e organizados pelo Edital possam se
+concretizar materialmente. A REUNI, enquanto iniciativa de acolhimento, democratização da
+informação, permanência estudantil, integração universitária e formação cidadã, não depende
+apenas de mobilização humana, criatividade coletiva ou compromisso político. Sua realização
+exige recursos concretos, planejamento econômico, capacidade de arrecadação, organização
+responsável e visão de continuidade.
+A primeira compreensão que qualquer membro do Financeiro precisa ter é simples: a REUNI
+é gratuita para quem participa, mas sua realização não é gratuita.
+Essa diferença define sua função. O Financeiro não existe apenas para arrecadar dinheiro,
+pagar demandas ou organizar rifas. Sua responsabilidade é estruturar economicamente a
+existência da REUNI, garantindo que a gratuidade do evento não se converta em precarização
+interna, improviso organizacional ou custo pessoal para membros voluntários. Enquanto
+outras subcomissões pensam o que será feito, como será feito e para quem será feito, o
+Financeiro precisa responder quanto isso custará, como será viabilizado, quando esse dinheiro
+será necessário, de onde virá e como preservar a sustentabilidade futura.
+Isso significa que o Financeiro atua como:
+● planejador de viabilidade;
+● gestor de sustentabilidade;
+● operador de previsibilidade;
+● articulador de arrecadação;
+● construtor de estabilidade;
+● guardião de continuidade institucional.
+
+-- 40 of 99 --
+
+À medida que a REUNI cresce, amplia suas exigências, fortalece sua imagem institucional,
+responde a novas demandas da UFBA e se especializa organizacionalmente, torna-se cada vez
+mais inadequado operar apenas por improviso. O Financeiro é uma das principais estruturas
+responsáveis por transformar a REUNI de esforço anual reativo em projeto contínuo e
+sustentável.
+6.1. Compreensão Estrutural: O Financeiro Como Garantidor Material da REUNI
+Toda decisão organizacional possui impacto material. Estrutura demanda materiais,
+manutenção, equipamentos, decoração e logística. Comunicação demanda campanhas,
+ferramentas, impressão, registros e ações de divulgação. Programação demanda oficinas,
+convidados, feirinha e operação temática. Recreação demanda provas, acolhimento,
+experiências e integração.
+Isso significa que o Financeiro não pode funcionar apenas reagindo a pedidos. Sua função
+começa desde o início do ciclo organizacional, no momento em que necessidades futuras
+precisam ser previstas, calculadas e transformadas em estratégia econômica.
+O Financeiro precisa operar em três níveis:
+● curto prazo: garantir demandas iniciais;
+● médio prazo: sustentar a execução da edição atual;
+● longo prazo: fortalecer a próxima edição.
+Essa lógica impede que a comissão seja apenas arrecadadora emergencial e a transforma em
+estrutura de sustentação institucional.
+6.2. Levantamento de Demandas, Previsão de Custos e Construção de Cenário
+Econômico
+Uma das primeiras responsabilidades práticas da Subcomissão de Financeiro é compreender
+quanto custa realizar aquela edição específica da REUNI.
+Isso exige levantamento detalhado junto a todas as subcomissões sobre:
+● necessidades;
+● prioridades;
+● custos essenciais;
+● custos complementares;
+● materiais;
+● previsões;
+● possibilidades de redução.
+Cada comissão precisa fornecer ao Financeiro informações suficientes para transformar o
+planejamento organizacional em planejamento econômico real.
+Entretanto, o Financeiro também precisa compreender que nem sempre outras comissões
+apresentarão previsões maduras ou completas. Nesses casos, cabe ao próprio Financeiro
+recorrer a:
+
+-- 41 of 99 --
+
+● registros históricos;
+● planilhas de anos anteriores;
+● memória institucional;
+● médias de custo;
+● experiências passadas.
+A memória da REUNI é uma ferramenta econômica.
+Se outras comissões não preveem adequadamente, o Financeiro precisa prever por elas para
+evitar improvisação estrutural.
+6.3. Construção do Plano Financeiro
+Após consolidar previsões, o Financeiro precisa estruturar um plano financeiro real, capaz de
+responder:
+PLANEJAMENTO FINANCEIRO - REUNI 2026
+● quanto custa realizar a edição;
+● quais despesas são prioritárias;
+● quais são inegociáveis;
+● quais são adaptáveis;
+● quanto já existe;
+● quanto falta;
+● quais estratégias serão utilizadas;
+● em quais prazos.
+Esse plano precisa considerar uma realidade central da REUNI: a maior parte dos gastos
+ocorre antes do evento.
+Campanhas, materiais, produção, estrutura, impressão, logística e preparação exigem
+investimento prévio. Por isso, depender exclusivamente de arrecadação tardia reduz
+capacidade operacional, compromete planejamento e limita potencial.
+A REUNI precisa de capital prévio, essa compreensão é central para toda estratégia financeira
+madura.
+6.4. Arrecadação Estratégica
+Nenhuma organização financeiramente estável depende de uma única fonte de arrecadação.
+Rifas podem oscilar.
+Doações podem variar.
+Parcerias podem falhar.
+Editais podem não contemplar.
+Eventos podem performar abaixo do esperado.
+Por isso, a Subcomissão de Financeiro deve operar sob lógica de diversificação, articulando
+múltiplas estratégias:
+
+-- 42 of 99 --
+
+● rifas;
+● doações;
+● parcerias;
+● editais;
+● feirinha;
+● festas;
+● apoios institucionais;
+● contribuições solidárias.
+Cada frente possui função distinta. Algumas geram caixa rápido. Outras geram
+previsibilidade. Outras fortalecem a imagem institucional.
+A maturidade financeira da REUNI depende de combinar estratégias, não de apostar em uma
+única solução.
+As rifas representam historicamente uma das estratégias mais relevantes da REUNI, mas sua
+eficácia depende de planejamento.
+Rifas bem-sucedidas exigem:
+● prêmio atrativo;
+● baixo custo relativo;
+● valor acessível;
+● divulgação massiva;
+● antecedência;
+● venda ativa.
+Com base na experiência histórica da REUNI, rifas como:
+● Kindle;
+● Kit Calouro;
+tendem a apresentar melhor desempenho por possuírem maior apelo junto ao público.
+Em relação à precificação, rifas com valor máximo em torno de R$7 costumam gerar maior
+circulação, menor resistência e melhor desempenho geral. Rifas acima de R$10
+frequentemente reduzem a adesão.
+Também se recomenda operar, preferencialmente, com até três rifas por ciclo, pois
+historicamente a quarta tende a apresentar queda significativa de desempenho.
+A função estratégica da rifa é gerar capital prévio. Portanto, rifas precisam ser lançadas cedo,
+porque vender muito apenas durante o evento pode significar arrecadação tardia demais para
+suprir gastos anteriores.
+6.5. Doações, Contribuições Solidárias e Busca Ativa
+A REUNI possui valor político, acadêmico, estudantil e institucional. Isso significa que
+professores, técnicos, ex-membros, parceiros, entidades, coletivos e comunidade universitária
+podem representar fontes relevantes de arrecadação.
+
+-- 43 of 99 --
+
+Entretanto, doação exige busca ativa.
+Cabe ao Financeiro:
+● apresentar o projeto;
+● demonstrar impacto;
+● justificar necessidade;
+● construir legitimidade;
+● mobilizar apoio.
+Doações raramente acontecem espontaneamente. Elas precisam ser buscadas.
+6.6. Parcerias, Apoios Externos e Expansão Institucional
+Parcerias representam uma frente central para expansão econômica da REUNI.
+A comissão pode buscar apoio junto a:
+● empresas juniores;
+● ligas;
+● coletivos;
+● negócios locais;
+● empresas privadas;
+● organizações estudantis;
+● entidades políticas;
+● prefeitura;
+● projetos.
+O objetivo não é comprometer autonomia, mas ampliar capacidade.
+Para isso, o plano de parcerias da REUNI deve ser constantemente atualizado em:
+● valores;
+● benefícios;
+● contrapartidas;
+● apresentação institucional.
+O Financeiro é responsável por estratégia e busca ativa; a Comunicação pode apoiar na
+apresentação visual.
+Texto Parceirias
+Proposta Comercial_REUNI 2026 (1).pdf
+6.7. Editais, Fomento e Oportunidades Institucionais
+Buscar editais e oportunidades institucionais é parte estratégica da atuação financeira.
+UFBA, extensão, cultura, juventude, permanência e outras estruturas podem oferecer
+oportunidades de apoio.
+
+-- 44 of 99 --
+
+Isso exige:
+● monitoramento;
+● leitura institucional;
+● organização documental;
+● atenção constante.
+Mesmo quando não há retorno imediato, essa frente amplia possibilidades futuras.
+6.8. Gestão de Caixa, Registro e Transparência
+Arrecadar sem organizar compromete continuidade.
+Toda movimentação financeira precisa ser:
+● registrada;
+● documentada;
+● acompanhada;
+● preservada.
+Isso inclui:
+● entradas;
+● saídas;
+● rifas;
+● parcerias;
+● compras;
+● reservas.
+Essa documentação não serve apenas para controle presente, mas para memória futura.
+Cada edição precisa deixar à próxima:
+● histórico de gastos;
+● custos reais;
+● parceiros;
+● erros;
+● acertos.
+A gestão financeira precisa proteger transparência, legitimidade e continuidade.
+Planejamento_Financeiro__REUNI_-_2026.xlsx
+6.9. Formalização Jurídica, CNPJ e Proteção Institucional
+O crescimento da REUNI torna cada vez mais urgente superar a dependência de contas
+pessoais de membros para arrecadação e movimentação financeira.
+Essa prática gera:
+
+-- 45 of 99 --
+
+● riscos jurídicos;
+● riscos fiscais;
+● insegurança política;
+● vulnerabilidade institucional;
+● problemas de continuidade.
+Por isso, torna-se estratégico estudar caminhos como:
+● associação;
+● coletivo formalizado;
+● organização sem fins lucrativos;
+● CNPJ;
+● vinculações institucionais.
+A formalização não existe para mercantilizar a REUNI, mas para protegê-la, profissionalizá-la
+e ampliar sua capacidade de atuação.
+6.10. Superação da Política de Caixa Zerado e Construção de Reserva Permanente
+A lógica de iniciar cada edição com caixa zerado se mostra incompatível com o atual estágio
+de especialização da REUNI.
+Como os maiores gastos ocorrem antes e boa parte da arrecadação pode ocorrer durante ou
+próxima ao evento, começar sem reserva reduz potencial, compromete planejamento e
+enfraquece capacidade operacional.
+Por isso, a partir deste manual, torna-se diretriz estratégica preservar parte dos recursos de
+cada edição para o ciclo seguinte.
+Cada edição deve ajudar a financiar o início da próxima.
+Essa reserva:
+● fortalece continuidade;
+● amplia previsibilidade;
+● reduz vulnerabilidade;
+● profissionaliza gestão.
+6.11. Relação com Outras Subcomissões e Responsabilidade Coletiva
+Embora exista uma Subcomissão de Financeiro, sustentabilidade não é responsabilidade
+exclusiva dela.
+Toda Comissão Organizadora precisa compreender os impactos econômicos.
+Isso significa que:
+● Estrutura precisa prever materiais;
+● Comunicação precisa compreender custos e potencial de arrecadação;
+● Programação precisa prever demandas;
+
+-- 46 of 99 --
+
+● Recreação pode gerar mobilização econômica;
+● Secretaria fortalece organização documental.
+O Financeiro coordena, mas toda a REUNI precisa operar com consciência econômica.
+6.12. Ética Financeira, Voluntariado e Proteção dos Membros
+A REUNI é gratuita, voluntária e estudantil.
+Isso significa que sua existência não deve depender da normalização de prejuízo financeiro
+individual de membros.
+O Financeiro precisa operar para evitar que trabalho voluntário se converta em sobrecarga
+econômica.
+Isso significa:
+● arrecadar melhor;
+● prever melhor;
+● reservar melhor;
+● proteger melhor.
+Garantir a sustentabilidade financeira também é garantir justiça organizacional.
+O papel do Financeiro não é apenas fazer a REUNI acontecer no presente.
+É garantir que ela possa continuar existindo, crescer e se fortalecer sem precarizar quem a
+constrói.
+6.13 Orçamentos
+A gestão orçamentária da REUNI deve ser compreendida como ferramenta técnica de
+planejamento, controle e viabilidade, e não apenas como previsão simples de receitas e
+despesas. Compete à Subcomissão de Financeiro garantir que toda proposta, demanda,
+contratação, compra ou investimento esteja compatível com a capacidade financeira real da
+organização, assegurando responsabilidade institucional, sustentabilidade operacional e
+transparência administrativa.
+Nenhuma comissão deverá assumir compromissos financeiros, propor contratações ou
+encaminhar despesas sem previsão orçamentária prévia, estimativa de custos e alinhamento
+com o Financeiro. Toda demanda deverá ser acompanhada de descrição clara de sua
+finalidade, necessidade operacional e impacto financeiro, permitindo análise de prioridade,
+viabilidade e adequação ao orçamento geral da REUNI.
+Fica instituída como regra obrigatória deste manual que toda contratação, compra, locação ou
+aquisição de bens e serviços deverá possuir, no mínimo, 5 (cinco) orçamentos distintos
+previamente pesquisados e documentados. Essa medida visa assegurar comparação
+responsável entre preços, qualidade, segurança, capacidade de entrega e custo-benefício,
+reduzindo improvisações, prevenindo gastos excessivos e ampliando o poder de negociação
+
+-- 47 of 99 --
+
+da REUNI. Somente situações excepcionalíssimas, devidamente justificadas, poderão operar
+fora dessa regra.
+O orçamento deverá ser organizado por categorias de despesa, permitindo controle mais
+eficiente sobre áreas como estrutura, segurança, comunicação, atrações, materiais,
+fornecedores, licenças e contingências. Além disso, o Financeiro deverá prever margem de
+segurança para imprevistos, reconhecendo que eventos estão sujeitos a alterações de preço,
+emergências e novas demandas.
+após a coleta, os orçamentos deverão ser escalonados com base nos seguintes critérios:
+a) Viabilidade financeira real:
+O valor precisa ser compatível com o caixa disponível, com a previsão de arrecadação e com
+a prioridade estratégica daquela demanda dentro do orçamento geral.
+b) Custo-benefício:
+O menor preço não será automaticamente o vencedor. Deve-se avaliar qualidade, quantidade,
+prazo, confiabilidade, segurança, histórico e capacidade real de entrega.
+c) Segurança operacional:
+Serviços ou produtos essenciais à integridade física, jurídica ou estrutural da REUNI, como
+segurança, bombeiros, geradores ou estruturas críticas, não poderão ser definidos
+exclusivamente por economia, sendo obrigatória análise de confiabilidade e risco.
+d) Capacidade de execução:
+Fornecedores precisam demonstrar que conseguem entregar o que prometem dentro do prazo,
+quantidade e padrão exigido.
+e) Histórico e reputação:
+Sempre que possível, priorizar fornecedores com boas referências, experiências anteriores
+positivas ou segurança contratual mais sólida.
+A partir dessa análise, recomenda-se classificação em três níveis:
+1º Prioridade Máxima (Aprovado Preferencial):
+Melhor equilíbrio entre custo, segurança, entrega e viabilidade.
+2º Prioridade Condicional (Reserva Estratégica):
+Opção viável caso o primeiro falhe, negociações mudem ou surjam ajustes.
+3º Prioridade Emergencial (Plano de Contingência):
+Utilizado apenas em caso de urgência, falha operacional ou inviabilidade das opções
+superiores.
+A decisão final não deverá ser tomada por um único membro. Recomenda-se validação
+conjunta entre:
+● Financeiro;
+
+-- 48 of 99 --
+
+● comissão demandante;
+● liderança geral ou secretaria, quando aplicável.
+Toda escolha deverá possuir registro documental contendo:
+● orçamentos comparados;
+● justificativa da escolha;
+● riscos considerados;
+● responsável pela aprovação.
+Caso um orçamento de menor valor seja rejeitado, a justificativa deve ser obrigatoriamente
+registrada, especialmente se fatores como qualidade, risco ou prazo motivarem a escolha de
+proposta mais cara.
+Para demandas de alto impacto financeiro, estrutural ou jurídico, recomenda-se ainda nova
+rodada de negociação com os finalistas, buscando redução de preço ou melhoria de condições
+antes da decisão final.
+Dessa forma, o orçamento vencedor não será apenas o mais barato, mas o mais
+estrategicamente adequado à realidade da REUNI, equilibrando economia, segurança,
+confiabilidade e sustentabilidade institucional..
+As únicas exceções a essa regra aplicam-se às comissões que realizem compras presenciais de
+insumos básicos, de natureza dinâmica e operacional, desde que essas compras ocorram com a
+presença ou acompanhamento de ao menos um membro da Subcomissão de Financeiro. Esse
+é, por exemplo, o caso recorrente da Subcomissão de Estrutura na aquisição de materiais de
+papelaria, montagem ou insumos emergenciais, em que o processo de compra exige maior
+agilidade prática. Nesses casos, a exigência formal de múltiplos orçamentos poderá ser
+simplificada, ocorrendo de maneira mais informal, porém ainda obrigatoriamente
+acompanhada de pesquisa básica de preços, comparação responsável e compromisso com
+economicidade.
+7. Credenciamento
+A Subcomissão de Credenciamento é responsável por uma das dimensões mais estratégicas da
+REUNI: transformar a mobilização em participação organizada. Sua função vai muito além de
+controlar entrada ou emitir certificados. O Credenciamento é a estrutura que garante que a
+REUNI aconteça de forma institucionalmente viável, operacionalmente funcional e
+acolhedora para seu público principal estudantes, especialmente ingressantes, que muitas
+vezes estão tendo seu primeiro contato com a universidade.
+Na prática, essa comissão opera como uma ponte entre burocracia, organização e experiência
+humana. Isso significa que seu trabalho começa muito antes da abertura oficial do evento,
+passa pela formalização institucional, pela manutenção da estrutura digital de inscrição, pela
+organização de formulários, pela gestão do fluxo presencial e continua mesmo após o
+encerramento, na certificação e preservação documental.
+
+-- 49 of 99 --
+
+O grande princípio do Credenciamento é equilibrar organização com acessibilidade. A
+REUNI precisa ser organizada, mas não hostil; formal, mas não excessivamente burocrática;
+acolhedora, mas não improvisada.
+7.1. Relação Institucional, Direção do IHAC e Assinaturas
+Antes de pensar em inscrições, listas ou recepção, é fundamental compreender que parte
+significativa da operação da REUNI depende de viabilização institucional. A assinatura da
+Direção do IHAC é uma das bases mais importantes para o funcionamento formal da
+comissão, porque diversos formulários, processos administrativos, sistemas e estruturas de
+certificação dependem dessa validação.
+Sem assinatura institucional, muitos processos simplesmente não avançam.
+Por isso, cabe ao Credenciamento atuar com antecedência e organização para garantir que
+essa relação institucional esteja ativa e funcional. Isso não significa apenas “pedir assinatura”,
+mas estruturar corretamente toda a documentação necessária para que os processos avancem
+sem desgaste ou retrabalho.
+Isso exige:
+● identificar previamente quais documentos precisarão de assinatura;
+● organizar formulários e anexos antes de enviá-los;
+● acompanhar prazos administrativos;
+● manter diálogo funcional com a Direção;
+● evitar demandas de última hora;
+● compreender que institucionalidade é parte da viabilidade da REUNI.
+A comissão precisa entender que burocracia não deve ser tratada como obstáculo, mas como
+estrutura que precisa ser organizada para não se tornar obstáculo.
+7.2. GERE
+O GERE é uma das ferramentas mais importantes do Credenciamento porque organiza de
+maneira mais profissional a entrada de participantes, o controle de inscritos, a previsibilidade
+de público e a emissão de certificados.
+Mais do que um sistema técnico, o GERE representa a capacidade da REUNI de operar com
+organização institucional real.
+Quando bem utilizado, ele permite:
+● organizar inscrições;
+● prever volume de participantes;
+● estruturar listas;
+● acompanhar dados;
+● facilitar certificação;
+● fortalecer a legitimidade.
+
+-- 50 of 99 --
+
+No entanto, o uso do GERE exige preparo. Não basta abrir o sistema próximo ao evento. É
+necessário estudar sua lógica, compreender exigências, testar formulários e revisar
+constantemente sua funcionalidade.
+O Credenciamento deve:
+● garantir acesso à plataforma;
+● revisar cronogramas;
+● testar links;
+● simplificar processos para o usuário;
+● monitorar erros;
+● assegurar clareza das informações.
+O GERE precisa funcionar como facilitador, não como barreira. Seu papel é profissionalizar a
+REUNI sem afastar estudantes por excesso de complexidade.
+https://areuni2026.ihac.ufba.br/
+7.3. Site de Inscrição: A Porta de Entrada Digital da REUNI
+Dentro da lógica do Credenciamento, o foco não está em um site institucional genérico, mas
+especificamente na página operacional de inscrição vinculada ao GERE e à estrutura
+institucional da REUNI.
+Esse espaço é estratégico porque representa o primeiro contato organizacional de muitos
+participantes com o evento.
+A página de inscrição precisa cumprir simultaneamente três funções:
+● informar;
+● organizar;
+● facilitar o acesso.
+Isso significa que ela precisa estar constantemente atualizada, funcional e clara. Informações
+desorganizadas, links quebrados ou cronogramas incorretos comprometem não apenas
+inscrições, mas a imagem pública da REUNI.
+Cabe ao Credenciamento:
+● atualizar datas;
+● revisar links;
+● monitorar formulários;
+● conferir navegabilidade;
+● garantir clareza;
+● ajustar mudanças operacionais;
+● manter informações corretas sobre programação, inscrições e certificação.
+
+-- 51 of 99 --
+
+Além disso, embora o Financeiro seja responsável pela captação de parceiros, o
+credenciamento precisa garantir que a área de apoiadores dentro da plataforma esteja pronta
+para atualização pública, fortalecendo a credibilidade institucional.
+7.4. Inscrições
+As inscrições não existem apenas para contabilizar participantes. Elas são uma das principais
+ferramentas de inteligência organizacional da REUNI.
+Através delas, a comissão consegue prever:
+● volume de público;
+● necessidade estrutural;
+● materiais;
+● equipes;
+● demanda de certificação;
+● intensidade de divulgação.
+Isso significa que acompanhar inscrições é parte ativa do planejamento.
+A comissão deve observar:
+● crescimento de inscritos;
+● períodos de maior adesão;
+● momentos de baixa procura;
+● necessidade de reforço junto à Comunicação;
+● previsões de fluxo.
+Ao mesmo tempo, os formulários precisam ser equilibrados. Excesso de exigências pode
+afastar participantes; falta de dados compromete organização. O objetivo é coletar o
+necessário sem transformar inscrição em filtro excludente.
+7.5. Formulários, Anexos e Documentação: Organização Para Continuidade
+Uma das responsabilidades mais negligenciadas do Credenciamento é sua função documental.
+Formulários, listas, anexos, registros e documentos institucionais não devem ser tratados
+como burocracia descartável.
+Eles compõem a memória operacional da REUNI.
+Cada edição precisa deixar bases melhores para a próxima, e isso só acontece com
+organização documental.
+Isso envolve:
+● revisão constante de formulários;
+● organização de anexos;
+● padronização de documentos;
+● armazenamento acessível;
+
+-- 52 of 99 --
+
+● preservação de listas;
+● controle de versões;
+● preparação de materiais para certificação.
+O objetivo não é burocratizar, mas evitar que cada nova gestão precise reconstruir processos
+do zero.
+GERE_formularioColetaInfo_simplificado.doc
+hospedagem_site.doc
+7.6. Monitores de Credenciamento
+Durante os dias da REUNI, os monitores de Credenciamento são a primeira experiência
+prática de muitos estudantes com o evento. Por isso, não podem atuar apenas como
+operadores de lista.
+Eles precisam equilibrar:
+● organização;
+● agilidade;
+● clareza;
+● acolhimento.
+Cabe à coordenação formar essa equipe para que saiba não apenas executar processos, mas
+também orientar participantes, reduzir ansiedade e transmitir segurança organizacional.
+A entrada da REUNI precisa ser organizada, mas também receptiva.
+7.7. Operação Presencial e Controle de Fluxo
+Nos dias do evento, o Credenciamento transforma planejamento em execução. Sua função é
+garantir que o processo de entrada seja funcional sem se tornar caótico ou excessivamente
+rígido.
+Isso inclui:
+● organização de filas;
+● confirmação de inscrições;
+● acolhimento inicial;
+● monitoramento de horários de pico;
+● identificação de gargalos;
+● controle de circulação.
+Controlar fluxo não significa dificultar entrada. O objetivo é garantir organização e segurança
+preservando a experiência positiva do participante.
+
+-- 53 of 99 --
+
+7.8. Certificação e Pós-REUNI
+Após o encerramento do evento, o Credenciamento continua responsável por uma dimensão
+fundamental: consolidar presença, organizar registros e viabilizar certificação.
+Para isso, é necessário:
+● organizar listas finais;
+● revisar presença;
+● consolidar dados;
+● estruturar critérios;
+● preservar documentação;
+● preparar materiais institucionais.
+A comissão também deve preservar essas informações como memória organizacional,
+fortalecendo futuras edições.
+8. Monitoria
+A Subcomissão de Monitoria é responsável pela gestão integral de todos os processos
+relacionados ao corpo de monitores da REUNI, constituindo-se como uma das estruturas
+centrais para a operacionalização prática, contínua e sustentável do evento. Sua função não se
+limita à abertura de inscrições ou à seleção de estudantes interessados em colaborar
+voluntariamente; trata-se de uma subcomissão de gestão de pessoas, organização logística,
+planejamento de recursos humanos e sustentação operacional intercomissional.
+No funcionamento real da REUNI, a Monitoria é a comissão encarregada de transformar
+interesse estudantil em força de trabalho organizada, distribuída, preparada e acompanhada.
+Isso significa que sua atuação perpassa todas as fases da organização: inicia-se na
+reformulação e publicação do edital, avança pela estruturação metodológica do processo
+seletivo, organização espacial e logística das entrevistas, alinhamento com as necessidades
+específicas de cada subcomissão, treinamento e formação dos monitores selecionados,
+construção de escalas, controle de presença, redistribuição conforme necessidades práticas,
+acompanhamento de desempenho, cuidado físico e emocional dos monitores durante a
+realização da REUNI e consolidação documental e certificadora no pós-evento.
+Por essa razão, a Subcomissão de Monitoria precisa operar sob lógica administrativa,
+estratégica e institucional, e não apenas sob lógica de recrutamento. Sua responsabilidade é
+garantir que todas as demais subcomissões possuam suporte humano adequado para execução
+de suas atividades, sem favorecimentos arbitrários, sem improvisos operacionais e sem
+negligência quanto ao cuidado com aqueles que sustentam a execução cotidiana do evento.
+A ausência de organização rigorosa nesta subcomissão compromete diretamente toda a
+estrutura da REUNI, pois afeta distribuição de trabalho, sobrecarrega lideranças, fragiliza
+fluxos e reduz a capacidade responsiva do evento. Por outro lado, uma Monitoria bem
+estruturada amplia eficiência, fortalece integração entre comissões, melhora experiência
+institucional e protege a sustentabilidade organizacional da REUNI.
+
+-- 54 of 99 --
+
+8.1. Reformulação Integral do Edital de Monitoria
+O edital de monitoria constitui o principal instrumento normativo, administrativo e
+organizacional da Subcomissão de Monitoria. Considerando a expansão estrutural, o aumento
+da complexidade operacional da REUNI e as fragilidades observadas em modelos anteriores,
+o edital atual deve ser considerado defasado, sendo necessária sua reformulação integral para
+o próximo ciclo organizacional.
+Essa reformulação não deve se limitar à atualização de datas, nomenclaturas ou correções
+superficiais. O edital precisa ser reconstruído como documento orientador completo, capaz de
+instruir, normatizar e prever operacionalmente todas as etapas relacionadas à monitoria.
+Para isso, o edital deverá contemplar, de forma clara, objetiva e detalhada:
+● definição institucional do que é a monitoria dentro da REUNI;
+● papel estratégico da Subcomissão de Monitoria;
+● funções possíveis a serem exercidas pelos monitores;
+● vínculo dos monitores com diferentes subcomissões;
+● dias e horários possíveis de atuação;
+● exigências mínimas de disponibilidade;
+● critérios de seleção;
+● metodologia das entrevistas;
+● funcionamento das etapas seletivas;
+● exigências de comparecimento;
+● critérios para certificação;
+● treinamentos obrigatórios;
+● metodologia de envio de materiais;
+● canais oficiais de comunicação;
+● responsabilidades comportamentais e operacionais.
+É indispensável que o edital trate disponibilidade temporal como critério estratégico.
+Perguntas como “Em quais dias você poderá participar da REUNI?” devem ser incorporadas
+como instrumentos de planejamento de escala e não apenas como formalidade cadastral. A
+REUNI depende de presença real, e a Monitoria precisa selecionar considerando não apenas
+vontade de participar, mas compatibilidade prática com as demandas operacionais.
+Além disso, o edital deve prever previamente cronogramas e metodologias diferenciadas
+conforme necessidades das subcomissões, evitando improvisos posteriores.
+8.2. Centralização Documental e Gestão Institucional de Dados
+Todos os documentos, formulários, registros e instrumentos administrativos produzidos pela
+Subcomissão de Monitoria devem, obrigatoriamente, estar vinculados à conta institucional da
+REUNI.
+Essa determinação não constitui sugestão administrativa, mas diretriz estrutural obrigatória
+voltada à preservação da memória institucional, segurança documental, continuidade
+organizacional e prevenção de perda de informações.
+
+-- 55 of 99 --
+
+Fica estabelecido que devem ser centralizados institucionalmente:
+● edital;
+● formulários de inscrição;
+● planilhas de seleção;
+● planilhas de alocação;
+● listas de presença;
+● registros de comparecimento;
+● materiais enviados por candidatos;
+● portfólios;
+● arquivos de entrevistas;
+● registros fotográficos;
+● cronogramas;
+● escalas;
+● relatórios de desempenho;
+● documentos de treinamento;
+● certificações.
+A utilização de contas pessoais, perfis individuais ou plataformas descentralizadas
+compromete gravemente a continuidade da REUNI e dificulta a transição entre gestões. A
+memória operacional da Monitoria não pertence a membros individualmente, mas à
+organização.
+Nota-se a falta de documentações desta comissão no manual decorrente desta prática.
+Toda metodologia adotada pela comissão deve partir do princípio de institucionalidade e
+continuidade.
+8.3. Diagnóstico de Demandas Intercomissionais e Dimensionamento De Recursos
+Humanos
+Compete à Subcomissão de Monitoria realizar, antes da abertura oficial do processo seletivo,
+um levantamento detalhado das demandas de monitores de todas as demais subcomissões.
+Esse levantamento deve ocorrer mediante diálogo direto com lideranças e coordenações,
+visando compreender:
+● quantidade necessária de monitores por comissão;
+● perfil desejado;
+● funções esperadas;
+● necessidades específicas;
+● dias prioritários;
+● horários críticos;
+● demandas extraordinárias;
+● necessidades de cobertura simultânea.
+Esse processo é indispensável para evitar tanto déficit quanto excesso de alocação e para
+impedir favorecimentos desproporcionais a áreas específicas.
+
+-- 56 of 99 --
+
+A Monitoria não deve selecionar monitores de forma abstrata ou genérica; ela deve selecionar
+considerando necessidades reais, concretas e previamente mapeadas.
+O princípio operacional é:
+as subcomissões informam necessidades;
+a Monitoria sistematiza, organiza e operacionaliza;
+a Secretaria Geral supervisiona equilíbrio institucional.
+8.4. Organização Das Seleções
+Após a definição da data oficial do processo seletivo, a Subcomissão de Monitoria deverá
+articular imediatamente com a Subcomissão de Estrutura a reserva dos espaços necessários
+para a operacionalização das entrevistas e atividades seletivas.
+A recomendação prioritária da Secretaria Geral para o próximo ciclo é a utilização das salas
+404, 406 (caso não esteja interditada), 407 e 408 do PAF V.
+A escolha dessas salas visa garantir:
+● divisão por comissão;
+● simultaneidade de entrevistas;
+● redução de ruído;
+● melhor fluxo de candidatos;
+● maior autonomia avaliativa;
+● organização logística;
+● previsibilidade espacial.
+Além da reserva dos espaços, cabe à Monitoria organizar previamente:
+● cronograma;
+● distribuição de salas;
+● sinalização;
+● listas;
+● recepção;
+● filas;
+● controle de horários;
+● QR Codes;
+● formulários de presença;
+● metodologia de encaminhamento.
+A comissão deve também construir, em conjunto com cada subcomissão, estratégias
+específicas para entrevistas conforme necessidades particulares. Caso uma comissão, como
+Recreação, necessite prioridade temporal, isso deve estar previsto previamente em edital,
+comunicação pública e organização prática.
+Exemplo: “Entrevistas da Subcomissão de Recreação ocorrerão entre 08h e 10h. Demais áreas
+funcionarão entre 10h e 12h.”
+Essa previsibilidade reduz a desorganização e melhora a eficiência.
+
+-- 57 of 99 --
+
+Fica expressamente desaconselhado o uso de metodologias informais, como envio de
+materiais via Instagram, mensagens dispersas ou plataformas não padronizadas.
+A experiência prévia demonstrou que tais práticas:
+● dificultam organização;
+● comprometem rastreabilidade;
+● fragilizam avaliação;
+● dispersam a memória documental.
+Recomenda-se, como procedimento padrão:
+● Google Forms institucional;
+● links centralizados;
+● QR Codes impressos;
+● pastas institucionais;
+● padronização de nomenclaturas;
+● organização por comissão.
+A metodologia precisa ser simples para candidatos, mas rigorosa para gestão.
+8.5. Treinamento, Formação e Preparação dos Monitores Selecionados
+Selecionar monitores não encerra a função da Subcomissão de Monitoria. Após a seleção,
+inicia-se uma das etapas mais importantes: a formação.
+É responsabilidade da comissão garantir que todos os monitores compreendam:
+● o que é a REUNI;
+● quais são seus objetivos;
+● qual subcomissão integrarão;
+● quais funções exercem;
+● quais horários cumprirão;
+● a quem responderão;
+● quais condutas são esperadas;
+● quais protocolos seguir.
+Para isso, reuniões, treinamentos e alinhamentos prévios são indispensáveis é necessária a
+destinação de um dia para essas explicações e apresentações.
+Monitor sem formação adequada gera ruído, improviso e fragilidade operacional.
+8.6. Gestão Operacional Durante a Reuni
+Durante os dias de realização da REUNI, a Subcomissão de Monitoria passa a operar como
+estrutura permanente de gestão humana.
+Isso significa que sua responsabilidade inclui:
+● credenciamento de monitores;
+
+-- 58 of 99 --
+
+● controle e distribuição de crachás;
+● listas de presença;
+● acompanhamento de frequência;
+● remanejamento;
+● resolução de problemas;
+● apoio físico;
+● apoio emocional;
+● comunicação de demandas;
+● interlocução com demais comissões.
+A comissão deve adotar postura ativa de acompanhamento, avaliando continuamente:
+● monitores possuem alimentação adequada?
+● Há necessidade de lanche?
+● possuem local para pertences?
+● estão sobrecarregados?
+● Precisam de pausas?
+● estão emocionalmente bem?
+● compreendem suas funções?
+● precisam ser realocados?
+O trabalho voluntário não pode significar abandono organizacional. Por isso, a Subcomissão
+de Monitoria precisa compreender que gerir monitores não significa apenas extrair força de
+trabalho, mas garantir condições mínimas de sustentação.
+Caso a comissão não organize, acompanhe e cuide, sua função torna-se burocraticamente
+limitada e estruturalmente questionável.
+Monitoria existe para garantir eficiência operacional com responsabilidade humana.
+8.7. Certificação, Consolidação Documental e Pós-Evento
+Após a realização da REUNI, a Subcomissão de Monitoria deve consolidar:
+● listas finais;
+● presença real;
+● comparecimento;
+● registros;
+● escalas cumpridas;
+● dados de desempenho;
+● documentação certificadora.
+Essa etapa é fundamental para o fechamento institucional adequado e preservação da memória
+organizacional.
+8.10. Alerta Institucional
+A existência da Subcomissão de Monitoria e demais comissões dentro da estrutura
+organizacional da REUNI está diretamente condicionada à sua capacidade real de cumprir,
+
+-- 59 of 99 --
+
+com eficiência, responsabilidade e institucionalidade, as funções para as quais foi concebida.
+A Monitoria não existe como estrutura simbólica, decorativa ou burocrática; sua permanência
+se justifica exclusivamente por sua utilidade operacional concreta na organização, gestão e
+sustentação do corpo de monitores.
+Dessa forma, diante ao seu desempenho, fica expressamente estabelecido que a manutenção
+desta subcomissão depende de sua capacidade de executar integralmente suas atribuições
+estratégicas, administrativas e humanas.
+Caso a Subcomissão de Monitoria:
+● Não operacionalize de forma adequada, organizada e funcional os processos seletivos,
+entrevistas, cronogramas e metodologias de seleção;
+● Negligencie o planejamento logístico das entrevistas, incluindo organização espacial,
+fluxos, listas, formulários, horários e articulação com Estrutura;
+● Desconsidere ou fragilize as demandas, escolhas, perfis e critérios definidos pelas
+demais subcomissões para composição de suas equipes;
+● Favoreça arbitrariamente determinadas áreas em detrimento de outras;
+● Deixe de estruturar estratégias concretas de formação, treinamento e preparação dos
+monitores selecionados;
+● Negligencie a construção de estratégias de apoio físico, emocional, logístico e
+institucional aos monitores durante os dias da REUNI;
+● Trate o corpo de monitores apenas como força de trabalho descartável, sem
+acompanhamento, cuidado ou sustentação;
+● Mantenha, incentive ou tolere o armazenamento de documentos, planilhas,
+formulários, registros, listas, fotos ou quaisquer materiais institucionais em contas
+pessoais, plataformas privadas ou meios descentralizados;
+● Comprometa a continuidade organizacional da REUNI por práticas de gestão
+individualizada ou não institucional;
+Então sua permanência como subcomissão autônoma deverá ser formalmente revista pela
+Secretaria Geral e pela estrutura dirigente da REUNI.
+Persistindo tais falhas, recomenda-se sua dissolução estrutural, redistribuição de suas funções
+entre outras subcomissões ou completa reformulação de sua lógica operacional, a REUNI não
+manterá comissões cuja existência não produza utilidade organizacional clara, continuidade
+institucional e melhoria prática.
+A Subcomissão de Monitoria só se justifica enquanto estrutura se for capaz de: selecionar com
+eficiência, organizar com estratégia, respeitar demandas institucionais, formar com
+responsabilidade, cuidar com humanidade e preservar informações com institucionalidade.
+Se a Monitoria não cumprir essas funções, sua manutenção deixa de ser estratégica e passa a
+ser um ônus organizacional. Nesse cenário, sua descontinuidade torna-se não apenas possível,
+mas recomendável.
+
+-- 60 of 99 --
+
+9. Festa
+A Subcomissão de Festa é responsável pela concepção, defesa institucional, legalização,
+planejamento financeiro, produção cultural, estruturação logística, gestão operacional,
+articulação política, segurança, curadoria artística e execução integral da festa oficial da
+REUNI. Historicamente, esta comissão já operou em contexto de menor complexidade
+normativa; entretanto, as exigências contemporâneas da Universidade Federal da Bahia,
+especialmente diante da Portaria nº 094/2025, transformaram sua atuação em processo
+altamente burocrático, técnico e politicamente sensível.
+A festa da REUNI não pode mais ser tratada como atividade meramente recreativa ou
+espontânea. Sua realização exige estrutura de produção cultural universitária, capacidade de
+negociação institucional, planejamento jurídico-administrativo, sustentabilidade financeira,
+gestão de riscos, responsabilidade patrimonial e conformidade integral com normas de
+segurança, uso do espaço público e preservação institucional.
+Dessa forma, a Subcomissão de Festa não se limita a “organizar uma festa”: ela deve tornar
+possível, legal, financeiramente viável, tecnicamente segura e institucionalmente defensável a
+realização de um evento cultural estudantil de grande porte dentro da UFBA.
+9.1. Legitimidade Política e Aprovação Institucional
+O primeiro passo para qualquer tentativa de realização da festa é político-institucional. Antes
+de atrações, fornecedores, segurança ou divulgação, é indispensável garantir autorização da
+Direção do IHAC e, quando necessário, apoio ou aprovação em instâncias mais amplas, como
+a Congregação, sem essa autorização, nenhuma etapa posterior se sustenta.
+A comissão deve compreender que sua primeira tarefa é construir legitimidade institucional
+suficiente para que a festa seja entendida como atividade artístico-cultural vinculada à missão
+da REUNI, e não como simples confraternização ou evento recreativo desvinculado da
+proposta acadêmico-estudantil. A festa deve ser apresentada como ação de:
+● integração estudantil;
+● acolhimento;
+● convivência universitária;
+● fortalecimento comunitário;
+● permanência;
+● produção cultural.
+A comissão deve mobilizar:
+● Centros Acadêmicos;
+● DCE;
+● coletivos;
+● lideranças estudantis;
+● membros com trânsito institucional.
+
+-- 61 of 99 --
+
+Os Centros Acadêmicos podem ser especialmente estratégicos diante de processos
+deliberativos e construção de apoio político.
+9.2. Portaria Nº 094/2025
+BUROCRACIAS DA PORTARIA Nº. 094, de 03 de abril de 2025
+anexos_-_portaria_094-2025
+A Portaria nº 094/2025 estabelece parâmetros que não podem ser tratados genericamente.
+Cada exigência precisa ser convertida em ação prática.
+I. Representação formal
+A REUNI deve definir quem responderá institucionalmente pela festa.
+Caminhos:
+● liderança geral;
+● liderança de festa;
+● entidade estudantil parceira;
+● comissão formalmente designada.
+II. Objetivo e natureza
+A descrição precisa ser estrategicamente institucional.
+Deve enfatizar:
+● cultura;
+● integração;
+● acolhimento;
+● caráter estudantil.
+Deve evitar:
+● linguagem comercial;
+● caráter privado;
+● enquadramento mercadológico.
+III. Público previsto
+A previsão quantitativa influencia:
+● segurança;
+● bombeiros;
+● estrutura;
+● fornecedores;
+● lotação.
+
+-- 62 of 99 --
+
+Como estimar:
+● histórico;
+● capacidade real;
+● segurança operacional;
+● perfil de divulgação.
+A superlotação pode comprometer o evento e futuras edições.
+IV e V. Data e horário
+A definição de horário impacta:
+● custos;
+● segurança;
+● exigências legais;
+● sensibilidade institucional.
+Recomenda-se:
+Planejamento compatível com viabilidade operacional e menor conflito institucional, com
+estimativa real de horários que também levam em conta que eventos às 20h ainda estão vazios
+e os que se prolongam ao longo da noite tendem a ser o ideal a fim de evitar interrupções de
+aulas.
+VI. Divulgação
+A divulgação deve priorizar:
+● redes sociais;
+● Instagram;
+● canais institucionais;
+● comunicação estudantil.
+A comunicação precisa respeitar o enquadramento institucional da festa.
+VII. Espaço físico e infraestrutura
+A comissão, em conjunto com Estrutura, deve mapear:
+● limites físicos;
+● entradas e saídas;
+● palco;
+● circulação;
+● vendedores;
+● energia;
+● banheiros;
+● áreas de risco;
+● limpeza.
+
+-- 63 of 99 --
+
+Recomendação:
+Elaboração de mapa funcional ou croqui, que detalhe de fato as operações a serem realizadas
+e o planejamento físico do espaço, bem como as restrições dele e alocações.
+9.3. Segurança, Coseg e Plano Operacional de Risco
+A aprovação da COSEG é elemento central da realização.
+A Subcomissão de Festa precisa transformar segurança em planejamento técnico real, e não
+em formalidade burocrática.
+a) Contato prévio com COSEG
+Solicitar:
+● reuniões;
+● orientações;
+● modelos;
+● parâmetros mínimos.
+b) Nomeação de responsável formal
+Deve existir responsável direto pela segurança.
+c) Elaboração de plano
+O plano deve prever:
+● fluxo de entrada;
+● fluxo de saída;
+● controle de público;
+● patrimônio;
+● proteção individual;
+● gestão de ocorrências.
+É fundamental que a comissão compreenda que não é suficiente afirmar apenas que “haverá a
+contratação de uma equipe de segurança”. É indispensável detalhar de forma completa e
+objetiva qual empresa ou equipe será contratada, o número exato de profissionais envolvidos,
+os pontos estratégicos de alocação dentro e fora do evento, os horários de entrada,
+permanência e saída de cada integrante, os turnos e escalas de atuação, bem como os
+procedimentos operacionais que deverão ser seguidos em diferentes situações, incluindo
+controle de acesso, monitoramento de áreas específicas, prevenção de conflitos, resposta a
+emergências e suporte à evacuação quando necessário. Da mesma forma, o planejamento
+referente à equipe de bombeiros e brigadistas deve apresentar o mesmo nível de precisão,
+especificando quantidade de profissionais, posicionamento, protocolos de prevenção e
+combate a incêndios, rotas de emergência, equipamentos disponíveis e responsabilidades
+práticas. Todo item relacionado à segurança deve estar descrito minuciosamente, de forma
+técnica e organizada, para garantir clareza operacional, prevenção eficiente e plena capacidade
+de execução.
+
+-- 64 of 99 --
+
+9.4. Defesa Civil, Bombeiros e Conformidade Emergencial
+A festa deve atender exigências relacionadas à segurança física e resposta emergencial.
+a) Contratação mínima recomendada
+Pelo menos 2 bombeiros.
+b) Busca ativa por referências
+Consultar:
+● atléticas;
+● FAU;
+● DCE;
+● São Lázaro;
+● coletivos com experiência.
+c) Planejamento preventivo
+Mapear:
+● saídas;
+● riscos;
+● extintores;
+● estruturas sensíveis;
+● uso de botijão ou equipamentos especiais.
+9.5. Estrutura Técnica
+A realização da festa deve prever, de forma integral, detalhada e tecnicamente estruturada,
+toda a infraestrutura necessária para sua execução, garantindo não apenas a qualidade
+operacional do evento, mas principalmente a preservação absoluta do patrimônio institucional,
+com atenção especial às instalações físicas, elétricas, estruturais e administrativas do IHAC.
+Não se trata apenas de organizar uma celebração, mas de desenvolver um planejamento
+técnico capaz de viabilizar o evento sem gerar impactos negativos, danos patrimoniais,
+sobrecarga de sistemas ou riscos jurídicos e operacionais para a instituição.
+A comissão organizadora deverá assegurar que toda a estrutura técnica da festa seja planejada
+com foco na autonomia operacional, segurança patrimonial e prevenção de danos. Isso exige
+uma avaliação prévia e minuciosa de toda a demanda energética do evento, considerando som,
+iluminação, palco, equipamentos de apoio, barracas, camarins, estruturas complementares e
+quaisquer dispositivos que dependam de energia elétrica.
+Nesse contexto, a contratação de gerador deixa de ser apenas uma recomendação e passa a ser
+uma medida estratégica de proteção institucional, visando evitar sobrecarga da rede elétrica,
+preservar a integridade das instalações do IHAC, reduzir riscos de curto-circuito ou falhas
+operacionais, ampliar a autonomia energética da festa e proteger tanto equipamentos
+contratados quanto a infraestrutura institucional.
+Além disso, a comissão deverá realizar um levantamento técnico completo de todas as
+necessidades estruturais, contemplando obrigatoriamente som, iluminação, palco,
+
+-- 65 of 99 --
+
+cabeamento, gerador, equipamentos complementares, suporte técnico e todas as contratações
+culturais, como DJs, bandas, artistas, produtores e demais profissionais envolvidos.
+Para garantir responsabilidade financeira, transparência administrativa e qualidade técnica,
+será necessário buscar múltiplos orçamentos para cada categoria principal. Recomenda-se,
+como diretriz mínima, a obtenção de pelo menos 5 orçamentos para cada área estrutural —
+som, iluminação, palco, cabos e gerador — bem como no mínimo 5 orçamentos para cada
+contratação cultural ou artística. Essa exigência não deve ser tratada como mera formalidade
+burocrática, mas como instrumento essencial para comparação de custo-benefício, análise de
+qualidade, avaliação de confiabilidade e prevenção de escolhas inadequadas.
+Cada proposta deverá ser analisada considerando valor financeiro, qualidade técnica,
+capacidade de entrega, histórico do fornecedor, segurança operacional, conformidade
+contratual e adequação às necessidades específicas do evento.
+Paralelamente à estrutura física, a comissão também deverá verificar e organizar todas as
+exigências legais indispensáveis para a realização regular da festa. Isso inclui regularização
+junto ao ECAD para execução musical, respeito aos limites sonoros permitidos pela legislação
+e pelas normas institucionais, definição precisa dos horários autorizados para montagem,
+operação e encerramento, além de quaisquer licenças, autorizações e exigências
+administrativas complementares.
+Também será fundamental prever medidas preventivas para evitar danos ao espaço físico, uso
+inadequado das dependências institucionais, falhas técnicas, riscos patrimoniais, problemas
+jurídicos e descumprimento de normas operacionais.
+Todo esse processo deverá ser documentado com rigor, assegurando que cada orçamento,
+contratação, decisão técnica e exigência legal esteja formalmente registrada. O planejamento
+não deve apenas viabilizar a festa, mas garantir que ela ocorra com excelência estrutural,
+responsabilidade financeira, conformidade legal e proteção integral ao patrimônio
+institucional, assegurando que a atividade cultural aconteça de forma segura, organizada e
+plenamente responsável.
+9.6. Financeiro e Festa
+A viabilidade da festa depende diretamente de uma atuação integrada, estratégica e contínua
+entre a comissão de festa e a comissão de financeiro especializada. Embora exista uma
+comissão especificamente voltada para a gestão financeira, a responsabilidade pela
+sustentabilidade econômica do evento não deve recair exclusivamente sobre ela. A comissão
+de festa também precisa assumir papel ativo na construção de caminhos para viabilização
+financeira, compreendendo que planejar a execução da festa inclui, necessariamente,
+participar da busca por recursos que tornem essa execução possível.
+Desde o início, ambas as comissões devem operar de forma articulada, colaborativa e
+complementar. A comissão de festa não deve apenas elaborar propostas estruturais, artísticas e
+operacionais, mas também pensar estrategicamente em formas de contribuir para captação de
+recursos, redução de custos, construção de parcerias e ampliação de possibilidades
+
+-- 66 of 99 --
+
+financeiras. Da mesma forma, a comissão de financeiro deve organizar, direcionar, controlar e
+potencializar essas iniciativas dentro de uma lógica orçamentária sustentável.
+Isso significa que festa e financeiro devem funcionar como frentes integradas de planejamento
+e viabilização, compartilhando responsabilidades tanto na projeção de custos quanto na busca
+de soluções econômicas.
+Entre os principais custos que exigem planejamento conjunto estão:
+● Segurança;
+● Bombeiros ou brigadistas;
+● Gerador;
+● Fornecedores;
+● Atrações culturais;
+● DJs, bandas e artistas;
+● Iluminação;
+● Estrutura física e operacional.
+A comissão de festa deverá apresentar suas demandas de forma técnica e detalhada, mas
+também precisa desenvolver iniciativas para ajudar a tornar essas demandas financeiramente
+possíveis. Isso inclui pensar, propor e executar estratégias como:
+● Busca por parcerias;
+● Articulação com possíveis patrocinadores;
+● Construção de redes de apoio;
+● Mobilização para arrecadações;
+● Criação de ações pré-evento para levantamento de recursos;
+● Negociação com fornecedores;
+● Propostas de permuta ou colaboração estratégica.
+A existência de uma comissão financeira não exime a comissão de festa da responsabilidade
+de colaborar ativamente com a captação de recursos. Pelo contrário, por estar diretamente
+ligada à produção e às necessidades concretas do evento, a comissão de festa muitas vezes
+possui maior capacidade de identificar oportunidades práticas, contatos estratégicos e
+soluções criativas para fortalecer a sustentabilidade econômica.
+Por sua vez, a comissão de financeiro deverá organizar essas possibilidades dentro de
+parâmetros técnicos, garantindo:
+● Controle orçamentário;
+● Planejamento de caixa;
+● Definição de prioridades;
+● Análise de viabilidade;
+● Gestão de arrecadação;
+● Prestação de contas;
+● Sustentabilidade financeira.
+Sem essa atuação integrada, existe o risco de a comissão de festa projetar um evento
+incompatível com a realidade financeira, enquanto a comissão de financeiro atua apenas de
+
+-- 67 of 99 --
+
+forma corretiva. O ideal é que ambas trabalhem simultaneamente na construção de soluções,
+compartilhando tanto a responsabilidade pelo planejamento quanto pela viabilização.
+Portanto, a comissão de festa deve compreender que sua função não se limita à organização da
+celebração, mas também envolve responsabilidade ativa na busca por meios que permitam sua
+realização. Produzir a festa também significa ajudar a construir suas condições materiais de
+existência.
+O sucesso do evento dependerá da capacidade coletiva de unir planejamento técnico,
+criatividade estratégica, captação de recursos e responsabilidade financeira, garantindo que
+festa e financeiro atuem como estruturas complementares na construção de um evento viável,
+seguro, sustentável e institucionalmente responsável.
+9.7. Fornecedores, Alimentação e Bebidas
+A comissão deverá estruturar, com planejamento prévio e organização estratégica, uma rede
+de fornecedores capaz de garantir o funcionamento eficiente da festa, tendo como objetivo
+central não a geração de lucro ou arrecadação excedente, mas a viabilização econômica,
+logística e operacional do próprio evento. A lógica de organização financeira da festa deve
+partir do princípio da sustentabilidade: captar e organizar recursos suficientes para que a festa
+aconteça com qualidade, segurança e responsabilidade, sem transformar sua estrutura
+comercial em mecanismo de exploração financeira.
+Nesse sentido, a rede de fornecedores deve ser pensada como parte essencial da sustentação
+prática da festa, contribuindo para abastecimento, diversidade de oferta, equilíbrio financeiro
+e segurança operacional, sempre dentro de uma lógica de viabilização coletiva.
+A comissão deverá estruturar essa rede para garantir:
+● Abastecimento contínuo, evitando falta de produtos e falhas de operação;
+● Diversidade comercial, oferecendo opções adequadas ao público;
+● Sustentação financeira da execução, ajudando a cobrir custos estruturais da festa;
+● Segurança operacional, com funcionamento organizado e responsável.
+Como recomendação mínima, sugere-se:
+● Bebidas: no mínimo 4 vendedores;
+● Alimentos: no mínimo 3 vendedores.
+Essa estrutura mínima visa assegurar fluxo adequado de consumo, variedade, redução de filas
+e estabilidade logística, podendo ser ampliada conforme necessidade e porte do evento.
+A escolha de fornecedores deverá considerar:
+● Capacidade de operação;
+● Regularidade comercial;
+● Qualidade de produtos e serviços;
+● Segurança;
+● Estrutura logística;
+● Compromisso com funcionamento adequado;
+
+-- 68 of 99 --
+
+● Compatibilidade com a proposta financeira da festa.
+Os modelos de organização comercial podem incluir:
+● Taxa fixa: contribuição previamente acordada para ajudar na cobertura de custos;
+● Percentual: repasse moderado baseado em vendas;
+● Parceria: apoio colaborativo com foco em viabilização mútua.
+Entretanto, é fundamental que qualquer modelo adotado esteja orientado pela lógica de
+viabilização e não de lucro. A comissão deve evitar práticas arrecadatórias abusivas,
+cobranças excessivas ou exigências que transformem fornecedores em mera fonte de receita.
+O foco deve ser construir relações equilibradas, nas quais a participação comercial contribua
+para custear elementos essenciais da festa — como estrutura, segurança ou operação — sem
+comprometer a sustentabilidade dos próprios vendedores, elevar excessivamente preços ao
+público ou descaracterizar o propósito coletivo do evento.
+A comissão precisa compreender que viabilizar financeiramente não significa lucrar, mas
+garantir que os custos necessários para realização da festa sejam cobertos de forma
+responsável, justa e funcional.
+Dessa forma, a rede de fornecedores deve atuar como instrumento de sustentação econômica e
+operacional, ajudando a tornar a festa possível dentro de parâmetros realistas e equilibrados.
+Mais do que arrecadar, trata-se de construir uma estrutura comercial organizada, colaborativa
+e financeiramente suficiente para assegurar que o evento aconteça com qualidade, segurança e
+responsabilidade institucional.
+9.8. Curadoria Cultural, Atrações e Produção Artística
+A Subcomissão de Festa é responsável pela seleção, negociação e operacionalização das
+atrações, desempenhando papel central na construção da programação cultural e da
+experiência coletiva do evento. Sua atuação não deve se limitar à simples contratação de
+apresentações, mas envolver planejamento estratégico, curadoria cultural, análise de
+viabilidade e articulação com outras frentes organizacionais, garantindo que cada escolha
+esteja alinhada à proposta da festa, à capacidade estrutural disponível e às condições
+financeiras previamente estabelecidas.
+A comissão deverá compreender que a definição das atrações impacta diretamente a
+identidade do evento, o perfil do público, a logística, a estrutura, a segurança e a dinâmica
+geral da festa. Por isso, toda decisão precisa ser construída de forma criteriosa, equilibrando
+relevância cultural, viabilidade prática e coerência organizacional.
+As possibilidades de programação podem incluir:
+● DJs
+● Cantores
+● Grupos culturais
+● Coletivos artísticos
+● Paredões
+
+-- 69 of 99 --
+
+● Performances diversas
+A diversidade de formatos amplia o potencial cultural da festa, mas exige responsabilidade na
+escolha. A seleção das atrações não deve ocorrer por preferência individual ou impulso
+momentâneo, devendo considerar critérios técnicos, culturais e operacionais claramente
+definidos.
+Entre os principais critérios de avaliação estão:
+● Custo, considerando valores, exigências financeiras, compatibilidade orçamentária e
+impacto sobre o planejamento geral
+● Identidade, garantindo alinhamento com a proposta cultural, política e estética da
+festa, além da conexão com o público esperado
+● Logística, observando necessidades técnicas, deslocamento, montagem, horários e
+compatibilidade com a estrutura disponível
+● Segurança, avaliando riscos operacionais, impacto na circulação, exigências
+específicas e adequação ao espaço
+● Engajamento, priorizando atrações com capacidade real de mobilização, participação e
+fortalecimento da experiência coletiva
+Cada contratação deverá ser precedida por negociação cuidadosa, levantamento técnico,
+análise de custo-benefício e verificação de viabilidade concreta. A Subcomissão de Festa
+precisa assegurar que as atrações escolhidas não sejam apenas desejáveis, mas plenamente
+executáveis dentro das condições reais do evento.
+Além da programação cultural, a comissão também deverá atuar de forma integrada com a
+equipe de Estrutura na construção da ambientação visual e espacial da festa. A experiência do
+público não depende apenas das atrações contratadas, mas também da forma como o espaço é
+organizado, apresentado e vivenciado.
+Essa atuação conjunta deverá priorizar:
+● Iluminação, pensada como elemento técnico, estético e de segurança, contribuindo
+para ambientação, valorização visual e funcionamento adequado
+● Organização espacial, garantindo distribuição estratégica de atrações, circulação
+eficiente, integração entre áreas e funcionalidade operacional
+● Composição estética funcional, construindo uma identidade visual coerente com a
+proposta da festa, fortalecendo experiência sem comprometer logística ou segurança
+A ambientação deve ser planejada para que estética e funcionalidade caminhem juntas. Isso
+exige atenção à disposição de palco, equipamentos, áreas de circulação, integração com
+fornecedores e experiência visual do público.
+A Subcomissão de Festa deverá manter diálogo constante com as comissões de Estrutura e
+Financeiro, garantindo equilíbrio entre programação cultural, capacidade operacional e
+viabilidade econômica. Não basta propor atrações relevantes se elas não puderem ser
+sustentadas financeiramente ou executadas de forma segura.
+Seu papel é construir uma proposta cultural consistente, logisticamente possível e visualmente
+organizada, articulando atrações, ambientação e operação de maneira integrada.
+
+-- 70 of 99 --
+
+9.9. Limpeza, Patrimônio e Devolução do Espaço
+A responsabilidade sobre limpeza, conservação e devolução adequada do espaço é
+integralmente da organização.
+A festa não termina ao final das atrações; ela termina quando o espaço retorna em condições
+adequadas.
+a) Articulação com Monitoria
+Escala de monitores para:
+● desmontagem;
+● limpeza;
+● logística;
+● resíduos.
+b) Mutirão interno
+Membros da comissão podem assumir limpeza diretamente.
+c) Contratação externa
+Caso haja caixa, contratar equipe.
+Insumos necessários:
+● sacos;
+● luvas;
+● recipientes;
+● cronograma;
+● divisão de tarefas.
+Além da limpeza, é dever da comissão prevenir:
+● danos patrimoniais;
+● depredação;
+● sobrecarga estrutural.
+9.10. Medida Emergencial Para Novos Ingressos
+Diante da complexidade crescente da comissão, fica instituída diretriz emergencial de
+qualificação para novos membros.
+9.10.1 Determinação:
+Novos integrantes da Subcomissão de Festa deverão, prioritariamente, ser estudantes do
+Bacharelado Interdisciplinar em Artes com área de concentração em Produção Cultural.
+Objetiva garantir:
+● qualificação técnica;
+
+-- 71 of 99 --
+
+● leitura de produção;
+● experiência cultural;
+● profissionalização;
+● maior capacidade operacional.
+Observações:
+● membros atuais permanecem;
+● aplica-se prioritariamente a novos ingressos;
+● trata-se de medida de sobrevivência operacional, não exclusão arbitrária.
+A complexidade atual da festa exige capacidade técnica real, e não apenas disposição
+recreativa.
+9.11. Responsabilidade Operacional Durante a Execução
+Durante a festa, os membros da Subcomissão de Festa são responsáveis operacionais
+permanentes.
+Isso significa que sua prioridade não é lazer pessoal, mas:
+● resolução de crises;
+● fornecedores;
+● segurança;
+● estrutura;
+● limpeza;
+● intercorrências;
+● continuidade do evento.
+A comissão pode usufruir do evento, mas nunca em detrimento de sua função organizacional.
+Enquanto houver operação, haverá responsabilidade ativa.
+10. Recreação
+A Subcomissão de Recreação é responsável por uma das dimensões mais sensíveis,
+estratégicas e estruturalmente importantes da REUNI: o acolhimento humano, emocional e
+social dos calouros por meio de metodologias lúdicas, interativas e integradoras.
+Diferentemente de uma leitura superficial que reduz sua função à execução de brincadeiras,
+provas ou entretenimento, este manual estabelece que a Recreação possui responsabilidade
+direta sobre a construção do senso de pertencimento, redução da ansiedade inicial, criação de
+vínculos sociais e fortalecimento da experiência subjetiva de chegada à universidade.
+A REUNI não existe apenas para informar. Ela existe para acolher, integrar e construir
+comunidade. Nesse sentido, a Recreação é uma das principais responsáveis por transformar a
+entrada na UFBA em experiência menos hostil, menos solitária e mais humana. Sua função
+central não é “fazer provas”, provas, gincanas, jogos, shows e dinâmicas são ferramentas. O
+verdadeiro objetivo é garantir que os calouros criem laços, façam amizades, se sintam
+pertencentes, sejam vistos, sejam recebidos e percebam que aquele espaço também lhes
+pertence.
+
+-- 72 of 99 --
+
+Assim, toda decisão da Recreação deve partir de um princípio inegociável: o protagonista
+absoluto da comissão é o calouro.
+Não são os membros de Recreação, não veteranos, não equipes, não as pontuações, não os
+organizadores.
+As equipes, as provas, os membros, os sistemas de pontuação e as metodologias competitivas
+são instrumentos secundários. O foco primário é o acolhimento, segurança, diversão coletiva e
+o pertencimento.
+Caso a Recreação opere apenas sob lógica de execução técnica de provas, competição vazia
+ou operacionalização mecânica, perde sua função institucional e falha em sua missão.
+10.1. Metodologia Base
+Historicamente, a Recreação da REUNI estrutura parte significativa de suas atividades a partir
+de uma metodologia de pertencimento por equipes, geralmente organizando os calouros em
+quatro grandes grupos que competem entre si ao longo da semana, especialmente no turno da
+tarde, por meio de provas, desafios e ações coordenadas.
+Este modelo é válido, mas sua finalidade precisa ser corretamente compreendida: a
+competição não existe para rivalidade pura, mas para construção de identidade coletiva,
+cooperação interna, interação social e estímulo à participação.
+As equipes devem servir para:
+● aproximar desconhecidos;
+● criar vínculos;
+● incentivar participação;
+● estimular expressão;
+● gerar memória coletiva;
+● promover pertencimento.
+A competição jamais poderá ultrapassar o acolhimento. Sempre que rivalidade, humilhação,
+desgaste ou exclusão superarem integração, a metodologia foi mal executada.
+10.2. Critérios Obrigatórios Para Criação de Provas e Dinâmicas
+Toda prova idealizada pela Comissão de Recreação deverá, obrigatoriamente, passar por
+critérios técnicos prévios de análise, avaliação e adequação antes de sua aprovação ou
+execução. A criatividade, o humor, a tradição ou o apelo simbólico de determinadas
+brincadeiras não substituem responsabilidade operacional, segurança coletiva ou viabilidade
+prática. Nenhuma atividade deve ser mantida apenas por costume, entusiasmo ou potencial de
+entretenimento se não houver garantia de que sua aplicação é segura, organizada e compatível
+com os objetivos estruturais da REUNI.
+A Recreação deve compreender que sua função não é apenas criar momentos divertidos, mas
+desenvolver experiências integradoras capazes de acolher, mobilizar e fortalecer
+
+-- 73 of 99 --
+
+pertencimento sem comprometer segurança física, patrimônio, cronograma, organização ou
+sustentabilidade institucional.
+O primeiro critério absoluto de avaliação é a segurança física dos participantes. Qualquer
+prova, dinâmica ou brincadeira que envolva risco de queda, colisão, corrida descontrolada,
+contato físico perigoso, exposição corporal insegura, esforço excessivo ou qualquer
+possibilidade relevante de dano físico deverá ser vetada, profundamente reformulada ou
+adaptada. A segurança não pode ser relativizada em nome do humor ou da tradição. Toda
+atividade deve partir do princípio de prevenção, priorizando integridade física acima de
+qualquer valor recreativo.
+Da mesma forma, a preservação patrimonial deve ser tratada como eixo central de decisão.
+Não poderão ser executadas provas que ofereçam risco às estruturas da universidade,
+materiais alugados, equipamentos de terceiros, recursos técnicos ou qualquer patrimônio
+institucional. Atividades que possam gerar quebra, dano estrutural, desgaste indevido ou
+prejuízo financeiro significativo deverão ser reestruturadas ou canceladas. A liberdade criativa
+da Recreação não pode operar em conflito com responsabilidade patrimonial.
+A viabilidade temporal também é indispensável. Toda prova precisa caber realisticamente no
+tempo disponível dentro da programação, respeitando fluxo, dinâmica, transições e
+capacidade de execução. Atividades excessivamente longas, burocráticas, de difícil condução
+ou que exijam tempo excessivo de explicação comprometem cronograma, reduzem
+engajamento e podem gerar desorganização coletiva. Uma boa prova precisa ser executável
+dentro das condições reais do evento.
+Além disso, a Recreação deve pensar para além dos participantes diretos. A participação da
+plateia é elemento fundamental para fortalecimento coletivo e integração ampliada. Provas
+que permitem torcida, interação observacional, canto, resposta coletiva, humor compartilhado
+ou envolvimento indireto tendem a possuir maior potência integradora do que atividades
+restritas a pequenos grupos sem capacidade de mobilização ampla. A experiência recreativa
+deve fortalecer pertencimento coletivo, não apenas participação isolada.
+A viabilidade financeira também precisa ser considerada desde a concepção. Toda atividade
+deve respeitar caixa disponível, estrutura existente, recursos materiais acessíveis e capacidade
+logística real da REUNI. Provas que dependem de materiais excessivamente caros, logística
+complexa ou recursos incompatíveis com a realidade financeira da comissão podem
+comprometer outras áreas prioritárias e, portanto, devem ser revistas.
+Por fim, clareza operacional é critério indispensável. Se uma prova exige explicações longas
+demais, regras excessivamente complexas, múltiplas exceções ou interpretação difícil, sua
+concepção já apresenta falha estrutural. A Recreação deve priorizar atividades
+compreensíveis, dinâmicas e operacionalmente claras, permitindo execução fluida, rápida
+assimilação e menor margem para confusão.
+A Comissão de Recreação deve compreender que o sucesso de uma dinâmica não depende
+apenas de sua criatividade ou potencial de entretenimento, mas também de sua clareza, fluidez
+e capacidade de execução prática. A Recreação não pode perder tempo excessivo explicando
+regras, corrigindo compreensões equivococadas ou tentando operacionalizar atividades mal
+estruturadas, pois isso compromete ritmo, engajamento, atenção coletiva e organização geral
+da programação.
+
+-- 74 of 99 --
+
+Dinâmicas excessivamente complexas, longas de explicar ou difíceis de compreender tendem
+a gerar dispersão, desgaste, perda de energia do público e desorganização operacional. Quanto
+maior o tempo gasto para explicar uma prova, maior o risco de queda de interesse, confusão
+entre participantes, atrasos no cronograma e enfraquecimento da experiência recreativa.
+Por essa razão, toda atividade deverá passar por processos prévios de simplificação, validação
+e refinamento antes de sua execução oficial. A comissão deve priorizar não apenas a ideia da
+prova, mas sua capacidade real de ser compreendida rapidamente, executada com fluidez e
+conduzida com segurança.
+Para isso, recomenda-se obrigatoriamente:
+● Testes prévios, permitindo verificar se a dinâmica funciona na prática como foi
+idealizada
+● Roteirização, organizando etapas, comandos, tempo estimado e lógica de condução
+● Simulações internas, avaliando clareza, ritmo, dificuldades operacionais e possíveis
+falhas
+● Validação com monitores, garantindo que diferentes pessoas consigam compreender e
+aplicar a prova adequadamente
+● Ajustes antes da execução, corrigindo excessos, ambiguidades, etapas desnecessárias
+ou problemas de design
+Esses processos são fundamentais para transformar ideias em atividades operacionalmente
+eficientes. Uma boa prova não é necessariamente a mais elaborada, mas aquela que consegue
+unir diversão, clareza e execução funcional.
+Como parâmetro técnico, se uma prova exige mais de 10 minutos de explicação para ser
+plenamente compreendida, a comissão falhou em simplificação, clareza ou design. Esse
+tempo excessivo indica, em regra, que a dinâmica precisa ser reformulada, simplificada ou
+substituída.
+Isso não significa eliminar a criatividade, mas reconhecer que clareza é parte essencial da
+qualidade recreativa. Uma dinâmica pode ser criativa e, ao mesmo tempo, objetiva. Pode ser
+divertida sem ser confusa. Pode ser marcante sem exigir excesso de complexidade.
+A Comissão de Recreação deve operar sob lógica de eficiência comunicacional,
+compreendendo que explicações longas demais enfraquecem impacto, reduzem adesão e
+comprometem a integração coletiva.
+Portanto, toda prova deverá ser concebida para ser rapidamente compreendida, facilmente
+comunicada e operacionalmente fluida. O objetivo não é apenas criar atividades, mas
+construir experiências recreativas acessíveis, organizadas e capazes de manter energia,
+participação e ritmo ao longo de toda a programação
+10.3. Postura Operacional e Política da Recreação
+A Recreação precisa compreender que sua atuação varia conforme interlocutor:
+
+-- 75 of 99 --
+
+Com os calouros:
+Acolhedora, energética, divertida, carismática e segura.
+Com os monitores:
+Imparcial, técnica, organizada e operacionalmente clara.
+Com outras comissões:
+Firme, articulada, estratégica e institucionalmente assertiva.
+A Recreação define regras, conduz atividades e precisa sustentá-las. Não é aceitável permitir
+interferências prévias e posteriormente alegar prejuízo operacional.
+Este manual estabelece que membros de outras comissões estão vetados de participar das
+provas como competidores, sendo a participação competitiva exclusiva dos calouros. Compete
+à Recreação impor, defender e operacionalizar essa regra.
+Da mesma forma que a Monitória protege seus monitores, Recreação deve proteger o
+acolhimento dos calouros.
+10.4 Recreação e Programação
+Estas comissões constituem as duas principais comissões operacionais responsáveis pela
+execução prática das atividades da REUNI, sendo ambas centrais para o funcionamento,
+dinamismo e organização do evento. Embora atuem de forma complementar e
+interdependente, é fundamental estabelecer com clareza que a Comissão de Programação
+possui prerrogativa final sobre a construção, organização e manutenção da grade horária
+oficial.
+Isso significa que cabe à Programação definir tempos, organizar cronogramas, estruturar
+fluxos, estabelecer prioridades de grade e administrar ajustes necessários para garantir
+coerência geral entre atividades, horários e funcionamento institucional. A Comissão de
+Recreação, por sua vez, deverá adaptar suas propostas, provas, dinâmicas e ações à estrutura
+temporal definida, ajustando formato, duração e operacionalização conforme os limites e
+necessidades da programação oficial.
+Essa relação exige cooperação constante. Programação e Recreação não devem operar em
+lógica de disputa por espaço, mas em articulação estratégica, reconhecendo que o sucesso
+operacional da REUNI depende da capacidade de ambas de trabalhar conjuntamente,
+administrar imprevistos, lidar com atrasos e preservar a funcionalidade coletiva.
+A Programação deverá compreender a importância estratégica da Recreação e da Festa para
+mobilização, engajamento e experiência coletiva, especialmente na sexta-feira, devendo
+estruturar a grade horária de modo a priorizar essas frentes dentro da lógica do evento. Isso
+inclui considerar espaços ampliados para atividades recreativas, ações de mobilização,
+integração entre programação e festa, além da possibilidade de ações externas
+estrategicamente pensadas para ampliar circulação, atrair público e fortalecer adesão ao Show
+das Drags e demais atividades centrais.
+
+-- 76 of 99 --
+
+Essa priorização não significa desorganização ou flexibilização irresponsável, mas
+reconhecimento de que determinados momentos da programação possuem papel estratégico
+específico na construção de público, identidade e participação.
+Ao mesmo tempo, a experiência acumulada demonstra necessidade de delimitação rigorosa
+entre atividades recreativas e atividades formativas. Diante de históricos de interferência
+indevida da gincana em palestras, mesas, debates e demais espaços formativos, fica
+terminantemente proibida a realização, mobilização ou continuidade de qualquer atividade
+relacionada à gincana durante palestras, mesas ou atividades acadêmico-formativas.
+Essa proibição existe para proteger integridade pedagógica, respeitar convidados, preservar
+público e impedir que ações recreativas comprometam espaços de formação, escuta e
+construção política. A REUNI não pode permitir que lógica competitiva ou recreativa interfira
+negativamente em atividades cuja natureza exige concentração, respeito e prioridade
+institucional.
+Caso qualquer equipe, integrante ou ação vinculada à gincana gere interferência, perturbação,
+desvio de atenção ou comprometimento de palestras, mesas ou atividades formativas, a
+Comissão de Programação terá autonomia para aplicar sanções imediatas, incluindo retirada
+de pontos das equipes envolvidas, independentemente de consulta prévia à Comissão de
+Recreação.
+Para garantir legitimidade e evitar arbitrariedade, essa medida deverá ocorrer mediante
+aprovação do líder da comissão lesada e de, no mínimo, dois de seus membros.
+Essa prerrogativa reforça que a Programação, enquanto guardiã da grade horária e da
+integridade estrutural das atividades, possui autoridade para proteger o funcionamento do
+evento quando outras frentes comprometerem sua execução.
+10.5 Microfone, Linguagem e Conduta
+O microfone é um instrumento institucional.
+É absolutamente vedado utilizá-lo para:
+● esporros;
+● humilhações;
+● shades;
+● chamadas agressivas;
+● constrangimento.
+A postura ao microfone deve ser:
+● cordial;
+● respeitosa;
+● acolhedora;
+● divertida;
+● energética.
+Qualquer desvio compromete diretamente o caráter de acolhimento.
+
+-- 77 of 99 --
+
+10.6. Publicização Interna Das Provas
+Historicamente, a não socialização prévia das provas com o restante da comissão gera falhas
+operacionais.
+Fica definida a obrigatoriedade de que todas as atividades de Recreação sejam previamente
+apresentadas à Comissão Organizadora, contendo:
+● nome;
+● descrição;
+● dia;
+● horário;
+● materiais;
+● necessidades estruturais;
+● formato de montagem.
+10.7. Recreação e Estrutura
+A relação entre Recreação e Estrutura deve operar sob lógica de planejamento prévio,
+comunicação objetiva e responsabilidade operacional compartilhada. A Comissão de
+Recreação não pode pressupor que suas necessidades serão automaticamente compreendidas,
+improvisadas ou solucionadas pela Comissão de Estrutura sem informação clara, detalhada e
+antecipada. A eficiência da execução depende diretamente da capacidade de previsão e
+comunicação entre ambas.
+Toda atividade, prova ou dinâmica idealizada pela Recreação deverá ser acompanhada de
+levantamento técnico prévio, informando com antecedência todas as demandas estruturais
+necessárias para sua realização. Isso inclui, obrigatoriamente, necessidades relacionadas a
+som, projetor, montagem, desmontagem, cadeiras, energia, materiais específicos e quaisquer
+outros recursos físicos, técnicos ou logísticos indispensáveis para execução segura e
+funcional.
+Não cabe à Estrutura adivinhar demandas, interpretar necessidades implícitas ou responder a
+exigências comunicadas de forma tardia, incompleta ou improvisada. A responsabilidade pela
+previsão inicial da necessidade é da Recreação, que deve apresentar suas propostas já
+acompanhadas de clareza operacional suficiente para permitir organização adequada.
+Se uma prova depende de som, por exemplo, não basta que o áudio exista em um celular
+pessoal se quem opera a mesa de som não possui acesso prévio ao conteúdo, ao formato
+adequado ou às instruções necessárias. Da mesma forma, não basta prever uso de projetor sem
+informar arquivos, conexões, tempo de montagem ou compatibilidade técnica. Toda
+necessidade deve ser pensada para execução real, e não apenas para intenção conceitual.
+A ausência de planejamento técnico compromete não apenas a prova específica, mas também
+o fluxo geral da programação, o trabalho da Estrutura e a segurança operacional do evento.
+Por isso, a Recreação deverá compreender que criatividade sem previsão técnica gera
+sobrecarga organizacional e aumenta riscos de falha.
+
+-- 78 of 99 --
+
+A Comissão de Estrutura, por sua vez, deverá organizar suporte com base nas informações
+recebidas, podendo exigir prazos, formatos de solicitação, validação prévia e critérios
+mínimos de organização para atendimento das demandas apresentadas.
+Também compete à Estrutura preservar materiais, equipamentos, espaços físicos e patrimônio
+institucional durante toda a execução das atividades. Caso equipes, participantes ou provas
+causem danos materiais, uso indevido de equipamentos, prejuízos estruturais ou
+comprometam recursos físicos da REUNI, a Comissão de Estrutura poderá aplicar sanções,
+incluindo retirada de pontos, desde que orientada por critérios previamente definidos,
+transparentes e institucionalmente comunicados.
+Essa prerrogativa existe para proteger patrimônio, reduzir irresponsabilidade e reforçar que a
+execução de atividades recreativas não está dissociada de responsabilidade material.
+10.8. DRAG RACE B.I.
+O Drag Race B.I. constitui uma das operações culturais, performáticas e integradoras mais
+relevantes da REUNI, ocupando posição estratégica dentro da programação da Recreação por
+seu potencial de mobilização, expressão artística, valorização cultural, engajamento externo e
+fortalecimento simbólico do evento. Trata-se de uma atividade que ultrapassa o caráter
+competitivo ou recreativo tradicional, funcionando também como vitrine cultural, espaço de
+performance, celebração estética e instrumento de ampliação de público.
+Por sua relevância, sua organização exige planejamento intercomissional rigoroso,
+envolvendo Recreação, Estrutura, Financeiro e Comunicação de forma coordenada.
+Cabe à Comissão de Estrutura solicitar e garantir previamente uma sala específica para
+funcionamento como camarim oficial das drags convidadas e participantes desafiantes.
+Preferencialmente, essa sala deverá possuir climatização adequada, considerando conforto
+térmico, tempo de preparação, preservação de maquiagem, figurino e bem-estar das
+participantes. O espaço deverá ser pensado não apenas como sala de apoio, mas como
+ambiente funcional de montagem.
+A Comissão de Recreação será responsável por esquematizar previamente como deseja que
+esse camarim seja montado, incluindo organização espacial, disposição de mesas, cadeiras,
+espelhos, pontos de energia, iluminação, suporte de montagem, insumos e demais
+necessidades operacionais. Caso a Recreação não forneça instruções claras dentro do prazo
+adequado, caberá à Estrutura apenas reservar o espaço, sem responsabilidade sobre montagem
+específica além da disponibilização básica da sala.
+As drags convidadas são, de fato, convidadas da comissão, e sua seleção, articulação,
+acompanhamento e recepção cabem diretamente à Comissão de Recreação. Isso significa que
+compete à Recreação definir quais drags participarão, priorizando, sempre que possível, a
+valorização da cena drag ufbiana e local, fortalecendo integração universitária e cena cultural
+próxima. No entanto, havendo disponibilidade financeira e capacidade logística, a comissão
+poderá contratar drags externas, desde que respeitando regras orçamentárias gerais e
+alinhamento com Financeiro.
+A Comissão de Recreação possui autonomia curatorial para definir:
+
+-- 79 of 99 --
+
+● Drags convidadas
+● Possíveis contratações
+● Valorização de cena local ou participação externa
+● Temáticas
+● Escolha musical
+● Formato de batalha
+● Comunicação estética da atividade
+● Estrutura do camarim
+● Alimentação e insumos destinados às participantes
+Toda contratação de serviço, artista ou estrutura vinculada ao Drag Race B.I. deverá seguir
+integralmente as mesmas regras orçamentárias aplicadas às demais operações da REUNI,
+incluindo levantamento prévio, análise de viabilidade, múltiplos orçamentos quando aplicável
+e validação financeira.
+Nesse processo, a Comissão de Financeiro não define curadoria, formato ou prioridades
+culturais, cabendo-lhe verificar disponibilidade de caixa, viabilidade econômica e execução
+financeira conforme regras institucionais.
+Historicamente, a Comunicação tem apresentado falhas na cobertura e valorização do Drag
+Race B.I., especialmente no Instagram e nas estratégias de mobilização pública. Considerando
+a relevância estratégica dessa atividade, essa deficiência torna-se inaceitável.
+Dessa forma, a Comissão de Comunicação passa a possuir responsabilidade ampliada e
+obrigatória na divulgação, valorização e cobertura do Drag Race B.I., devendo tratá-lo com
+nível de investimento comunicacional semelhante ao destinado à Festa, em forma de sanção
+pela conduta.
+A divulgação deverá ocorrer com antecedência suficiente para atrair público interno e externo,
+gerar expectativa real, ampliar circulação e consolidar o evento como operação cultural de
+destaque. Não basta publicação pontual ou cobertura superficial. A lógica deve ser de
+construção de desejo, valorização artística e fortalecimento de imagem.
+10.8.1. Comunicação deverá realizar:
+● No mínimo 4 posts específicos sobre o Drag Race B.I. antes e durante sua execução
+● Divulgação prévia estruturada, apresentando proposta, expectativa e atratividade do
+evento
+● Cobertura que valorize participantes e convidadas de forma estratégica
+● Um post exclusivo de fotos dedicado apenas às drags
+● Produção de um vlog editado, roteirizado e estruturado em formato de reality, com
+duração mínima de 10 minutos
+Esse vlog deverá incluir:
+● Montagem das drags
+● Bastidores
+● Preparação
+● Expectativas
+
+-- 80 of 99 --
+
+● Entrevistas
+● Apresentações
+● Cobertura performática
+● Registro coerente com a proposta cultural do projeto
+A publicação desse material deverá ocorrer até a terça-feira pós-REUNI, garantindo
+continuidade de valorização, registro institucional e fortalecimento de memória cultural.
+Essa exigência opera também como mecanismo corretivo diante de falhas históricas de
+cobertura, assegurando que o trabalho, estética e potência cultural das drags não sejam
+tratados como conteúdo secundário.
+O Drag Race B.I. deve ser pensado, executado e divulgado como uma das grandes operações
+culturais da REUNI. Sua força depende não apenas da performance em si, mas da qualidade
+de sua estrutura, curadoria, recepção, comunicação e memória.
+Portanto, todas as comissões envolvidas deverão compreender que essa atividade exige
+tratamento técnico, estético e organizacional proporcional à sua importância, garantindo que o
+Drag Race B.I. seja não apenas realizado, mas valorizado como experiência cultural central da
+REUNI.
+10.9. Operações históricas e dinâmicas tradicionais da REUNI
+Para além das grandes provas de gincana, do Drag Race B.I. e das atividades centrais de
+integração por equipes, compete à Subcomissão de Recreação a responsabilidade integral
+sobre a manutenção, atualização, revisão e operacionalização das atividades históricas e
+dinâmicas tradicionais da REUNI. Essas práticas possuem função muito maior do que
+tradição simbólica: elas estruturam memória institucional, fortalecem identidade coletiva,
+ampliam acolhimento e funcionam como instrumentos complementares de integração social,
+descontração e pertencimento.
+Entretanto, tradição não significa imutabilidade. Nenhuma atividade deve ser mantida apenas
+por costume. Toda dinâmica histórica precisa ser constantemente avaliada com base em
+segurança, viabilidade logística, engajamento, acessibilidade, custo, clareza operacional e
+capacidade real de acolhimento. Preserva-se aquilo que funciona; reformula-se aquilo que
+compromete.
+10.9.1. Caça-bandeira
+A Caça-bandeira consiste na distribuição estratégica de pistas, bandeiras, objetos, pessoas ou
+referências em espaços da UFBA para que equipes ou participantes cumpram objetivos
+definidos pela Recreação. Mais do que uma prova competitiva, trata-se de ferramenta de
+exploração territorial, familiarização espacial e apropriação simbólica da universidade.
+Quando bem planejada, essa atividade permite que calouros conheçam espaços, circulem,
+explorem e construam relação mais concreta com o ambiente universitário.
+Sua operacionalização exige planejamento rigoroso. A Recreação deverá mapear previamente
+os locais utilizados, avaliar riscos, impedir deslocamentos perigosos, vedar áreas inadequadas,
+testar rotas, prever tempo de execução e orientar monitores responsáveis. Não poderão existir
+
+-- 81 of 99 --
+
+pistas que incentivem invasão de espaços impróprios, dano patrimonial, corridas inseguras ou
+desorganização institucional.
+As pistas podem utilizar bandeiras físicas, QR codes, membros posicionados
+estrategicamente, desafios ou objetos específicos, desde que haja clareza metodológica e
+segurança. A complexidade deve ser equilibrada: desafios excessivamente difíceis geram
+frustração; simplicidade extrema reduz engajamento.
+10.9.2. Cupido
+O Cupido constitui uma das atividades mais tradicionais da REUNI, operando como
+ferramenta de interação social, descontração, humor e quebra de gelo entre calouros. Sua
+função não se limita a dimensões românticas, mas principalmente à criação de momentos
+leves de aproximação, sociabilidade e engajamento coletivo.
+Compete integralmente à Recreação gerir sua operação, incluindo escalas, horários, fluxo de
+participação, leitura de mensagens, manutenção da energia performática e preservação de seus
+materiais. Caso não haja voluntários suficientes, a própria comissão deverá assumir
+diretamente sua operacionalização.
+A atividade deve ocorrer em momentos estrategicamente pensados, como pré-provas,
+pós-provas, intervalos ou períodos de montagem, funcionando como mecanismo de
+acolhimento e entretenimento complementar sem comprometer o fluxo principal da
+programação.
+A leitura dos cupidos precisa ser previamente estruturada, definindo quem realizará, em qual
+tom, em quais horários e sob quais limites. É vedado o uso da atividade para constrangimento,
+exposição humilhante ou abordagem invasiva. O tom deve ser divertido, respeitoso e
+acolhedor.
+Também compete à Recreação preservar os materiais envolvidos, como asas, caixas e demais
+elementos cênicos, compreendendo-os como patrimônio institucional da REUNI.
+10.9.3. Grito de guerra
+O Grito de guerra é atividade estratégica de construção de identidade coletiva entre equipes,
+fortalecendo pertencimento, organização interna, criatividade e engajamento público. Sua
+função vai além da performance: trata-se de consolidar senso de grupo e estimular expressão
+coletiva.
+Cada equipe deverá idealizar, organizar e apresentar seu grito, seja por performance
+presencial, produção audiovisual ou outras metodologias aprovadas pela Recreação. A
+comissão deverá definir critérios objetivos de avaliação, limites de tempo, regras de
+segurança, linguagem adequada e critérios de pontuação.
+É fundamental garantir que os gritos promovam criatividade e mobilização sem reproduzir
+humilhação, ataques discriminatórios ou conteúdo ofensivo a outras equipes. A atividade deve
+fortalecer identidade, não hostilidade.
+10.9.4. Prova de caracterização
+
+-- 82 of 99 --
+
+A Prova de caracterização consiste na definição, por parte da Recreação, de uma temática
+específica para que equipes ou participantes construam figurinos, apresentações,
+performances ou composições visuais a partir dessa proposta.
+Sua potência reside na criatividade, adesão coletiva, humor e expressão visual, mas sua
+formulação precisa respeitar acessibilidade material e financeira. Temáticas excessivamente
+caras, complexas ou excludentes devem ser evitadas.
+A comissão deve priorizar propostas:
+● acessíveis;
+● criativas;
+● interpretativas;
+● financeiramente viáveis;
+● visualmente engajantes.
+Os critérios de avaliação podem envolver criatividade, coerência temática, participação
+coletiva, execução e engajamento, sempre evitando elitização ou exigências que afastem
+participantes.
+10.9.5. Consulta à comissão anterior e memória metodológica
+As atividades históricas da Recreação não devem depender exclusivamente de improvisação
+anual. Sempre que possível, recomenda-se consulta às comissões anteriores para compreensão
+de metodologias, acertos, falhas, limitações e sugestões operacionais.
+Essa consulta não significa reprodução automática, mas preservação de memória institucional.
+Conhecer o histórico permite evitar erros recorrentes, otimizar processos, adaptar tradições e
+fortalecer continuidade organizacional.
+A perda completa de memória metodológica compromete qualidade, gera retrabalho e
+aumenta risco de repetição de falhas já identificadas.
+11. Saúde, segurança e Inclusão
+A Subcomissão de Saúde, Segurança e Inclusão surge como resposta institucional direta às
+intercorrências observadas em edições anteriores da REUNI, especialmente diante da
+constatação de que eventos de grande porte, acolhimento massivo e intensa circulação de
+estudantes exigem não apenas organização estrutural, recreativa e programática, mas também
+protocolos formais de cuidado, prevenção, resposta emergencial e garantia de acessibilidade.
+Sua criação reconhece que acolher calouros não significa apenas informar, integrar ou
+entreter, mas também assegurar que todos os participantes estejam protegidos, assistidos e
+incluídos de forma concreta, responsável e operacional.
+Por se tratar de uma comissão nova, este manual estabelece inicialmente suas atribuições
+estruturantes com base nas demandas já identificadas, nas lacunas verificadas e nas
+necessidades institucionais mais urgentes. Após sua primeira atuação prática, recomenda-se
+revisão e atualização integral deste tópico a partir das experiências operacionais, falhas
+identificadas, acertos metodológicos e novas exigências institucionais.
+
+-- 83 of 99 --
+
+A lógica desta comissão deve partir de três eixos centrais e inseparáveis:
+● saúde e resposta emergencial;
+● segurança preventiva e protocolos;
+● inclusão e acessibilidade.
+Não se trata de comissão simbólica ou apenas consultiva. Sua função é operacional,
+preventiva, estratégica e interventiva.
+11.1. Protocolos de emergência, intercorrências médicas e resposta imediata
+A primeira e mais urgente responsabilidade desta subcomissão consiste na construção,
+definição, documentação e operacionalização de protocolos claros para situações de
+emergência, intercorrência ou necessidade de atendimento.
+A REUNI, por envolver grande circulação, atividades físicas, longos períodos de
+permanência, festas, gincanas, calor, ansiedade, alimentação irregular e possíveis
+vulnerabilidades individuais, está sujeita a situações como:
+● desmaios;
+● crises de ansiedade;
+● quedas;
+● ferimentos leves;
+● crises alérgicas;
+● episódios de hipoglicemia;
+● mal-estar físico;
+● exaustão;
+● intoxicação;
+● emergências mais graves.
+Dessa forma, esta comissão deverá produzir protocolos objetivos e previamente definidos
+sobre:
+● quem acionar;
+● onde encaminhar;
+● quais materiais utilizar;
+● quando chamar SAMU;
+● quando acionar bombeiros;
+● como isolar área;
+● como registrar ocorrência;
+● como comunicar lideranças.
+Improviso em situações emergenciais constitui falha grave. Todos os membros da comissão
+devem conhecer esses fluxos previamente, e recomenda-se treinamento básico interno antes
+do evento.
+Também deverá ser produzida uma lista centralizada com:
+● contatos de emergência;
+
+-- 84 of 99 --
+
+● hospitais próximos;
+● UPA de referência;
+● SAMU;
+● bombeiros;
+● brigadistas;
+● contatos institucionais da UFBA;
+● COSEG, quando necessário.
+11.2. Kits de primeiros socorros, materiais médicos e estrutura mínima de assistência
+Compete à comissão realizar levantamento técnico dos materiais mínimos necessários para
+atendimento básico e primeiros socorros, buscando construir uma estrutura funcional de
+cuidado.
+Isso inclui:
+● kits de primeiros socorros;
+● gaze;
+● bandagens;
+● curativos;
+● luvas descartáveis;
+● álcool;
+● soro fisiológico;
+● termômetro;
+● máscara;
+● materiais de apoio;
+● itens de suporte emergencial básico.
+A comissão não deverá improvisar essa estrutura no momento do evento. Será sua
+responsabilidade pesquisar, idealizar, listar, orçar e encaminhar ao Financeiro previsão
+detalhada desses custos.
+Além disso, recomenda-se fortemente a idealização de uma Sala de Assistência, espaço
+reservado para:
+● atendimento inicial;
+● acolhimento de pessoas com mal-estar;
+● estabilização temporária;
+● crises emocionais;
+● necessidades sensoriais;
+● descanso emergencial;
+● apoio inclusivo.
+Essa sala deve ser pensada em articulação com Estrutura, que poderá viabilizar espaço físico,
+enquanto o Financeiro avaliará viabilidade econômica. Caso não seja possível uma sala
+plenamente equipada, ainda assim deverá existir ao menos um ponto de apoio funcional
+previamente definido.
+11.3. Apoio estratégico à comissão de festa e exigências ampliadas de segurança
+
+-- 85 of 99 --
+
+A comissão deverá atuar de forma especialmente integrada à Subcomissão de Festa,
+considerando que festas possuem exigências ampliadas de risco, circulação, acidentes, uso de
+equipamentos, multidões e possíveis demandas institucionais extras.
+Diante das experiências passadas e da crescente formalização da UFBA quanto à realização
+de eventos, esta comissão deverá:
+● mapear exigências de segurança;
+● auxiliar na elaboração de planos preventivos;
+● manter contato com bombeiros ou brigadistas;
+● prever cenários de emergência;
+● dialogar com exigências da PROEXT, IHAC ou COSEG;
+● auxiliar na avaliação de necessidade de ambulância, posto médico ou suporte
+ampliado.
+Ainda que determinadas exigências não sejam obrigatórias em todos os casos, a comissão
+deve trabalhar sob lógica preventiva, não reativa.
+Sua função não é apenas responder acidentes, mas antecipar riscos.
+11.4. Inclusão, acessibilidade e articulação institucional
+A Subcomissão de Saúde, Segurança e Inclusão possui responsabilidade direta sobre a
+dimensão inclusiva da REUNI, devendo garantir que o evento não seja apenas acessível em
+discurso, mas operacionalmente preparado para acolher pessoas com deficiência, necessidades
+específicas ou barreiras de participação.
+Nesse sentido, torna-se fundamental a busca ativa por articulação com o NAPE (Núcleo de
+Apoio a Pessoas com Necessidades Educacionais Específicas) e demais estruturas
+institucionais pertinentes da UFBA.
+Essa articulação deve buscar:
+● orientação técnica;
+● acessibilidade estrutural;
+● inclusão comunicacional;
+● intérpretes de Libras, quando viável;
+● suporte a mobilidade;
+● atenção a barreiras físicas;
+● acolhimento sensorial;
+● adequações metodológicas.
+A comissão deverá pensar inclusão desde a inscrição até a execução, o que pode envolver:
+● identificação prévia de necessidades específicas em formulários;
+● planejamento de acessibilidade;
+● orientação às demais comissões;
+● mediação de demandas específicas.
+
+-- 86 of 99 --
+
+Inclusão não pode ser tratada como adaptação tardia ou improviso.
+11.5. Perfil técnico dos membros e diretrizes de composição
+Dada a natureza sensível, técnica e estratégica desta comissão, fica definido que sua
+composição deverá priorizar membros com formação, experiência ou trajetória vinculada à
+área de saúde.
+Preferencialmente:
+● estudantes do Bacharelado Interdisciplinar em Saúde;
+● estudantes ou formados em Enfermagem;
+● Medicina;
+● Saúde Coletiva;
+● áreas correlatas;
+● pessoas com cursos de primeiros socorros;
+● brigadistas;
+● experiências em cuidado ou atendimento.
+Essa prioridade deverá constar em edital, não como barreira absoluta à participação, mas
+como diretriz técnica institucional para assegurar maior capacidade operacional.
+A lógica dessa definição não é elitizar participação, mas reconhecer que determinadas
+responsabilidades exigem preparo mínimo, familiaridade técnica e capacidade de resposta
+qualificada.
+11.6. Implementação inicial, avaliação e atualização obrigatória
+Por se tratar de comissão inédita, este manual reconhece que sua primeira edição será também
+fase de teste, consolidação e aprendizado institucional.
+Assim, após sua primeira atuação, recomenda-se produção de relatório específico contendo:
+● demandas reais enfrentadas;
+● falhas;
+● materiais insuficientes;
+● protocolos eficazes;
+● limitações;
+● recomendações;
+● custos;
+● necessidades futuras.
+Esse relatório deverá servir como base para reformulação e amadurecimento deste manual.
+A criação desta comissão representa avanço institucional da REUNI no reconhecimento de
+que o acolhimento verdadeiro exige cuidado integral. Segurança, saúde e inclusão não são
+dimensões secundárias: são fundamentos estruturais de permanência, dignidade e
+responsabilidade organizacional. Quando plenamente operacionalizada, esta comissão poderá
+representar uma das maiores evoluções institucionais da história da REUNI.
+
+-- 87 of 99 --
+
+12. Secretaria Geral
+12. Secretaria Geral
+A Secretaria Geral constitui a principal instância de sustentação institucional, administrativa,
+documental, metodológica e estratégica da REUNI. Sua função não se resume à produção de
+atas, envio de e-mails ou organização de documentos: ela representa o núcleo responsável por
+assegurar a continuidade histórica, a estabilidade estrutural, a integridade institucional e a
+execução plena da REUNI enquanto projeto político, acadêmico, organizacional e
+extensionista.
+A REUNI não pode ser compreendida como um agrupamento informal de pessoas ou apenas
+como um evento anual dependente da disposição circunstancial de seus membros. A REUNI é
+um projeto institucional contínuo, uma construção coletiva histórica e uma estrutura
+organizacional que ultrapassa indivíduos, lideranças passageiras, interesses particulares ou
+gestões específicas. Assim, a Secretaria Geral existe para garantir precisamente essa
+permanência: proteger a REUNI de desorganização, descontinuidade, perda documental,
+falhas institucionais, improviso administrativo ou riscos burocráticos que possam
+comprometer sua realização.
+Enquanto as demais comissões concentram-se prioritariamente em áreas operacionais
+específicas — como estrutura, programação, recreação, comunicação, festa, monitoria ou
+financeiro —, a Secretaria Geral possui responsabilidade transversal sobre toda a organização.
+Seu compromisso fundamental é assegurar que todas essas áreas operem dentro das diretrizes
+do projeto, respeitem prazos, mantenham coerência institucional, cumpram exigências formais
+e não coloquem em risco a integridade maior da REUNI.
+A Secretaria Geral funciona, portanto, como guardiã da institucionalidade da REUNI.
+Seu papel não é necessariamente decidir por todas as comissões, tampouco substituir suas
+autonomias operacionais. Sua função central é observar, organizar, registrar, orientar, cobrar,
+acompanhar, articular, padronizar, preservar memória e garantir execução. Trata-se de uma
+posição de supervisão institucional e operacionalização sistêmica, cujo foco é assegurar que
+decisões tomadas sejam efetivamente executadas, que responsabilidades sejam cumpridas e
+que o projeto não seja descaracterizado ou ameaçado.
+Dessa forma, a Secretaria Geral deve atuar como observadora imparcial, articuladora
+organizacional e mantenedora do projeto. Ela não existe para concentrar poder político, mas
+para garantir funcionamento técnico, documental e institucional.
+12.1. Perfil técnico, competências e conhecimentos indispensáveis
+Dada sua centralidade, a Secretaria Geral exige perfil altamente qualificado. A pessoa ou
+equipe responsável deve possuir amplo conhecimento sobre:
+● funcionamento institucional da UFBA;
+● estruturas administrativas;
+● tramitação de documentos;
+● elaboração de projetos;
+
+-- 88 of 99 --
+
+● editais;
+● atas;
+● ofícios;
+● comunicação institucional;
+● memória histórica da REUNI;
+● prazos;
+● burocracias;
+● gestão organizacional.
+Conhecimento jurídico, administrativo ou consultivo constitui diferencial estratégico
+extremamente relevante, pois permite antecipar problemas, prevenir falhas e orientar a
+REUNI diante de exigências institucionais, normativas ou legais.
+A ausência de domínio institucional por parte da Secretaria Geral pode gerar:
+● perda de prazos;
+● falhas documentais;
+● problemas com editais;
+● desorganização de processos;
+● quebra de continuidade;
+● vulnerabilidade institucional.
+Portanto, esta função exige responsabilidade ampliada, rigor organizacional e visão sistêmica.
+12.2. Convocação do novo ciclo e manutenção da continuidade organizacional
+A primeira grande responsabilidade prática da Secretaria Geral inicia-se ao final de cada ciclo,
+quando se torna necessário garantir a transição organizacional para o ano seguinte.
+Compete à Secretaria:
+● convocar membros do ciclo anterior;
+● identificar quem deseja permanecer;
+● realizar filtragem organizacional;
+● estruturar grupo base do novo ciclo;
+● preservar continuidade;
+● impedir ruptura institucional;
+● garantir manutenção de memória coletiva.
+Essa etapa não deve ser improvisada. A REUNI depende da preservação de experiência
+acumulada, e a Secretaria Geral deve impedir que conhecimentos essenciais sejam perdidos
+entre edições.
+Após essa filtragem inicial, compete à Secretaria organizar:
+● grupo de continuidade;
+● grupo de lideranças;
+● espaços institucionais de organização;
+● primeira reunião geral.
+
+-- 89 of 99 --
+
+Historicamente, recomenda-se que a primeira reunião ocorra de forma online para facilitar
+mobilização inicial, alinhamento de expectativas e definição prévia de lideranças e rumos
+organizacionais.
+A escolha de lideranças não compete exclusivamente à Secretaria, mas é sua responsabilidade
+garantir que esse processo aconteça, seja organizado, comunicado e operacionalizado.
+12.3. Organização administrativa, atas, frequência e registro formal
+Toda organização de grande porte depende de memória documental confiável. Nesse sentido,
+compete à Secretaria Geral:
+● convocar reuniões;
+● organizar pautas;
+● registrar decisões;
+● elaborar atas;
+● colher frequências;
+● manter registros administrativos;
+● organizar documentos históricos.
+As atas não devem ser tratadas como formalidade secundária. Elas representam memória
+institucional, proteção organizacional, registro decisório e ferramenta de continuidade.
+A ausência de atas bem produzidas gera:
+● perda de memória;
+● retrabalho;
+● confusão;
+● disputas narrativas;
+● fragilidade institucional.
+A Secretaria também deve organizar listas de presença e frequência de membros, permitindo
+acompanhamento de engajamento, responsabilidade e histórico participativo.
+12.4. Padronização documental, identidade institucional e uso da marca REUNI
+Toda documentação institucional da REUNI deve possuir unidade formal, visual e
+metodológica. Compete à Secretaria Geral garantir que:
+● projetos; PROJETO REUNI (2026).docx
+● editais; EDITAL REUNI 2026
+● atas; Ata 21/02
+● ofícios; OFÍCIO N° 03/2026_REUNI
+● formulários; https://forms.gle/Ws9xjVdCgDLjGToF9
+● declarações;
+● comunicados oficiais: OFÍCIO CIRCULAR N° 01/2026_REUNI
+sigam padrão único de linguagem, formatação e identidade visual.
+
+-- 90 of 99 --
+
+A REUNI deve operar institucionalmente como projeto organizado, e não como conjunto
+disperso de documentos despadronizados.
+Nesse sentido, a Secretaria deverá assegurar:
+● uso correto da marca oficial;
+● padronização textual;
+● uniformidade documental;
+● coerência institucional.
+Essa medida fortalece credibilidade, profissionalismo, reconhecimento e preservação
+identitária.
+12.5. Reformulação anual do projeto e elaboração do edital da Comissão Organizadora
+Compete diretamente à Secretaria Geral atualizar anualmente o projeto oficial da REUNI,
+revisando:
+● datas;
+● metodologias;
+● eixos;
+● alterações operacionais;
+● necessidades institucionais;
+● adequações organizacionais.
+O projeto é o principal documento estruturante da REUNI e não pode permanecer estático ou
+desatualizado.
+Após atualização do projeto, cabe à Secretaria conduzir a elaboração, organização e
+publicação do edital de seleção de novos membros da Comissão Organizadora, garantindo:
+● coerência;
+● legalidade;
+● padronização;
+● clareza.
+Embora cada comissão seja responsável por seus próprios processos seletivos e entrevistas,
+compete à Secretaria garantir que esses processos existam, ocorram e estejam
+institucionalmente organizados.
+12.6. Organização das seleções e apoio logístico institucional
+A Secretaria Geral não realiza as entrevistas específicas de cada comissão, mas deve garantir
+operacionalmente que elas aconteçam de maneira organizada, viável e institucionalmente
+funcional.
+Isso inclui:
+● articulação de espaços;
+
+-- 91 of 99 --
+
+● comunicação;
+● cronogramas;
+● suporte documental;
+● orientação organizacional.
+Os processos podem ocorrer em espaços como:
+● PAF V (mediante solicitação prévia);
+● Vão do IHAC;
+● áreas institucionais adequadas;
+● Vão da Biblioteca (quando aplicável e permitido).
+Cabe à Secretaria garantir que reservas, comunicações e fluxos estejam organizados, ainda
+que a condução específica das entrevistas seja responsabilidade de cada comissão.
+12.7. E-mails, ofícios, contatos institucionais e gestão central de acessos
+A Secretaria Geral deve centralizar e preservar o acesso institucional da REUNI, incluindo:
+● contas oficiais;
+● e-mails;
+● documentos;
+● formulários;
+● contatos;
+● históricos.
+É inadmissível que informações centrais da REUNI permaneçam dispersas em contas pessoais
+de membros ou ex-membros.
+A institucionalidade da REUNI depende diretamente da posse coletiva, organizada e contínua
+de seus acessos e registros.
+Também compete à Secretaria:
+● redigir e revisar ofícios;
+● encaminhar comunicações formais;
+● manter contato com setores institucionais;
+● preservar listas estratégicas;
+● garantir histórico de interlocuções.
+12.8. Fiscalização da execução do manual e garantia de cumprimento institucional
+A Secretaria Geral possui ainda função central de acompanhamento macroestrutural: garantir
+que este manual seja efetivamente aplicado.
+Isso significa acompanhar se:
+● comissões estão executando funções;
+● processos estão ocorrendo;
+
+-- 92 of 99 --
+
+● documentos foram produzidos;
+● protocolos estão sendo respeitados;
+● exigências estão sendo cumpridas.
+A Secretaria não substitui comissões, mas também não pode ser passiva diante de falhas
+graves.
+Sua responsabilidade é garantir execução, cobrar operacionalização e proteger o projeto.
+12.9. Princípio fundamental da Secretaria Geral
+A Secretaria Geral deve compreender que sua responsabilidade não é apenas “ajudar a
+organizar”, mas garantir a permanência institucional da REUNI como projeto.
+Documentação, memória, continuidade, formalidade, padronização, supervisão, articulação e
+proteção institucional são suas bases.
+Em termos práticos: a Secretaria Geral deve entender toda a REUNI, acompanhar toda a
+REUNI, preservar toda a REUNI e garantir que todas as páginas deste manual sejam
+operacionalizadas.
+Caso a Secretaria falhe estruturalmente, a REUNI corre risco institucional.
+Por essa razão, a Secretaria Geral não é apenas uma comissão administrativa: ela é a espinha
+dorsal organizacional da REUNI.
+12.10. Senhas e contas
+Categoria Plataforma/Conta 	Login/Usuário 	Senha 	Status /
+Observações
+E-mail
+institucional
+Gmail principal 	reunibiufba@gmail.c
+om
+estudantesr
+eunidas
+Conta
+institucional
+ativa
+E-mail
+institucional
+Gmail secundário reunibiufba2@gmail.
+com
+estudantesr
+eunidas
+Conta
+institucional
+ativa; vinculada
+ao 	Twitter/X
+atual
+
+-- 93 of 99 --
+
+Rede social
+oficial
+Instagram 	@reunibi 	estudantesr
+eunidas
+Conta oficial
+ativa
+Rede social
+oficial
+Twitter/X 	@REUNIufba 	2025comun
+icacao
+Conta oficial
+ativa; criada em
+2025; vinculada
+ao 	e-mail
+institucional
+secundário; não
+vincular número
+de telefone
+Rede social
+oficial
+TikTok 	reunibi 	Login via
+Google
+Utilizar opção
+“login com o
+Google”;
+preservar acesso
+pelo 	e-mail
+institucional
+Rede social
+antiga
+Twitter/X 	@reunibiufba_ 	2024comun
+icacao
+Acesso
+comprometido;
+verificação em
+duas 	etapas
+vinculada 	a
+número
+desconhecido
+Rede social
+antiga
+Twitter/X 	@reunibiufba 	Desconheci
+da
+Conta perdida;
+senha e número
+de recuperação
+desconhecidos
+Rede social
+antiga
+Instagram 	@reunibiufba 	Desconheci
+da
+Conta perdida
+desde 	2018;
+senha
+indisponível
+
+-- 94 of 99 --
+
+12.11. Contatos
+Categoria 	Contato /
+Setor
+E-mail 	Cargo / Função
+institucional correta
+Direção 	do
+IHAC
+IHAC – Luiz
+Augusto
+Vasconcelos
+da Silva
+luis.vasconcelos@ufba.br 	/
+gugavascon@gmail.com
+Diretor do IHAC
+(2025–2029); principal
+autoridade
+institucional 	para
+validações políticas,
+apoio estratégico e
+decisões da unidade
+Vice-Direção
+do IHAC
+Milton Júlio de
+Carvalho Filho
+miltonjulio@ufba.br 	/
+miltonjuliofilho@gmail.com
+Vice-diretor do IHAC;
+apoio 	institucional,
+articulação
+administrativa 	e
+suporte estratégico
+Secretaria
+institucional
+IHAC
+Secretaria
+IHAC
+ihacsecretaria@ufba.br 	Secretaria oficial da
+unidade; tramitação
+documental,
+assinaturas, processos,
+reservas e interlocução
+administrativa
+Coordenação
+Acadêmica
+IHAC
+Bianca
+Rückert
+bianca.ruckert@ufba.br 	Coordenadora
+Acadêmica do IHAC;
+processos acadêmicos,
+monitoria institucional
+e apoio organizacional
+Coordenação
+administrativa
+complementar
+Coordena
+IHAC
+coordena.ihac@ufba.br 	Coordenação
+acadêmico-administrat
+iva; 	apoio
+organizacional 	e
+gestão acadêmica
+
+-- 95 of 99 --
+
+Gerência
+Administrativa
+e Financeira
+IHAC
+Gerência
+Administrativa
+IHAC
+gerenciaadmihac@ufba.br 	Gestão administrativa,
+financeira, compras,
+suporte operacional e
+infraestrutura
+Núcleo 	de
+Extensão
+IHAC
+NEXT 	/
+Extensão
+IHAC
+extensao.ihac@ufba.br 	/
+ihac.extensao@gmail.com
+Núcleo de Extensão,
+Comunicação 	e
+Cultura; 	extensão,
+projetos e articulação
+extensionista
+Comunicação
+IHAC
+Comunicação
+IHAC
+comunicacao.ihac@ufba.br 	Comunicação
+institucional,
+ListaTodos,
+divulgação e apoio
+midiático
+PROEXT 	UFBA 	–
+Pró-Reitoria
+de Extensão
+proext@ufba.br 	/
+prodext@ufba.br
+Pró-Reitoria 	de
+Extensão; 	editais,
+extensão, certificações
+e institucionalização
+COSEG 	Coordenação
+de Segurança
+UFBA
+coseg@ufba.br 	Segurança
+institucional; planos de
+segurança, 	festas,
+eventos e portarias
+CMP 	/
+PROAD
+Coordenação
+de Material e
+Patrimônio
+patrimonio.cmp@ufba.br 	Patrimônio, materiais,
+cessão, compras e
+controle patrimonial
+CMP 	/
+PROAD
+Elieide Orrico elieide.orrico@ufba.br 	Coordenadora 	de
+Material e Patrimônio
+(CMP/PROAD), não
+direção do IHAC;
+referência estratégica
+
+-- 96 of 99 --
+
+para patrimônio e
+materiais
+CMP 	/
+PROAD
+Ana 	Rita
+Martins
+Menezes
+anarmm@ufba.br 	Apoio Administrativo
+do 	Núcleo 	de
+Patrimônio/CMP
+CMP 	/
+PROAD
+Rafaele
+Bacelar
+Romero
+rafaele.romero@ufba.br 	Apoio Administrativo
+do 	Núcleo 	de
+Patrimônio/CMP
+CMP 	/
+PROAD
+Josiane Lobão jolobao@ufba.br 	Secretaria 	da
+Coordenação 	de
+Material e Patrimônio
+Pérola
+Cavalcante
+Dourado
+Pérola
+Dourado
+perola.dourado@ufba.br 	/
+peroladourado.ufba@gmail.co
+m
+Servidora
+técnica-administrativa
+vinculada ao IHAC;
+apoio institucional e
+articulação
+administrativa
+histórica
+PAF III 	PAF 3 Glauber
+Rocha
+paf3@ufba.br 	Gestão de espaços
+físicos
+PAF IV 	PAF 4 	paf4@ufba.br 	Gestão de espaços
+físicos
+PAF V 	PAF 5 	paf5@ufba.br 	Principal 	eixo
+operacional para salas,
+entrevistas e estrutura
+
+-- 97 of 99 --
+
+Teatro 	/
+Produção
+cultural
+Produção
+Teatro UFBA
+prod.teatro@ufba.br 	Produção 	cultural,
+espaços 	e apoio
+artístico
+GERE-L 	Lista
+institucional
+UFBA
+gere-l@listas.ufba.br 	Circulação ampliada
+de 	informações
+institucionais
+NRU 	Núcleo 	de
+Restaurante
+Universitário
+nru@ufba.br 	Alimentação
+institucional, 	apoio
+alimentar e logística
+NRU Nutrição Nutrição RU 	nru.nutricao@ufba.br 	Questões técnicas de
+alimentação e suporte
+nutricional
+A Secretaria Geral deve compreender que a estrutura institucional da UFBA, do IHAC e de
+seus setores administrativos não é estática. Em anos eleitorais, períodos de transição
+administrativa, mudanças de gestão, nomeações, remanejamentos internos ou reestruturações
+institucionais, diretores, vice-diretores, secretários, coordenadores, técnicos e demais agentes
+estratégicos podem deixar funções, assumir novos cargos ou serem substituídos. Por essa
+razão, a REUNI não pode depender exclusivamente de nomes específicos como base
+organizacional, devendo priorizar sempre a lógica institucional dos setores, cargos e funções.
+Em termos práticos, isso significa que mais importante do que memorizar apenas uma pessoa
+é compreender qual setor ela ocupa, Direção do IHAC, Secretaria do IHAC, Gerência
+Administrativa, Comunicação, PROEXT, COSEG, CMP/PROAD, PAFs, entre outros , pois a
+função institucional permanece mesmo quando o ocupante muda. Assim, a cada novo ciclo
+organizacional, antes da reformulação do projeto, lançamento de editais, envio de ofícios ou
+solicitações formais, a Secretaria Geral deve revisar, atualizar e confirmar todos os contatos
+estratégicos da REUNI, verificando nomes atuais, cargos, e-mails, telefones institucionais e
+responsáveis por cada setor. Essa verificação deve ocorrer preferencialmente por fontes
+oficiais, como sites institucionais, páginas da UFBA, páginas do IHAC, e-mails recentes,
+listas administrativas e assinaturas institucionais, evitando dependência de memória informal
+ou informações desatualizadas. Também se recomenda fortemente a manutenção de um banco
+institucional dinâmico de contatos, registrando setor, nome atual, função, meios de contato e
+data da última atualização, permitindo que a REUNI opere com precisão administrativa.
+Contatos antigos podem e devem ser preservados como memória histórica ou apoio
+consultivo, mas precisam ser identificados como pertencentes a gestões anteriores, evitando
+confusão entre autoridade atual e referência passada. A utilização de contatos desatualizados
+
+-- 98 of 99 --
+
+pode gerar atrasos, perda de assinaturas, falhas burocráticas, envio incorreto de documentação
+e prejuízos institucionais diretos. Dessa forma, fica estabelecido que a atualização permanente
+de cargos, funções e contatos institucionais é responsabilidade estratégica da Secretaria Geral,
+sendo sua função garantir que a memória histórica da REUNI seja preservada, mas que sua
+operação institucional esteja sempre alinhada à configuração administrativa vigente. Pessoas
+mudam, cargos mudam e gestões mudam; cabe à Secretaria assegurar que a REUNI
+permaneça operacional independentemente dessas transições.
+
+-- 99 of 99 --
+

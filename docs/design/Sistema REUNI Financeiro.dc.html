@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #FBF9F4; font-family: Archivo, system-ui, sans-serif; }
+  a { color: #1B5EA8; text-decoration: none; }
+  a:hover { color: #C1392B; }
+  input, select, button { font-family: inherit; }
+  @keyframes omFade { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+  @keyframes omBar { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+  @keyframes omVeil { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes omSheet { from { transform: translateX(34px); opacity: 0 } to { transform: none; opacity: 1 } }
+</style>
+</helmet>
+
+<sc-if value="{{ isLogin }}">
+<div style="min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: #1A1714; color: #FBF9F4; animation: omFade 320ms cubic-bezier(.22,1,.36,1) both">
+  <div style="padding: 48px; display: flex; flex-direction: column; justify-content: space-between">
+    <div style="display: flex; gap: 6px">
+      <span style="width: 34px; height: 8px; background: #E8A400"></span>
+      <span style="width: 34px; height: 8px; background: #1B5EA8"></span>
+      <span style="width: 34px; height: 8px; background: #C1392B"></span>
+      <span style="width: 34px; height: 8px; background: #1E7A4B"></span>
+    </div>
+    <div>
+      <div style="font-size: 64px; font-weight: 800; font-stretch: 125%; letter-spacing: -0.03em; line-height: 0.9">REUNI<br>Financeiro</div>
+      <p style="font-size: 17px; color: #C9C1B2; max-width: 26em; line-height: 1.5; margin: 20px 0 0">Caixa, demandas e prestação de contas da Recepção Unificada dos Bacharelados Interdisciplinares. Um registro por edição, auditável até o último comprovante.</p>
+    </div>
+    <div style="font-size: 13px; color: #9A9284">Edição 2027 · 16 anos · UFBA Salvador</div>
+  </div>
+  <div style="background: #FBF9F4; color: #1A1714; padding: 48px; display: flex; flex-direction: column; justify-content: center">
+    <div style="max-width: 380px; width: 100%">
+      <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #6B6459">Acesso da comissão</div>
+      <h1 style="font-size: 34px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 8px 0 24px; line-height: 1.05">Entrar no sistema</h1>
+      <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px">E-mail institucional</label>
+      <input type="email" value="vinicius@ufba.br" style="width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid #D5CDBC; border-radius: 4px; background: #FFF; font-size: 15px; color: #1A1714">
+      <label style="display: block; font-size: 12px; font-weight: 700; margin: 16px 0 6px">Senha</label>
+      <input type="password" value="reuni2027" style="width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid #D5CDBC; border-radius: 4px; background: #FFF; font-size: 15px; color: #1A1714">
+      <button onClick="{{ goDash }}" style="width: 100%; margin-top: 22px; padding: 14px; background: #1B5EA8; color: #FFF; border: 0; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer" style-hover="background: #123F73">Entrar</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin: 22px 0 14px">
+        <span style="height: 1px; background: #E2DCCF; flex: 1"></span>
+        <span style="font-size: 11px; color: #6B6459; font-weight: 600">OU</span>
+        <span style="height: 1px; background: #E2DCCF; flex: 1"></span>
+      </div>
+      <button onClick="{{ goDash }}" style="width: 100%; padding: 13px; background: #FFF; color: #1A1714; border: 1px solid #D5CDBC; border-radius: 4px; font-size: 14px; font-weight: 600; cursor: pointer" style-hover="border-color: #1A1714">Entrar com a conta Google da REUNI</button>
+      <p style="font-size: 12px; color: #6B6459; line-height: 1.5; margin: 24px 0 0">Cada membro entra com o próprio e-mail. O nível de acesso é definido pela subcomissão, e todo lançamento fica registrado com autor e horário.</p>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isApp }}" hint-placeholder-val="{{ true }}">
+<div style="min-height: 100vh; display: flex; background: #FBF9F4; color: #1A1714">
+
+  <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+  <aside style="width: 252px; flex: 0 0 252px; background: #1A1714; color: #FBF9F4; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh">
+    <div style="padding: 20px 18px 16px; border-bottom: 1px solid #302A24">
+      <div style="display: flex; gap: 4px; margin-bottom: 12px">
+        <span style="width: 18px; height: 5px; background: #E8A400"></span>
+        <span style="width: 18px; height: 5px; background: #1B5EA8"></span>
+        <span style="width: 18px; height: 5px; background: #C1392B"></span>
+        <span style="width: 18px; height: 5px; background: #1E7A4B"></span>
+      </div>
+      <div style="font-size: 21px; font-weight: 800; font-stretch: 125%; letter-spacing: -0.02em; line-height: 1">REUNI</div>
+      <div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9284; margin-top: 3px">Financeiro · 2027</div>
+    </div>
+
+    <nav style="flex: 1; padding: 8px 0 16px; overflow-y: auto">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 14px 14px 7px">
+        <span style="width: 9px; height: 9px; background: #1B5EA8"></span>
+        <span style="font-size: 9.5px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #9A9284">Caixa</span>
+        <span style="flex: 1; height: 1px; background: #302A24"></span>
+      </div>
+      <button onClick="{{ goDash }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #1B5EA8; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.dash }}; color: {{ navFg.dash }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">01</span><span>Visão geral</span></button>
+      <button onClick="{{ goCaixa }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #1B5EA8; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.caixa }}; color: {{ navFg.caixa }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">02</span><span>Gestão de caixa</span></button>
+      <button onClick="{{ goDemandas }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #1B5EA8; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.demandas }}; color: {{ navFg.demandas }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">03</span><span>Demandas por subcomissão</span></button>
+
+      <div style="display: flex; align-items: center; gap: 8px; padding: 18px 14px 7px">
+        <span style="width: 9px; height: 9px; background: #1E7A4B"></span>
+        <span style="font-size: 9.5px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #9A9284">Entrada</span>
+        <span style="flex: 1; height: 1px; background: #302A24"></span>
+      </div>
+      <button onClick="{{ goArrec }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #1E7A4B; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.arrec }}; color: {{ navFg.arrec }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">04</span><span>Arrecadação</span></button>
+      <button onClick="{{ goParc }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #1E7A4B; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.parc }}; color: {{ navFg.parc }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">05</span><span>Parcerias e patrocínios</span></button>
+      <button onClick="{{ goBazar }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #1E7A4B; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.bazar }}; color: {{ navFg.bazar }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">06</span><span>Bazar</span></button>
+
+      <div style="display: flex; align-items: center; gap: 8px; padding: 18px 14px 7px">
+        <span style="width: 9px; height: 9px; background: #E8A400"></span>
+        <span style="font-size: 9.5px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #9A9284">Registro</span>
+        <span style="flex: 1; height: 1px; background: #302A24"></span>
+      </div>
+      <button onClick="{{ goContas }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #E8A400; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.contas }}; color: {{ navFg.contas }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">07</span><span>Prestação de contas</span></button>
+      <button onClick="{{ goInv }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #E8A400; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.inv }}; color: {{ navFg.inv }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">08</span><span>Inventário</span></button>
+      <button onClick="{{ goAcessos }}" style="display: grid; grid-template-columns: 24px minmax(0, 1fr); align-items: center; gap: 6px; width: 100%; box-sizing: border-box; text-align: left; border: 0; border-left: 3px solid #E8A400; cursor: pointer; padding: 10px 14px; font-size: 13.5px; font-weight: 600; background: {{ navBg.acessos }}; color: {{ navFg.acessos }}"><span style="font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; opacity: 0.5">09</span><span>Acessos da comissão</span></button>
+    </nav>
+
+    <div style="padding: 14px 16px; border-top: 1px solid #302A24">
+      <div style="font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9A9284">Saldo em caixa</div>
+      <div style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; margin-top: 2px">{{ kpi.saldo }}</div>
+      <div style="display: flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 11px; color: #9A9284">
+        <span style="width: 6px; height: 6px; border-radius: 50%; background: #1E7A4B"></span>
+        <span>Sincronizado {{ kpi.hora }}</span>
+      </div>
+      <button onClick="{{ goLogin }}" style="margin-top: 12px; width: 100%; padding: 8px; background: transparent; color: #C9C1B2; border: 1px solid #302A24; border-radius: 3px; font-size: 12px; font-weight: 600; cursor: pointer" style-hover="border-color: #6B6459; color: #FBF9F4">Sair</button>
+    </div>
+  </aside>
+  </sc-if>
+
+  <div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column">
+
+    <sc-if value="{{ narrow }}">
+    <header style="position: sticky; top: 0; z-index: 5; background: #1A1714; color: #FBF9F4; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between">
+      <div>
+        <div style="font-size: 16px; font-weight: 800; font-stretch: 125%; line-height: 1">REUNI</div>
+        <div style="font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9284">Financeiro · 2027</div>
+      </div>
+      <div style="text-align: right">
+        <div style="font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9A9284">Saldo</div>
+        <div style="font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1">{{ kpi.saldo }}</div>
+      </div>
+    </header>
+    </sc-if>
+
+    <main style="flex: 1; padding: 26px 28px 40px; max-width: 1180px; width: 100%; box-sizing: border-box">
+
+      <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Visão geral</div>
+            <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Caixa da REUNI 2027</h1>
+          </div>
+          <sc-if value="{{ podeLancar }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ openSheet }}" style="padding: 11px 16px; background: #1B5EA8; color: #FFF; border: 0; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer" style-hover="background: #123F73">Novo lançamento</button>
+          </sc-if>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 20px">
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-top: 4px solid #1E7A4B; border-radius: 4px; padding: 16px; animation: omFade 360ms cubic-bezier(.22,1,.36,1) both">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Saldo em caixa</div>
+            <div style="font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 6px">{{ kpi.saldo }}</div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 6px">Entradas liquidadas menos saídas pagas</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-top: 4px solid #1B5EA8; border-radius: 4px; padding: 16px; animation: omFade 360ms cubic-bezier(.22,1,.36,1) 70ms both">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Arrecadado</div>
+            <div style="font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 6px">{{ kpi.arrecadado }}</div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 6px">Meta da edição R$ 15.450,00</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-top: 4px solid #E8A400; border-radius: 4px; padding: 16px; animation: omFade 360ms cubic-bezier(.22,1,.36,1) 140ms both">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Previsto a pagar</div>
+            <div style="font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 6px">{{ kpi.aPagar }}</div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 6px">28 demandas mapeadas, 9 subcomissões</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-top: 4px solid #C1392B; border-radius: 4px; padding: 16px; animation: omFade 360ms cubic-bezier(.22,1,.36,1) 210ms both">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Já pago</div>
+            <div style="font-size: 30px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 6px">{{ kpi.pago }}</div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 6px">{{ kpi.compTxt }}</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 16px">
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 18px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline">
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0">Progresso da arrecadação</h2>
+              <span style="font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: #1B5EA8">{{ kpi.pct }}</span>
+            </div>
+            <div style="height: 14px; background: #E7E2D6; border-radius: 2px; overflow: hidden; margin-top: 12px; display: flex">
+              <div style="background: #1B5EA8; width: {{ kpi.pctW }}"></div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid #E2DCCF">
+              <div>
+                <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">Arrecadado</div>
+                <div style="font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; color: #145635; margin-top: 2px">{{ kpi.arrecadado }}</div>
+              </div>
+              <div>
+                <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">Custo total</div>
+                <div style="font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; margin-top: 2px">R$ 15.450,00</div>
+              </div>
+              <div>
+                <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">Falta</div>
+                <div style="font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; color: #8E271C; margin-top: 2px">{{ kpi.falta }}</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 18px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px">
+              <h2 style="font-size: 16px; font-weight: 700; margin: 0">Demandas inegociáveis</h2>
+              <span style="font-size: 11px; font-weight: 700; background: #C1392B; color: #FFF; padding: 3px 8px; border-radius: 2px">4 pendentes</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px; background: #FBF9F4; border-left: 4px solid #C1392B">
+                <div><div style="font-size: 13.5px; font-weight: 600">Aluguel de som e microfones</div><div style="font-size: 11.5px; color: #6B6459">Estrutura · vence 18/09</div></div>
+                <div style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">R$ 1.400,00</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px; background: #FBF9F4; border-left: 4px solid #C1392B">
+                <div><div style="font-size: 13.5px; font-weight: 600">Kit de primeiros socorros extra</div><div style="font-size: 11.5px; color: #6B6459">Saúde, Segurança e Inclusão · vence 20/09</div></div>
+                <div style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">R$ 830,00</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px; background: #FBF9F4; border-left: 4px solid #E8A400">
+                <div><div style="font-size: 13.5px; font-weight: 600">Impressão de crachás dos monitores</div><div style="font-size: 11.5px; color: #6B6459">Comunicação · vence 25/09</div></div>
+                <div style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">R$ 1.160,00</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px; background: #FBF9F4; border-left: 4px solid #E8A400">
+                <div><div style="font-size: 13.5px; font-weight: 600">Água e gelo para os cinco dias</div><div style="font-size: 11.5px; color: #6B6459">Estrutura · vence 26/09</div></div>
+                <div style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap">R$ 620,00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; margin-top: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid #E2DCCF">
+            <h2 style="font-size: 16px; font-weight: 700; margin: 0">Últimas movimentações</h2>
+            <button onClick="{{ goCaixa }}" style="background: transparent; border: 0; color: #1B5EA8; font-size: 13px; font-weight: 700; cursor: pointer">Ver o caixa completo</button>
+          </div>
+          <div style="display: grid; grid-template-columns: 84px minmax(0, 1fr) 150px 120px; padding: 9px 18px; background: #FBF9F4; border-bottom: 1px solid #E2DCCF; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">
+            <span>Data</span><span>Descrição</span><span>Categoria</span><span style="text-align: right">Valor</span>
+          </div>
+          <sc-for list="{{ recentes }}" as="r" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 84px minmax(0, 1fr) 150px 120px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="color: #6B6459; font-variant-numeric: tabular-nums">{{ r.data }}</span>
+              <span style="font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ r.descricao }}</span>
+              <span style="color: #4A443B; font-size: 12.5px">{{ r.categoria }}</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: {{ r.cor }}">{{ r.valorFmt }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isCaixa }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Gestão de caixa</div>
+            <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Livro de lançamentos</h1>
+          </div>
+          <div style="display: flex; gap: 8px">
+            <sc-if value="{{ podeExportar }}" hint-placeholder-val="{{ true }}">
+            <button style="padding: 11px 14px; background: #FFF; color: #1A1714; border: 1px solid #D5CDBC; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer" style-hover="border-color: #1A1714">Exportar .xlsx</button>
+            </sc-if>
+            <sc-if value="{{ podeLancar }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ openSheet }}" style="padding: 11px 16px; background: #1B5EA8; color: #FFF; border: 0; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer" style-hover="background: #123F73">Novo lançamento</button>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; align-items: center">
+          <button onClick="{{ setTodos }}" style="padding: 8px 14px; border: 1px solid #D5CDBC; border-radius: 999px; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{ chip.todosBg }}; color: {{ chip.todosFg }}">Todos</button>
+          <button onClick="{{ setEntradas }}" style="padding: 8px 14px; border: 1px solid #D5CDBC; border-radius: 999px; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{ chip.entBg }}; color: {{ chip.entFg }}">Entradas</button>
+          <button onClick="{{ setSaidas }}" style="padding: 8px 14px; border: 1px solid #D5CDBC; border-radius: 999px; font-size: 12.5px; font-weight: 700; cursor: pointer; background: {{ chip.saiBg }}; color: {{ chip.saiFg }}">Saídas</button>
+          <span style="font-size: 12.5px; color: #6B6459; margin-left: 6px">{{ contagem }}</span>
+        </div>
+
+        <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; margin-top: 14px; overflow-x: auto">
+          <div style="min-width: 720px">
+            <div style="display: grid; grid-template-columns: 84px minmax(0, 1fr) 132px 118px 108px; padding: 10px 18px; background: #FBF9F4; border-bottom: 1px solid #E2DCCF; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">
+              <span>Data</span><span>Descrição</span><span>Categoria</span><span style="text-align: right">Valor</span><span style="text-align: right">Comprovante</span>
+            </div>
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="8">
+              <div style="display: grid; grid-template-columns: 84px minmax(0, 1fr) 132px 118px 108px; padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center; transition: background 900ms ease-out; background: {{ r.bg }}">
+                <span style="color: #6B6459; font-variant-numeric: tabular-nums">{{ r.data }}</span>
+                <span>
+                  <span style="font-weight: 600; display: block">{{ r.descricao }}</span>
+                  <span style="font-size: 11.5px; color: #6B6459">{{ r.autor }}</span>
+                </span>
+                <span style="color: #4A443B; font-size: 12.5px">{{ r.categoria }}</span>
+                <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; color: {{ r.cor }}">{{ r.valorFmt }}</span>
+                <span style="text-align: right; font-size: 11.5px; font-weight: 700; color: {{ r.compCor }}">{{ r.comp }}</span>
+              </div>
+            </sc-for>
+            <sc-if value="{{ vazio }}">
+              <div style="padding: 48px 18px; text-align: center">
+                <div style="font-size: 15px; font-weight: 700">Nenhum lançamento com esse filtro</div>
+                <p style="font-size: 13px; color: #6B6459; margin: 6px 0 0">O caixa da edição começa vazio. O primeiro registro costuma ser a transferência do saldo remanescente da edição anterior.</p>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px">
+          <div style="flex: 1 1 200px; background: #FFF; border: 1px solid #E2DCCF; border-left: 4px solid #1E7A4B; padding: 14px">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Total de entradas</div>
+            <div style="font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: #145635; margin-top: 4px">{{ kpi.arrecadado }}</div>
+          </div>
+          <div style="flex: 1 1 200px; background: #FFF; border: 1px solid #E2DCCF; border-left: 4px solid #C1392B; padding: 14px">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Total de saídas</div>
+            <div style="font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: #8E271C; margin-top: 4px">{{ kpi.pago }}</div>
+          </div>
+          <div style="flex: 1 1 200px; background: #1A1714; color: #FBF9F4; border: 1px solid #1A1714; padding: 14px">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9A9284">Saldo</div>
+            <div style="font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 4px">{{ kpi.saldo }}</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isDemandas }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Demandas</div>
+          <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Orçamento por subcomissão</h1>
+          <p style="font-size: 13.5px; color: #4A443B; margin: 8px 0 0; max-width: 56em">Cada subcomissão lança o que precisa e a prioridade. O Financeiro só decide o que entra no plano depois de ver o total — é o levantamento de demandas do capítulo 6 da Bíblia, feito na tela em vez da planilha.</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px">
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px 18px">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 22px; background: #C1392B"></span><span style="font-size: 16px; font-weight: 700">Estrutura</span><span style="font-size: 11.5px; color: #6B6459">8 itens · 3 inegociáveis</span></div>
+              <div style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443B">pago <strong style="color: #1A1714">R$ 2.185,50</strong> de <strong style="color: #1A1714">R$ 4.200,00</strong></div>
+            </div>
+            <div style="height: 8px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #C1392B; width: 52%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) both; transform-origin: left"></div></div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px 18px">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 22px; background: #1B5EA8"></span><span style="font-size: 16px; font-weight: 700">Programação</span><span style="font-size: 11.5px; color: #6B6459">5 itens · 1 inegociável</span></div>
+              <div style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443B">pago <strong style="color: #1A1714">R$ 0,00</strong> de <strong style="color: #1A1714">R$ 2.600,00</strong></div>
+            </div>
+            <div style="height: 8px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #1B5EA8; width: 0%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) both; transform-origin: left"></div></div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px 18px">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 22px; background: #E8A400"></span><span style="font-size: 16px; font-weight: 700">Festa</span><span style="font-size: 11.5px; color: #6B6459">4 itens · 2 inegociáveis</span></div>
+              <div style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443B">pago <strong style="color: #1A1714">R$ 0,00</strong> de <strong style="color: #1A1714">R$ 3.400,00</strong></div>
+            </div>
+            <div style="height: 8px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #E8A400; width: 0%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) both; transform-origin: left"></div></div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px 18px">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 22px; background: #1B5EA8"></span><span style="font-size: 16px; font-weight: 700">Comunicação</span><span style="font-size: 11.5px; color: #6B6459">6 itens · 2 inegociáveis</span></div>
+              <div style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443B">pago <strong style="color: #1A1714">R$ 640,00</strong> de <strong style="color: #1A1714">R$ 1.800,00</strong></div>
+            </div>
+            <div style="height: 8px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #1B5EA8; width: 36%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 60ms both; transform-origin: left"></div></div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px 18px">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 22px; background: #1E7A4B"></span><span style="font-size: 16px; font-weight: 700">Saúde, Segurança e Inclusão</span><span style="font-size: 11.5px; color: #6B6459">3 itens · 2 inegociáveis</span></div>
+              <div style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443B">pago <strong style="color: #1A1714">R$ 420,00</strong> de <strong style="color: #1A1714">R$ 1.250,00</strong></div>
+            </div>
+            <div style="height: 8px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #1E7A4B; width: 34%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 90ms both; transform-origin: left"></div></div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px 18px">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline">
+              <div style="display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 22px; background: #6B6459"></span><span style="font-size: 16px; font-weight: 700">Recreação, Credenciamento, Financeiro e Secretaria</span><span style="font-size: 11.5px; color: #6B6459">2 itens cada</span></div>
+              <div style="font-size: 13px; font-variant-numeric: tabular-nums; color: #4A443B">pago <strong style="color: #1A1714">R$ 0,00</strong> de <strong style="color: #1A1714">R$ 2.200,00</strong></div>
+            </div>
+            <div style="height: 8px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #6B6459; width: 0%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 120ms both; transform-origin: left"></div></div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 16px; align-items: center; justify-content: space-between; background: #1A1714; color: #FBF9F4; padding: 16px 18px; border-radius: 4px">
+          <div>
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9A9284">Total previsto da edição</div>
+            <div style="font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em">R$ 15.450,00</div>
+          </div>
+          <div style="font-size: 13px; color: #C9C1B2; max-width: 30em">Esse número é a meta de arrecadação. Toda demanda nova recalcula a meta, e a Arrecadação vê a diferença no mesmo instante.</div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isArrec }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Arrecadação</div>
+          <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Frentes de arrecadação</h1>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-top: 20px">
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 700">Rifa da REUNI</span><span style="font-size: 11px; font-weight: 700; color: #7A5300; background: #FCF0D2; padding: 3px 7px">Em curso</span></div>
+            <div style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 10px">R$ 1.240,00</div>
+            <div style="font-size: 12px; color: #6B6459">de R$ 4.000,00 · 31%</div>
+            <div style="height: 7px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #E8A400; width: 31%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) both; transform-origin: left"></div></div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 10px">248 bilhetes vendidos · 14 vendedores</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 700">Venda de camisas</span><span style="font-size: 11px; font-weight: 700; color: #7A5300; background: #FCF0D2; padding: 3px 7px">Em curso</span></div>
+            <div style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 10px">R$ 1.410,00</div>
+            <div style="font-size: 12px; color: #6B6459">de R$ 3.500,00 · 40%</div>
+            <div style="height: 7px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #1B5EA8; width: 40%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 60ms both; transform-origin: left"></div></div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 10px">47 camisas do lote 1 · falta lote 2</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 700">Bazar solidário</span><span style="font-size: 11px; font-weight: 700; color: #7A5300; background: #FCF0D2; padding: 3px 7px">Em curso</span></div>
+            <div style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 10px">R$ 860,00</div>
+            <div style="font-size: 12px; color: #6B6459">de R$ 3.000,00 · 29%</div>
+            <div style="height: 7px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #C1392B; width: 29%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 120ms both; transform-origin: left"></div></div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 10px">86 peças no acervo · 14 vendidas</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 700">Doações e vaquinha</span><span style="font-size: 11px; font-weight: 700; color: #7A5300; background: #FCF0D2; padding: 3px 7px">Em curso</span></div>
+            <div style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 10px">R$ 500,00</div>
+            <div style="font-size: 12px; color: #6B6459">de R$ 1.950,00 · 26%</div>
+            <div style="height: 7px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #1E7A4B; width: 26%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 180ms both; transform-origin: left"></div></div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 10px">1 doação de egresso · vaquinha aberta em 12/09</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 16px">
+            <div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 15px; font-weight: 700">Editais e fomento</span><span style="font-size: 11px; font-weight: 700; color: #FFF; background: #1E7A4B; padding: 3px 7px">Concluído</span></div>
+            <div style="font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 10px">R$ 3.000,00</div>
+            <div style="font-size: 12px; color: #6B6459">de R$ 3.000,00 · 100%</div>
+            <div style="height: 7px; background: #E7E2D6; margin-top: 10px; display: flex"><div style="background: #1E7A4B; width: 100%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) 240ms both; transform-origin: left"></div></div>
+            <div style="font-size: 11.5px; color: #4A443B; margin-top: 10px">Edital PROAE de apoio a eventos estudantis</div>
+          </div>
+          <div style="background: #FBF9F4; border: 1px dashed #C6BCA6; border-radius: 4px; padding: 16px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px">
+            <div style="font-size: 14px; font-weight: 700">Abrir nova frente</div>
+            <p style="font-size: 12px; color: #4A443B; margin: 0">Vaquinha, sorteio, feirinha, parceria com cantina.</p>
+            <button style="padding: 9px 14px; background: #1B5EA8; color: #FFF; border: 0; border-radius: 4px; font-size: 13px; font-weight: 700; cursor: pointer">Criar frente</button>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isParc }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Parcerias</div>
+          <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Patrocínios e apoios</h1>
+          <p style="font-size: 13.5px; color: #4A443B; margin: 8px 0 0; max-width: 56em">O que hoje vive no WhatsApp de uma pessoa só. Cada contato tem responsável, estágio e valor previsto, então a próxima comissão herda a rede em vez de começar do zero.</p>
+        </div>
+        <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; margin-top: 20px; overflow-x: auto">
+          <div style="min-width: 760px">
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 10px 18px; background: #FBF9F4; border-bottom: 1px solid #E2DCCF; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">
+              <span>Parceiro</span><span>Estágio</span><span>Contrapartida</span><span style="text-align: right">Valor</span><span style="text-align: right">Responsável</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Editora da UFBA</span>
+              <span><span style="font-size: 11px; font-weight: 700; color: #FFF; background: #1E7A4B; padding: 3px 7px">Fechado</span></span>
+              <span style="font-size: 12.5px; color: #4A443B">Logo no material e 40 livros para sorteio</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">R$ 1.500,00</span>
+              <span style="text-align: right; font-size: 12.5px; color: #4A443B">Financeiro</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">PROAE · edital de apoio</span>
+              <span><span style="font-size: 11px; font-weight: 700; color: #FFF; background: #1E7A4B; padding: 3px 7px">Fechado</span></span>
+              <span style="font-size: 12.5px; color: #4A443B">Repasse em duas parcelas</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">R$ 3.000,00</span>
+              <span style="text-align: right; font-size: 12.5px; color: #4A443B">Coordenação</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Livraria LDM</span>
+              <span><span style="font-size: 11px; font-weight: 700; color: #1A1714; background: #FCF0D2; padding: 3px 7px">Negociação</span></span>
+              <span style="font-size: 12.5px; color: #4A443B">Cota apoio + brindes na feirinha</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">R$ 1.200,00</span>
+              <span style="text-align: right; font-size: 12.5px; color: #4A443B">Financeiro</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Cafeteria Ponto Zero</span>
+              <span><span style="font-size: 11px; font-weight: 700; color: #1A1714; background: #E7E2D6; padding: 3px 7px">Contato feito</span></span>
+              <span style="font-size: 12.5px; color: #4A443B">Café dos convidados nos cinco dias</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">R$ 800,00</span>
+              <span style="text-align: right; font-size: 12.5px; color: #4A443B">Programação</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Copiadora do IHAC</span>
+              <span><span style="font-size: 11px; font-weight: 700; color: #1A1714; background: #E7E2D6; padding: 3px 7px">Prospecção</span></span>
+              <span style="font-size: 12.5px; color: #4A443B">Impressão de placas e crachás</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">R$ 400,00</span>
+              <span style="text-align: right; font-size: 12.5px; color: #4A443B">Comunicação</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.4fr) 128px minmax(0, 1fr) 116px 130px; padding: 12px 18px; font-size: 13.5px; align-items: center; opacity: 0.6">
+              <span style="font-weight: 600">Loja de EVA da Barroquinha</span>
+              <span><span style="font-size: 11px; font-weight: 700; color: #FFF; background: #8E271C; padding: 3px 7px">Recusado</span></span>
+              <span style="font-size: 12.5px; color: #4A443B">Sem verba para 2027 · retomar em maio</span>
+              <span style="text-align: right; font-weight: 700; font-variant-numeric: tabular-nums">—</span>
+              <span style="text-align: right; font-size: 12.5px; color: #4A443B">Estrutura</span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 14px">
+          <div style="flex: 1 1 200px; background: #FFF; border: 1px solid #E2DCCF; border-left: 4px solid #1E7A4B; padding: 14px">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Fechado</div>
+            <div style="font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: #145635; margin-top: 4px">R$ 4.500,00</div>
+          </div>
+          <div style="flex: 1 1 200px; background: #FFF; border: 1px solid #E2DCCF; border-left: 4px solid #E8A400; padding: 14px">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Em negociação</div>
+            <div style="font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; color: #7A5300; margin-top: 4px">R$ 2.400,00</div>
+          </div>
+          <div style="flex: 1 1 200px; background: #FFF; border: 1px solid #E2DCCF; border-left: 4px solid #6B6459; padding: 14px">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6459">Taxa de conversão</div>
+            <div style="font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; margin-top: 4px">2 de 6</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isBazar }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Bazar</div>
+          <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Acervo do bazar solidário</h1>
+        </div>
+        <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; margin-top: 20px; overflow-x: auto">
+          <div style="min-width: 700px">
+            <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) 140px 110px 120px minmax(0, 1fr); padding: 10px 18px; background: #FBF9F4; border-bottom: 1px solid #E2DCCF; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">
+              <span>Peça</span><span>Categoria</span><span style="text-align: right">Avaliado</span><span style="text-align: right">Status</span><span style="text-align: right">Comprador</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) 140px 110px 120px minmax(0, 1fr); padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Jaqueta jeans doada</span><span style="font-size: 12.5px; color: #4A443B">Roupa</span><span style="text-align: right; font-variant-numeric: tabular-nums; font-weight: 700">R$ 75,00</span><span style="text-align: right"><span style="font-size: 11px; font-weight: 700; color: #FFF; background: #1E7A4B; padding: 3px 7px">Vendido</span></span><span style="text-align: right; font-size: 12.5px; color: #4A443B">Marina S. · balcão Lívia</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) 140px 110px 120px minmax(0, 1fr); padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Lote de 12 livros de humanas</span><span style="font-size: 12.5px; color: #4A443B">Livro</span><span style="text-align: right; font-variant-numeric: tabular-nums; font-weight: 700">R$ 180,00</span><span style="text-align: right"><span style="font-size: 11px; font-weight: 700; color: #1A1714; background: #FCF0D2; padding: 3px 7px">À venda</span></span><span style="text-align: right; font-size: 12.5px; color: #4A443B">—</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) 140px 110px 120px minmax(0, 1fr); padding: 12px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Caixa de som portátil</span><span style="font-size: 12.5px; color: #4A443B">Eletrônico</span><span style="text-align: right; font-variant-numeric: tabular-nums; font-weight: 700">R$ 220,00</span><span style="text-align: right"><span style="font-size: 11px; font-weight: 700; color: #1A1714; background: #E7E2D6; padding: 3px 7px">Em avaliação</span></span><span style="text-align: right; font-size: 12.5px; color: #4A443B">—</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.3fr) 140px 110px 120px minmax(0, 1fr); padding: 12px 18px; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Kit de canecas serigrafadas</span><span style="font-size: 12.5px; color: #4A443B">Artesanato</span><span style="text-align: right; font-variant-numeric: tabular-nums; font-weight: 700">R$ 90,00</span><span style="text-align: right"><span style="font-size: 11px; font-weight: 700; color: #FFF; background: #1E7A4B; padding: 3px 7px">Vendido</span></span><span style="text-align: right; font-size: 12.5px; color: #4A443B">João M. · balcão Pedro</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isContas }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end; justify-content: space-between; border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div>
+            <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Prestação de contas</div>
+            <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Relatório da edição</h1>
+          </div>
+          <div style="display: flex; gap: 8px">
+            <button style="padding: 11px 14px; background: #FFF; border: 1px solid #D5CDBC; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer" style-hover="border-color: #1A1714">Planilha .xlsx</button>
+            <button style="padding: 11px 16px; background: #1A1714; color: #FBF9F4; border: 0; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer" style-hover="background: #302A24">Gerar PDF assinável</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px">
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 18px">
+            <h2 style="font-size: 15px; font-weight: 700; margin: 0 0 12px">Resumo do exercício</h2>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #F0EBE0; font-size: 13.5px"><span>Total arrecadado</span><strong style="font-variant-numeric: tabular-nums; color: #145635">R$ 7.010,00</strong></div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #F0EBE0; font-size: 13.5px"><span>Total pago</span><strong style="font-variant-numeric: tabular-nums; color: #8E271C">R$ 3.245,50</strong></div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #F0EBE0; font-size: 13.5px"><span>Saldo em caixa</span><strong style="font-variant-numeric: tabular-nums">R$ 3.764,50</strong></div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 13.5px"><span>Reserva para a próxima edição</span><strong style="font-variant-numeric: tabular-nums">R$ 1.000,00</strong></div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 18px">
+            <h2 style="font-size: 15px; font-weight: 700; margin: 0 0 12px">Comprovantes</h2>
+            <div style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; color: #145635">7</span><span style="font-size: 13.5px; color: #4A443B">de 9 lançamentos com comprovante anexado</span></div>
+            <div style="height: 8px; background: #E7E2D6; margin: 12px 0; display: flex"><div style="background: #1E7A4B; width: 78%; animation: omBar 900ms cubic-bezier(.22,1,.36,1) both; transform-origin: left"></div></div>
+            <div style="font-size: 12.5px; font-weight: 700; color: #8E271C; margin-bottom: 6px">Pendentes</div>
+            <div style="font-size: 12.5px; color: #4A443B; line-height: 1.6">04/09 · Material de ambientação — R$ 335,50<br>08/09 · Kit de primeiros socorros — R$ 420,00</div>
+          </div>
+        </div>
+
+        <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; margin-top: 16px; overflow-x: auto">
+          <div style="min-width: 640px">
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 10px 18px; background: #FBF9F4; border-bottom: 1px solid #E2DCCF; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">
+              <span>Subcomissão</span><span style="text-align: right">Previsto</span><span style="text-align: right">Pago</span><span style="text-align: right">Saldo</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; font-variant-numeric: tabular-nums">
+              <span style="font-weight: 600">Estrutura</span><span style="text-align: right">R$ 4.200,00</span><span style="text-align: right">R$ 2.185,50</span><span style="text-align: right; color: #8E271C">R$ 2.014,50</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; font-variant-numeric: tabular-nums">
+              <span style="font-weight: 600">Festa</span><span style="text-align: right">R$ 3.400,00</span><span style="text-align: right">R$ 0,00</span><span style="text-align: right; color: #8E271C">R$ 3.400,00</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; font-variant-numeric: tabular-nums">
+              <span style="font-weight: 600">Programação</span><span style="text-align: right">R$ 2.600,00</span><span style="text-align: right">R$ 0,00</span><span style="text-align: right; color: #8E271C">R$ 2.600,00</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; font-variant-numeric: tabular-nums">
+              <span style="font-weight: 600">Comunicação</span><span style="text-align: right">R$ 1.800,00</span><span style="text-align: right">R$ 640,00</span><span style="text-align: right; color: #8E271C">R$ 1.160,00</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; font-variant-numeric: tabular-nums">
+              <span style="font-weight: 600">Saúde, Segurança e Inclusão</span><span style="text-align: right">R$ 1.250,00</span><span style="text-align: right">R$ 420,00</span><span style="text-align: right; color: #8E271C">R$ 830,00</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; font-variant-numeric: tabular-nums">
+              <span style="font-weight: 600">Demais subcomissões</span><span style="text-align: right">R$ 2.200,00</span><span style="text-align: right">R$ 0,00</span><span style="text-align: right; color: #8E271C">R$ 2.200,00</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1fr) 130px 130px 130px; padding: 13px 18px; background: #1A1714; color: #FBF9F4; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums">
+              <span>Total</span><span style="text-align: right">R$ 15.450,00</span><span style="text-align: right">R$ 3.245,50</span><span style="text-align: right">R$ 12.204,50</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isInv }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Inventário</div>
+          <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Material guardado entre edições</h1>
+          <p style="font-size: 13.5px; color: #4A443B; margin: 8px 0 0; max-width: 56em">Cada item aqui é dinheiro que a próxima comissão não precisa gastar. O total economizado entra na abertura do plano financeiro da edição seguinte.</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 20px">
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px">
+            <div style="font-size: 14.5px; font-weight: 700">Painéis de ambientação</div>
+            <div style="font-size: 12px; color: #6B6459; margin-top: 2px">6 unidades · sala 204, IHAC</div>
+            <div style="font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; color: #145635; margin-top: 10px">R$ 720,00</div>
+            <div style="font-size: 11.5px; color: #4A443B">economizados em 2027</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px">
+            <div style="font-size: 14.5px; font-weight: 700">Extensões e adaptadores</div>
+            <div style="font-size: 12px; color: #6B6459; margin-top: 2px">14 unidades · armário da GERAF</div>
+            <div style="font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; color: #145635; margin-top: 10px">R$ 310,00</div>
+            <div style="font-size: 11.5px; color: #4A443B">economizados em 2027</div>
+          </div>
+          <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; padding: 15px">
+            <div style="font-size: 14.5px; font-weight: 700">Placas de sinalização</div>
+            <div style="font-size: 12px; color: #6B6459; margin-top: 2px">22 unidades · sala 204, IHAC</div>
+            <div style="font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; color: #145635; margin-top: 10px">R$ 480,00</div>
+            <div style="font-size: 11.5px; color: #4A443B">economizados em 2027</div>
+          </div>
+          <div style="background: #1A1714; color: #FBF9F4; border-radius: 4px; padding: 15px; display: flex; flex-direction: column; justify-content: center">
+            <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #9A9284">Total economizado</div>
+            <div style="font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; margin-top: 4px">R$ 1.510,00</div>
+            <div style="font-size: 11.5px; color: #C9C1B2; margin-top: 4px">42 itens em 3 locais</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isAcessos }}">
+      <div style="animation: omFade 300ms cubic-bezier(.22,1,.36,1) both">
+        <div style="border-bottom: 2px solid #1A1714; padding-bottom: 14px">
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Acessos</div>
+          <h1 style="font-size: 32px; font-weight: 800; font-stretch: 112%; letter-spacing: -0.02em; margin: 4px 0 0; line-height: 1">Quem pode fazer o quê</h1>
+          <p style="font-size: 13.5px; color: #4A443B; margin: 8px 0 0; max-width: 56em">Todas as nove subcomissões usam o sistema, mas só o Financeiro movimenta caixa. Sem níveis, um lançamento errado de terceiro derruba a confiança no saldo — e é o saldo que sustenta a prestação de contas.</p>
+        </div>
+        <div style="background: #FFF; border: 1px solid #E2DCCF; border-radius: 4px; margin-top: 20px; overflow-x: auto">
+          <div style="min-width: 700px">
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 10px 18px; background: #FBF9F4; border-bottom: 1px solid #E2DCCF; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6B6459">
+              <span>Permissão</span><span style="text-align: center">Tesouraria</span><span style="text-align: center">Coordenação</span><span style="text-align: center">Subcomissão</span><span style="text-align: center">Leitura</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Lançar entrada e saída no caixa</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #6B6459">Não</span><span style="text-align: center; color: #6B6459">Não</span><span style="text-align: center; color: #6B6459">Não</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Pedir demanda para a própria subcomissão</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #6B6459">Não</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Aprovar demanda e liberar pagamento</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #6B6459">Não</span><span style="text-align: center; color: #6B6459">Não</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Registrar venda de rifa, camisa ou bazar</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #6B6459">Não</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 11px 18px; border-bottom: 1px solid #F0EBE0; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Zerar dados da edição</span><span style="text-align: center; color: #6B6459">Não</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #6B6459">Não</span><span style="text-align: center; color: #6B6459">Não</span>
+            </div>
+            <div style="display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(4, minmax(0, 1fr)); padding: 11px 18px; font-size: 13.5px; align-items: center">
+              <span style="font-weight: 600">Ver relatório e exportar planilha</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span><span style="text-align: center; color: #1E7A4B; font-weight: 700">Sim</span>
+            </div>
+          </div>
+        </div>
+        <div style="background: #FCF0D2; border-left: 4px solid #E8A400; padding: 14px 16px; margin-top: 16px">
+          <div style="font-size: 13.5px; font-weight: 700">Você está vendo o sistema como {{ perfilNome }}</div>
+          <p style="font-size: 12.5px; color: #4A443B; margin: 4px 0 0">Troque o perfil no painel de ajustes para ver quais botões cada nível encontra na tela.</p>
+        </div>
+      </div>
+      </sc-if>
+
+    </main>
+
+    <sc-if value="{{ narrow }}">
+    <nav style="position: sticky; bottom: 0; background: #FFF; border-top: 1px solid #E2DCCF; display: flex; justify-content: space-around; padding: 8px 4px">
+      <button onClick="{{ goDash }}" style="border: 0; background: transparent; cursor: pointer; padding: 8px 10px; min-width: 60px; font-size: 11px; font-weight: 700; color: {{ tabFg.dash }}">Geral</button>
+      <button onClick="{{ goCaixa }}" style="border: 0; background: transparent; cursor: pointer; padding: 8px 10px; min-width: 60px; font-size: 11px; font-weight: 700; color: {{ tabFg.caixa }}">Caixa</button>
+      <button onClick="{{ goDemandas }}" style="border: 0; background: transparent; cursor: pointer; padding: 8px 10px; min-width: 60px; font-size: 11px; font-weight: 700; color: {{ tabFg.demandas }}">Demandas</button>
+      <button onClick="{{ goArrec }}" style="border: 0; background: transparent; cursor: pointer; padding: 8px 10px; min-width: 60px; font-size: 11px; font-weight: 700; color: {{ tabFg.arrec }}">Arrecadar</button>
+      <button onClick="{{ goContas }}" style="border: 0; background: transparent; cursor: pointer; padding: 8px 10px; min-width: 60px; font-size: 11px; font-weight: 700; color: {{ tabFg.contas }}">Contas</button>
+    </nav>
+    </sc-if>
+
+  </div>
+
+  <sc-if value="{{ sheetOpen }}">
+  <div style="position: fixed; inset: 0; background: rgba(26, 23, 20, 0.5); z-index: 20; display: flex; justify-content: flex-end; animation: omVeil 200ms ease-out both">
+    <div style="width: 420px; max-width: 100%; background: #FBF9F4; height: 100%; overflow-y: auto; padding: 24px; box-sizing: border-box; animation: omSheet 300ms cubic-bezier(.22,1,.36,1) both">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #1A1714; padding-bottom: 12px">
+        <div>
+          <div style="font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #6B6459">Gestão de caixa</div>
+          <h2 style="font-size: 24px; font-weight: 800; font-stretch: 112%; margin: 4px 0 0; line-height: 1">Novo lançamento</h2>
+        </div>
+        <button onClick="{{ closeSheet }}" style="background: transparent; border: 1px solid #D5CDBC; border-radius: 4px; width: 32px; height: 32px; font-size: 16px; cursor: pointer; color: #1A1714">×</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-top: 18px">
+        <button onClick="{{ formEntrada }}" style="flex: 1; padding: 12px; border: 1px solid #D5CDBC; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer; background: {{ form.entBg }}; color: {{ form.entFg }}">Entrada</button>
+        <button onClick="{{ formSaida }}" style="flex: 1; padding: 12px; border: 1px solid #D5CDBC; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer; background: {{ form.saiBg }}; color: {{ form.saiFg }}">Saída</button>
+      </div>
+
+      <label style="display: block; font-size: 12px; font-weight: 700; margin: 18px 0 6px">Descrição</label>
+      <input value="{{ form.desc }}" onChange="{{ onDesc }}" placeholder="Ex: Rifa da REUNI — 4ª rodada" style="width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid #D5CDBC; border-radius: 4px; background: #FFF; font-size: 14px; color: #1A1714">
+
+      <label style="display: block; font-size: 12px; font-weight: 700; margin: 14px 0 6px">Valor</label>
+      <input value="{{ form.valor }}" onChange="{{ onValor }}" placeholder="0,00" style="width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid #D5CDBC; border-radius: 4px; background: #FFF; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; color: #1A1714">
+
+      <label style="display: block; font-size: 12px; font-weight: 700; margin: 14px 0 6px">Subcomissão ou frente</label>
+      <select value="{{ form.cat }}" onChange="{{ onCat }}" style="width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid #D5CDBC; border-radius: 4px; background: #FFF; font-size: 14px; color: #1A1714">
+        <option>Estrutura</option>
+        <option>Festa</option>
+        <option>Comunicação</option>
+        <option>Saúde</option>
+        <option>Recreação</option>
+        <option>Credenciamento</option>
+        <option>Programação</option>
+        <option>Financeiro</option>
+        <option>Secretaria Geral</option>
+        <option>Arrecadação</option>
+        <option>Bazar</option>
+        <option>Doações</option>
+        <option>Editais</option>
+      </select>
+
+      <div style="background: #FFF; border: 1px dashed #C6BCA6; border-radius: 4px; padding: 16px; margin-top: 16px; text-align: center">
+        <div style="font-size: 13px; font-weight: 700">Anexar comprovante</div>
+        <p style="font-size: 12px; color: #4A443B; margin: 4px 0 10px">Foto do recibo, PIX ou nota. Lançamento sem comprovante entra como pendente na prestação de contas.</p>
+        <button style="padding: 9px 14px; background: #E7E2D6; border: 0; border-radius: 4px; font-size: 12.5px; font-weight: 700; cursor: pointer; color: #1A1714">Escolher arquivo</button>
+      </div>
+
+      <button onClick="{{ submitForm }}" style="width: 100%; margin-top: 18px; padding: 14px; background: #1B5EA8; color: #FFF; border: 0; border-radius: 4px; font-size: 15px; font-weight: 700; cursor: pointer" style-hover="background: #123F73">Registrar lançamento</button>
+      <p style="font-size: 11.5px; color: #6B6459; margin: 10px 0 0; text-align: center">Registrado como {{ perfilNome }} · {{ kpi.hora }}</p>
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</sc-if>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1280, &quot;height&quot;: 860}, &quot;perfil&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;Tesouraria&quot;, &quot;Coordenação&quot;, &quot;Subcomissão&quot;, &quot;Leitura&quot;], &quot;default&quot;: &quot;Tesouraria&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Protótipo&quot;}, &quot;dadosDeExemplo&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Protótipo&quot;}}">
+const SEED = [
+  { id: 9, data: '12/09', descricao: 'Aluguel de 200 cadeiras — Móveis Bahia', categoria: 'Estrutura', tipo: 'Saída', valor: 1850, comp: true, autor: 'Vinícius M. · Tesouraria' },
+  { id: 8, data: '12/09', descricao: 'Rifa da REUNI — 3ª rodada', categoria: 'Arrecadação', tipo: 'Entrada', valor: 1240, comp: true, autor: 'Lívia A. · 14 vendedores' },
+  { id: 7, data: '11/09', descricao: 'Bazar solidário — 14 peças vendidas', categoria: 'Bazar', tipo: 'Entrada', valor: 860, comp: true, autor: 'Pedro S. · balcão' },
+  { id: 6, data: '10/09', descricao: 'Impressão de crachás e placas', categoria: 'Comunicação', tipo: 'Saída', valor: 640, comp: true, autor: 'Vinícius M. · Tesouraria' },
+  { id: 5, data: '09/09', descricao: 'Doação de egresso do BI em Humanidades', categoria: 'Doações', tipo: 'Entrada', valor: 500, comp: true, autor: 'Coordenação' },
+  { id: 4, data: '08/09', descricao: 'Kit de primeiros socorros', categoria: 'Saúde', tipo: 'Saída', valor: 420, comp: false, autor: 'Ana C. · Saúde' },
+  { id: 3, data: '05/09', descricao: 'Edital PROAE — parcela 1 de 2', categoria: 'Editais', tipo: 'Entrada', valor: 3000, comp: true, autor: 'Coordenação' },
+  { id: 2, data: '04/09', descricao: 'Material de ambientação (EVA, fitas, papel metro)', categoria: 'Estrutura', tipo: 'Saída', valor: 335.5, comp: false, autor: 'Vinícius M. · Tesouraria' },
+  { id: 1, data: '02/09', descricao: 'Venda de camisas — lote 1', categoria: 'Arrecadação', tipo: 'Entrada', valor: 1410, comp: true, autor: 'Lívia A. · Comunicação' }
+];
+
+const money = n => 'R$ ' + Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+class Component extends DCLogic {
+  state = {
+    screen: 'dash',
+    wide: typeof window !== 'undefined' ? window.innerWidth >= 860 : true,
+    filtro: 'Todos',
+    sheet: false,
+    tipo: 'Entrada',
+    desc: '',
+    valor: '',
+    cat: 'Arrecadação',
+    tx: SEED
+  };
+
+  componentDidMount() {
+    this._onResize = () => {
+      const wide = window.innerWidth >= 860;
+      if (wide !== this.state.wide) this.setState({ wide });
+    };
+    window.addEventListener('resize', this._onResize);
+    this._onResize();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+  }
+
+  go = screen => () => this.setState({ screen, sheet: false });
+
+  submit = () => {
+    const v = parseFloat(String(this.state.valor).replace(/\./g, '').replace(',', '.'));
+    if (!this.state.desc.trim() || !v) { this.setState({ sheet: false }); return; }
+    const d = new Date();
+    const row = {
+      id: Date.now(),
+      data: String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0'),
+      descricao: this.state.desc,
+      categoria: this.state.cat,
+      tipo: this.state.tipo,
+      valor: v,
+      comp: false,
+      autor: this.perfil() + ' · agora'
+    };
+    this.setState({ tx: [row, ...this.state.tx], sheet: false, desc: '', valor: '' });
+  };
+
+  perfil() {
+    return this.props.perfil ?? 'Tesouraria';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const perfil = this.perfil();
+    const usarSeed = this.props.dadosDeExemplo ?? true;
+    const tx = usarSeed ? s.tx : [];
+
+    const entradas = tx.filter(t => t.tipo === 'Entrada').reduce((a, t) => a + t.valor, 0);
+    const saidas = tx.filter(t => t.tipo === 'Saída').reduce((a, t) => a + t.valor, 0);
+    const meta = 15450;
+    const pct = meta ? Math.min(100, (entradas / meta) * 100) : 0;
+
+    const map = t => ({
+      data: t.data,
+      descricao: t.descricao,
+      categoria: t.categoria,
+      autor: t.autor,
+      valorFmt: (t.tipo === 'Entrada' ? '+ ' : '− ') + money(t.valor),
+      cor: t.tipo === 'Entrada' ? '#145635' : '#8E271C',
+      comp: t.comp ? 'Anexado' : 'Pendente',
+      compCor: t.comp ? '#145635' : '#8E271C'
+    });
+
+    const filtrada = s.filtro === 'Todos' ? tx : tx.filter(t => (s.filtro === 'Entradas' ? t.tipo === 'Entrada' : t.tipo === 'Saída'));
+    const rows = filtrada.map(map);
+
+    const on = { background: '#1A1714', color: '#FBF9F4' };
+    const off = { background: '#FFF', color: '#1A1714' };
+    const chip = {
+      todosBg: s.filtro === 'Todos' ? on.background : off.background,
+      todosFg: s.filtro === 'Todos' ? on.color : off.color,
+      entBg: s.filtro === 'Entradas' ? '#145635' : off.background,
+      entFg: s.filtro === 'Entradas' ? '#FFF' : off.color,
+      saiBg: s.filtro === 'Saídas' ? '#8E271C' : off.background,
+      saiFg: s.filtro === 'Saídas' ? '#FFF' : off.color
+    };
+
+    const keys = ['dash', 'caixa', 'demandas', 'arrec', 'parc', 'bazar', 'contas', 'inv', 'acessos'];
+    const navBg = {}, navFg = {}, tabFg = {};
+    keys.forEach(k => {
+      const active = s.screen === k;
+      navBg[k] = active ? '#FBF9F4' : 'transparent';
+      navFg[k] = active ? '#1A1714' : '#C9C1B2';
+      tabFg[k] = active ? '#1B5EA8' : '#6B6459';
+    });
+
+    return {
+      isLogin: s.screen === 'login',
+      isApp: s.screen !== 'login',
+      wide: s.wide,
+      narrow: !s.wide,
+      isDash: s.screen === 'dash',
+      isCaixa: s.screen === 'caixa',
+      isDemandas: s.screen === 'demandas',
+      isArrec: s.screen === 'arrec',
+      isParc: s.screen === 'parc',
+      isBazar: s.screen === 'bazar',
+      isContas: s.screen === 'contas',
+      isInv: s.screen === 'inv',
+      isAcessos: s.screen === 'acessos',
+      navBg, navFg, tabFg, chip,
+      goLogin: this.go('login'),
+      goDash: this.go('dash'),
+      goCaixa: this.go('caixa'),
+      goDemandas: this.go('demandas'),
+      goArrec: this.go('arrec'),
+      goParc: this.go('parc'),
+      goBazar: this.go('bazar'),
+      goContas: this.go('contas'),
+      goInv: this.go('inv'),
+      goAcessos: this.go('acessos'),
+      rows,
+      recentes: rows.slice(0, 4),
+      vazio: rows.length === 0,
+      contagem: filtrada.length + (filtrada.length === 1 ? ' lançamento' : ' lançamentos'),
+      kpi: {
+        saldo: money(entradas - saidas),
+        arrecadado: money(entradas),
+        pago: money(saidas),
+        aPagar: money(meta - saidas),
+        falta: money(Math.max(0, meta - entradas)),
+        pct: pct.toFixed(1).replace('.', ',') + '%',
+        pctW: pct + '%',
+        compTxt: tx.filter(t => t.comp).length + ' de ' + tx.length + ' com comprovante',
+        hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      },
+      perfilNome: perfil,
+      podeLancar: perfil === 'Tesouraria',
+      podeExportar: perfil !== 'Leitura',
+      sheetOpen: s.sheet,
+      openSheet: () => this.setState({ sheet: true }),
+      closeSheet: () => this.setState({ sheet: false }),
+      setTodos: () => this.setState({ filtro: 'Todos' }),
+      setEntradas: () => this.setState({ filtro: 'Entradas' }),
+      setSaidas: () => this.setState({ filtro: 'Saídas' }),
+      formEntrada: () => this.setState({ tipo: 'Entrada' }),
+      formSaida: () => this.setState({ tipo: 'Saída' }),
+      form: {
+        desc: s.desc,
+        valor: s.valor,
+        cat: s.cat,
+        entBg: s.tipo === 'Entrada' ? '#145635' : '#FFF',
+        entFg: s.tipo === 'Entrada' ? '#FFF' : '#1A1714',
+        saiBg: s.tipo === 'Saída' ? '#8E271C' : '#FFF',
+        saiFg: s.tipo === 'Saída' ? '#FFF' : '#1A1714'
+      },
+      onDesc: e => this.setState({ desc: e.target.value }),
+      onValor: e => this.setState({ valor: e.target.value }),
+      onCat: e => this.setState({ cat: e.target.value }),
+      submitForm: this.submit
+    };
+  }
+}
+</script>
+</body>
+</html>

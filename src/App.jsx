@@ -21,17 +21,37 @@ import Inventario from './pages/Inventario'
 // Modals
 import ImportPlanilhaModal from './components/ImportPlanilhaModal'
 
-const NAV_ITEMS = [
-  { name: 'Visão Geral', path: '/', icon: LayoutDashboard },
-  { name: 'Planejamento de Demandas', path: '/demandas', icon: Building2 },
-  { name: 'Arrecadação Estratégica', path: '/arrecadacao', icon: HandCoins },
-  { name: 'Curadoria do Bazar', path: '/bazar', icon: ShoppingBag },
-  { name: 'Inventário de Materiais', path: '/inventario', icon: Boxes },
-  { name: 'Administração de Informações', path: '/informacoes', icon: StickyNote },
-  { name: 'Gestão de Caixa', path: '/caixa', icon: ArrowRightLeft },
+const NAV_SECTIONS = [
+  {
+    category: 'Caixa',
+    color: '#1B5EA8',
+    items: [
+      { num: '01', name: 'Visão geral', path: '/', icon: LayoutDashboard },
+      { num: '02', name: 'Gestão de caixa', path: '/caixa', icon: ArrowRightLeft },
+      { num: '03', name: 'Demandas por subcomissão', path: '/demandas', icon: Building2 },
+    ]
+  },
+  {
+    category: 'Entrada',
+    color: '#1E7A4B',
+    items: [
+      { num: '04', name: 'Arrecadação estratégica', path: '/arrecadacao', icon: HandCoins },
+      { num: '05', name: 'Curadoria do bazar', path: '/bazar', icon: ShoppingBag },
+    ]
+  },
+  {
+    category: 'Registro',
+    color: '#E8A400',
+    items: [
+      { num: '06', name: 'Inventário & Patrimônio', path: '/inventario', icon: Boxes },
+      { num: '07', name: 'Prestação & Informações', path: '/informacoes', icon: StickyNote },
+    ]
+  }
 ]
 
-function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, onOpenImport }) {
+const ALL_NAV_ITEMS = NAV_SECTIONS.flatMap(s => s.items)
+
+function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, onOpenImport }) {
   const location = useLocation()
   const financeData = useFinance()
   const { theme, toggleTheme, resetToDefault, clearAllData, lastSaved } = financeData
@@ -42,36 +62,38 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
   }
 
   return (
-    <div className="flex flex-col h-full bg-card glass-panel select-none overflow-hidden">
-      {/* Header da Sidebar */}
+    <div className="flex flex-col h-full bg-[#1A1714] text-[#FBF9F4] select-none overflow-hidden font-sans border-r border-[#302A24]">
+      {/* Header da Sidebar com as 4 Listras de Marca REUNI */}
       <div className={cn(
-        "border-b border-border/50 flex items-center transition-all duration-300 shrink-0",
+        "border-b border-[#302A24] flex items-center transition-all duration-300 shrink-0",
         isCollapsed ? "justify-center px-2 py-4" : "justify-between px-5 py-4"
       )}>
         {isCollapsed ? (
           <button
             onClick={toggleCollapse}
-            className="p-2.5 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl shadow-md transition-transform hover:scale-105 active:scale-95 flex items-center justify-center"
+            className="p-2.5 bg-[#1B5EA8] text-white hover:bg-[#123F73] rounded-xl shadow-md transition-transform hover:scale-105 active:scale-95 flex items-center justify-center"
             title="Expandir Menu"
           >
             <PanelLeftOpen className="w-5 h-5" />
           </button>
         ) : (
           <>
-            <div className="flex items-center gap-3 min-w-0 overflow-hidden">
-              <div className="p-2.5 bg-primary text-primary-foreground rounded-xl shadow-md shrink-0">
-                <Wallet className="w-5 h-5" />
+            <div className="flex flex-col min-w-0">
+              {/* Barra das 4 Cores REUNI */}
+              <div className="brand-stripe-bar mb-2">
+                <span className="w-4 h-1.5 rounded-xs inline-block"></span>
+                <span className="w-4 h-1.5 rounded-xs inline-block"></span>
+                <span className="w-4 h-1.5 rounded-xs inline-block"></span>
+                <span className="w-4 h-1.5 rounded-xs inline-block"></span>
               </div>
-              <div className="min-w-0">
-                <h1 className="text-base font-bold text-foreground tracking-tight leading-none truncate">REUNI Financeiro</h1>
-                <p className="text-[11px] text-muted-foreground mt-1 truncate">Gestão de Viabilidade</p>
-              </div>
+              <h1 className="text-xl font-extrabold tracking-tight leading-none text-[#FBF9F4]">REUNI</h1>
+              <p className="text-[10px] font-bold tracking-widest uppercase text-[#9A9284] mt-1">Financeiro · UFBA 2026</p>
             </div>
 
             {/* Botão para recolher no Desktop */}
             <button
               onClick={toggleCollapse}
-              className="hidden md:flex p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              className="hidden md:flex p-2 rounded-lg text-[#9A9284] hover:text-[#FBF9F4] hover:bg-[#302A24] transition-colors"
               title="Recolher Menu"
             >
               <PanelLeftClose className="w-5 h-5" />
@@ -80,7 +102,7 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
             {/* Botão fechar no Mobile */}
             <button
               onClick={closeMobile}
-              className="md:hidden p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              className="md:hidden p-2 rounded-lg text-[#9A9284] hover:text-[#FBF9F4] hover:bg-[#302A24] transition-colors"
               title="Fechar Menu"
             >
               <X className="w-5 h-5" />
@@ -89,62 +111,75 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
         )}
       </div>
 
-      {/* Navegação de Módulos */}
-      <nav className="flex-1 px-3 py-4 space-y-2 overflow-y-auto">
-        {!isCollapsed && (
-          <div className="px-3 pb-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-            Módulos Principais
+      {/* Navegação por Subcomissões e Seções */}
+      <nav className="flex-1 px-2 py-3 space-y-4 overflow-y-auto">
+        {NAV_SECTIONS.map((sec) => (
+          <div key={sec.category} className="space-y-1">
+            {!isCollapsed && (
+              <div className="flex items-center gap-2 px-3 py-1 text-[9.5px] font-extrabold tracking-widest uppercase text-[#9A9284]">
+                <span className="w-2 h-2 rounded-xs" style={{ background: sec.color }} />
+                <span>{sec.category}</span>
+                <span className="flex-1 h-px bg-[#302A24] ml-1" />
+              </div>
+            )}
+
+            {sec.items.map((item) => {
+              const isActive = location.pathname === item.path
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={closeMobile}
+                  title={isCollapsed ? item.name : undefined}
+                  className={cn(
+                    "flex items-center gap-2.5 transition-all duration-200 group relative",
+                    isCollapsed 
+                      ? "justify-center w-11 h-11 mx-auto rounded-xl" 
+                      : "px-3 py-2.5 rounded-lg text-xs font-bold border-l-3",
+                    isActive 
+                      ? "bg-[#2A241F] text-[#FBF9F4] shadow-xs" 
+                      : "text-[#C9C1B2] hover:bg-[#24201C] hover:text-[#FBF9F4]"
+                  )}
+                  style={{ borderLeftColor: isActive ? sec.color : 'transparent' }}
+                >
+                  {!isCollapsed && (
+                    <span className="text-[10px] font-extrabold tabular-nums opacity-50 text-[#9A9284]">
+                      {item.num}
+                    </span>
+                  )}
+
+                  <item.icon className={cn(
+                    "w-4 h-4 shrink-0 transition-transform group-hover:scale-110", 
+                    isActive ? "text-[#FBF9F4]" : "text-[#9A9284] group-hover:text-[#FBF9F4]"
+                  )} />
+                  
+                  {!isCollapsed && (
+                    <span className="truncate">{item.name}</span>
+                  )}
+
+                  {/* Tooltip no desktop quando recolhido */}
+                  {isCollapsed && (
+                    <span className="absolute left-full ml-3 px-3 py-1.5 bg-[#1A1714] text-[#FBF9F4] text-xs font-semibold rounded-lg shadow-xl border border-[#302A24] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50">
+                      {item.num} · {item.name}
+                    </span>
+                  )}
+                </Link>
+              )
+            })}
           </div>
-        )}
-
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={closeMobile}
-              title={isCollapsed ? item.name : undefined}
-              className={cn(
-                "flex items-center gap-3.5 transition-all duration-200 group relative",
-                isCollapsed 
-                  ? "justify-center w-11 h-11 mx-auto rounded-xl" 
-                  : "px-3 py-3 rounded-xl text-sm font-medium",
-                isActive 
-                  ? "bg-primary text-primary-foreground shadow-md font-semibold" + (!isCollapsed ? " translate-x-0.5" : "")
-                  : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"
-              )}
-            >
-              <item.icon className={cn(
-                "w-5 h-5 shrink-0 transition-transform group-hover:scale-110", 
-                isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
-              )} />
-              
-              {!isCollapsed && (
-                <span className="truncate">{item.name}</span>
-              )}
-
-              {/* Tooltip no desktop quando recolhido */}
-              {isCollapsed && (
-                <span className="absolute left-full ml-3 px-3 py-1.5 bg-popover text-popover-foreground text-xs font-semibold rounded-xl shadow-xl border border-border/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-200 z-50 translate-x-1 group-hover:translate-x-0">
-                  {item.name}
-                </span>
-              )}
-            </Link>
-          )
-        })}
+        ))}
       </nav>
 
       {/* Rodapé da Sidebar */}
-      <div className={cn("p-4 border-t border-border/50 space-y-2.5 shrink-0", isCollapsed ? "p-2 space-y-2" : "")}>
+      <div className={cn("p-4 border-t border-[#302A24] space-y-2.5 shrink-0 bg-[#141210]", isCollapsed ? "p-2 space-y-2" : "")}>
         {/* Status de Salvamento */}
         {!isCollapsed && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-400">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 animate-pulse shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-2 bg-[#1E7A4B]/10 border border-[#1E7A4B]/30 rounded-lg text-xs text-[#1E7A4B]">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#1E7A4B] animate-pulse shrink-0" />
             <div className="flex-1 min-w-0">
-              <span className="font-semibold block truncate">Salvamento Automático</span>
-              <span className="text-[10px] opacity-80 block truncate">
-                {lastSaved ? `Atualizado às ${lastSaved}` : 'Persistência ativa'}
+              <span className="font-semibold block truncate text-emerald-400">Sincronizado 24/7</span>
+              <span className="text-[10px] opacity-80 block truncate text-emerald-500/80">
+                {lastSaved ? `Atualizado às ${lastSaved}` : 'Persistência SSD de 1TB'}
               </span>
             </div>
           </div>
@@ -154,16 +189,16 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
         {!isCollapsed ? (
           <button
             onClick={handleExportExcel}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#1B5EA8] hover:bg-[#123F73] text-white rounded-lg text-xs font-bold transition-all shadow-xs"
             title="Exportar Relatório Geral em Excel (.xlsx)"
           >
             <Download className="w-4 h-4" />
-            <span>Exportar Relatório Excel (.xlsx)</span>
+            <span>Exportar Relatório .xlsx</span>
           </button>
         ) : (
           <button
             onClick={handleExportExcel}
-            className="w-11 h-11 mx-auto flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors"
+            className="w-11 h-11 mx-auto flex items-center justify-center bg-[#1B5EA8] hover:bg-[#123F73] text-white rounded-lg text-xs font-bold transition-colors"
             title="Exportar Relatório Excel (.xlsx)"
           >
             <Download className="w-4 h-4" />
@@ -177,11 +212,11 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
               if (closeMobile) closeMobile()
               onOpenImport()
             }}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-all shadow-xs"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#24201C] hover:bg-[#302A24] text-[#C9C1B2] border border-[#302A24] rounded-lg text-xs font-semibold transition-all"
             title="Importar Planilha CSV / Excel"
           >
-            <FileSpreadsheet className="w-4 h-4" />
-            <span>Importar Planilha CSV / Excel</span>
+            <FileSpreadsheet className="w-4 h-4 text-[#E8A400]" />
+            <span>Importar Planilha</span>
           </button>
         ) : (
           <button
@@ -189,7 +224,7 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
               if (closeMobile) closeMobile()
               onOpenImport()
             }}
-            className="w-11 h-11 mx-auto flex items-center justify-center bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-colors"
+            className="w-11 h-11 mx-auto flex items-center justify-center bg-[#24201C] hover:bg-[#302A24] text-[#E8A400] border border-[#302A24] rounded-lg text-xs font-semibold transition-colors"
             title="Importar Planilha CSV / Excel"
           >
             <FileSpreadsheet className="w-4 h-4" />
@@ -274,21 +309,24 @@ function Layout({ children }) {
   }, [location.pathname])
 
   // Obter nome da página ativa
-  const currentNavItem = NAV_ITEMS.find(item => item.path === location.pathname) || NAV_ITEMS[0]
+  const currentNavItem = ALL_NAV_ITEMS.find(item => item.path === location.pathname) || ALL_NAV_ITEMS[0]
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row antialiased relative">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row antialiased relative font-sans">
       
       {/* Header Superior Mobile (Celulares e Tablets Pequenos) */}
-      <header className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-card/90 backdrop-blur-md border-b border-border shadow-xs">
+      <header className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#1A1714] text-[#FBF9F4] border-b border-[#302A24] shadow-xs">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="p-2 bg-primary text-primary-foreground rounded-xl shadow-xs shrink-0">
-            <Wallet className="w-4 h-4" />
+          <div className="brand-stripe-bar flex gap-1">
+            <span className="w-2.5 h-4 rounded-xs inline-block"></span>
+            <span className="w-2.5 h-4 rounded-xs inline-block"></span>
+            <span className="w-2.5 h-4 rounded-xs inline-block"></span>
+            <span className="w-2.5 h-4 rounded-xs inline-block"></span>
           </div>
           <div className="min-w-0">
-            <h2 className="text-sm font-bold text-foreground leading-none truncate">REUNI Financeiro</h2>
-            <p className="text-[11px] text-primary font-semibold mt-0.5 truncate">
-              {currentNavItem.name}
+            <h2 className="text-sm font-extrabold text-[#FBF9F4] leading-none truncate">REUNI 2026</h2>
+            <p className="text-[10px] text-[#E8A400] font-bold mt-0.5 truncate">
+              {currentNavItem.num} · {currentNavItem.name}
             </p>
           </div>
         </div>
@@ -297,7 +335,7 @@ function Layout({ children }) {
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setIsImportModalOpen(true)}
-            className="p-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-xl transition-colors"
+            className="p-2 bg-[#24201C] text-[#E8A400] hover:bg-[#302A24] rounded-lg transition-colors border border-[#302A24]"
             title="Importar CSV/Excel"
           >
             <FileSpreadsheet className="w-4 h-4" />
@@ -305,15 +343,15 @@ function Layout({ children }) {
 
           <button
             onClick={toggleTheme}
-            className="p-2 text-muted-foreground hover:text-foreground rounded-xl hover:bg-secondary transition-colors"
+            className="p-2 text-[#9A9284] hover:text-[#FBF9F4] rounded-lg hover:bg-[#302A24] transition-colors"
             title="Tema"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-300" />}
           </button>
 
           <button
             onClick={() => setIsMobileOpen(!isMobileOpen)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-primary text-primary-foreground rounded-xl text-xs font-semibold shadow-xs transition-all active:scale-95 ml-1"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#1B5EA8] text-white rounded-lg text-xs font-bold shadow-xs transition-all active:scale-95 ml-1"
             aria-label="Abrir menu de módulos"
           >
             {isMobileOpen ? <X className="w-4 h-4" /> : <Layers className="w-4 h-4" />}
@@ -326,7 +364,7 @@ function Layout({ children }) {
       {isMobileOpen && (
         <div 
           onClick={() => setIsMobileOpen(false)}
-          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 md:hidden transition-opacity animate-in fade-in duration-200"
+          className="fixed inset-0 bg-black/70 backdrop-blur-xs z-40 md:hidden transition-opacity animate-in fade-in duration-200"
         />
       )}
 
@@ -339,21 +377,19 @@ function Layout({ children }) {
           isCollapsed={false} 
           toggleCollapse={() => {}} 
           closeMobile={() => setIsMobileOpen(false)}
-          navItems={NAV_ITEMS}
           onOpenImport={() => setIsImportModalOpen(true)}
         />
       </div>
 
       {/* Sidebar Desktop (Recolhível w-72 / w-20) */}
       <aside className={cn(
-        "hidden md:block sticky top-0 h-screen border-r border-border z-20 transition-all duration-300 shrink-0",
+        "hidden md:block sticky top-0 h-screen border-r border-[#302A24] z-20 transition-all duration-300 shrink-0",
         isCollapsed ? "w-20" : "w-72"
       )}>
         <SidebarContent 
           isCollapsed={isCollapsed} 
           toggleCollapse={() => setIsCollapsed(!isCollapsed)} 
           closeMobile={() => {}}
-          navItems={NAV_ITEMS}
           onOpenImport={() => setIsImportModalOpen(true)}
         />
       </aside>
