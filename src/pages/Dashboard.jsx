@@ -1,6 +1,7 @@
 import React from 'react'
-import { TrendingUp, TrendingDown, Target, Wallet, ArrowUpRight, ArrowDownRight, CheckCircle2, Clock } from 'lucide-react'
+import { TrendingUp, TrendingDown, Target, Wallet, ArrowUpRight, ArrowDownRight, CheckCircle2, Clock, Download } from 'lucide-react'
 import { useFinance } from '../context/FinanceContext'
+import { exportToExcel } from '../utils/excelExporter'
 
 function StatCard({ title, amount, icon: Icon, subtitle, type = 'normal' }) {
   const colorStyles = {
@@ -29,6 +30,7 @@ function StatCard({ title, amount, icon: Icon, subtitle, type = 'normal' }) {
 }
 
 export default function Dashboard() {
+  const financeData = useFinance()
   const { 
     totalArrecadado, 
     totalGastos, 
@@ -39,7 +41,7 @@ export default function Dashboard() {
     arrecadacoes,
     transacoes,
     updateDemandaStatus
-  } = useFinance()
+  } = financeData
 
   const demandasInegociaveis = demandas.filter(d => d.prioridade === 'Inegociável')
   const percentualMetaArrecadacao = metaArrecadacaoTotal > 0 
@@ -49,11 +51,21 @@ export default function Dashboard() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Header Banner */}
-      <div className="pb-4 border-b border-border/60">
-        <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Visão Geral Financeira</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Painel de Atualizações, Garantidor Material & Planejamento da REUNI 2026 (UFBA)
-        </p>
+      <div className="pb-4 border-b border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-3xl font-extrabold tracking-tight text-foreground">Visão Geral Financeira</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Painel de Atualizações, Garantidor Material & Planejamento da REUNI 2026 (UFBA)
+          </p>
+        </div>
+        <button
+          onClick={() => exportToExcel(financeData)}
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm shrink-0 active:scale-95"
+          title="Baixar Relatório Completo em Excel (.xlsx)"
+        >
+          <Download className="w-4 h-4" />
+          <span>Exportar Relatório Excel (.xlsx)</span>
+        </button>
       </div>
 
       {/* KPI Cards */}

@@ -3,10 +3,11 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react
 import { 
   LayoutDashboard, Wallet, ArrowRightLeft, HandCoins, Building2, 
   ShoppingBag, StickyNote, Sun, Moon, RotateCcw, CheckCircle2, 
-  Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes, FileSpreadsheet
+  Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes, FileSpreadsheet, Download
 } from 'lucide-react'
 import { FinanceProvider, useFinance } from './context/FinanceContext'
 import { cn } from './lib/utils'
+import { exportToExcel } from './utils/excelExporter'
 
 // Pages
 import Dashboard from './pages/Dashboard'
@@ -32,7 +33,13 @@ const NAV_ITEMS = [
 
 function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, onOpenImport }) {
   const location = useLocation()
-  const { theme, toggleTheme, resetToDefault, clearAllData, lastSaved } = useFinance()
+  const financeData = useFinance()
+  const { theme, toggleTheme, resetToDefault, clearAllData, lastSaved } = financeData
+
+  const handleExportExcel = () => {
+    if (closeMobile) closeMobile()
+    exportToExcel(financeData)
+  }
 
   return (
     <div className="flex flex-col h-full bg-card glass-panel select-none overflow-hidden">
@@ -129,7 +136,7 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
       </nav>
 
       {/* Rodapé da Sidebar */}
-      <div className={cn("p-4 border-t border-border/50 space-y-3 shrink-0", isCollapsed ? "p-2 space-y-2" : "")}>
+      <div className={cn("p-4 border-t border-border/50 space-y-2.5 shrink-0", isCollapsed ? "p-2 space-y-2" : "")}>
         {/* Status de Salvamento */}
         {!isCollapsed && (
           <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-400">
@@ -143,6 +150,26 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
           </div>
         )}
 
+        {/* Botão de Exportação para Excel (.xlsx) */}
+        {!isCollapsed ? (
+          <button
+            onClick={handleExportExcel}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm active:scale-98"
+            title="Exportar Relatório Geral em Excel (.xlsx)"
+          >
+            <Download className="w-4 h-4" />
+            <span>Exportar Relatório Excel (.xlsx)</span>
+          </button>
+        ) : (
+          <button
+            onClick={handleExportExcel}
+            className="w-11 h-11 mx-auto flex items-center justify-center bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors"
+            title="Exportar Relatório Excel (.xlsx)"
+          >
+            <Download className="w-4 h-4" />
+          </button>
+        )}
+
         {/* Botão de Importação de Planilha CSV / Excel */}
         {!isCollapsed ? (
           <button
@@ -150,7 +177,7 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, navItems, on
               if (closeMobile) closeMobile()
               onOpenImport()
             }}
-            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-all shadow-xs"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-xl text-xs font-semibold transition-all shadow-xs"
             title="Importar Planilha CSV / Excel"
           >
             <FileSpreadsheet className="w-4 h-4" />
