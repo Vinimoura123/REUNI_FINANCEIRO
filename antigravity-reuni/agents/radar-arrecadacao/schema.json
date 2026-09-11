@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RadarArrecadacaoOutput",
+  "description": "Sugestão do radar-arrecadacao para uma campanha (ver prompt.md). Nunca altera meta/atual — só recomenda.",
+  "type": "object",
+  "required": [
+    "arrecadacaoId",
+    "velocidade_bilhetes_dia",
+    "velocidade_reais_dia",
+    "projecao_data_conclusao",
+    "ritmo_necessario_reais_dia",
+    "percentual_do_ritmo",
+    "atrasada",
+    "sugestao_precificacao",
+    "copy_divulgacao",
+    "alertas"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "arrecadacaoId": { "type": "string" },
+    "velocidade_bilhetes_dia": { "type": "number", "minimum": 0 },
+    "velocidade_reais_dia": { "type": "number", "minimum": 0 },
+    "projecao_data_conclusao": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "null quando não há velocidade suficiente pra projetar — nunca uma data chutada."
+    },
+    "ritmo_necessario_reais_dia": {
+      "type": ["number", "null"],
+      "description": "null quando não há prazoFinal informado."
+    },
+    "percentual_do_ritmo": {
+      "type": ["number", "null"],
+      "description": "velocidade_reais_dia / ritmo_necessario_reais_dia, em %. null quando ritmo_necessario_reais_dia é null."
+    },
+    "atrasada": {
+      "description": "true/false quando calculável; 'indeterminado' quando falta prazoFinal ou vendas suficientes.",
+      "anyOf": [{ "type": "boolean" }, { "const": "indeterminado" }]
+    },
+    "sugestao_precificacao": { "type": "string" },
+    "copy_divulgacao": { "type": "string" },
+    "alertas": {
+      "type": "array",
+      "items": {
+        "enum": ["sem_vendas_registradas", "sem_prazo_definido", "preco_acima_ideal", "preco_reduz_adesao", "atrasada"]
+      }
+    }
+  }
+}
