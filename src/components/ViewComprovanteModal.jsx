@@ -1,6 +1,7 @@
 import React from 'react'
 import Modal from './Modal'
 import { FileText, Download, CheckCircle2 } from 'lucide-react'
+import { withAccessToken } from '../lib/auth'
 
 export default function ViewComprovanteModal({ isOpen, onClose, comprovanteUrl, titulo, detalhe }) {
   if (!comprovanteUrl) return null
@@ -19,9 +20,9 @@ export default function ViewComprovanteModal({ isOpen, onClose, comprovanteUrl, 
 
         <div className="border border-border/80 rounded-2xl bg-black/40 overflow-hidden flex items-center justify-center min-h-[250px] max-h-[450px] p-2">
           {comprovanteUrl.startsWith('data:image') || comprovanteUrl.startsWith('http') || comprovanteUrl.startsWith('blob:') ? (
-            <img 
-              src={comprovanteUrl} 
-              alt="Comprovante Anexado" 
+            <img
+              src={withAccessToken(comprovanteUrl)}
+              alt="Comprovante Anexado"
               className="max-h-[400px] w-auto object-contain rounded-xl shadow-lg"
             />
           ) : (
@@ -35,7 +36,7 @@ export default function ViewComprovanteModal({ isOpen, onClose, comprovanteUrl, 
 
         <div className="flex items-center justify-between pt-3 border-t border-border/50">
           <a
-            href={comprovanteUrl}
+            href={withAccessToken(comprovanteUrl)}
             download="comprovante_reuni.png"
             target="_blank"
             rel="noreferrer"
