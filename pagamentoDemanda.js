@@ -8,9 +8,29 @@
 // (nunca uma cópia do cliente) pelo mesmo motivo do dbOps.js: evitar
 // lost-update e checar duplicidade de verdade.
 
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { applyOps } from './dbOps.js'
 import { proporPlano } from './antigravity-reuni/agents/conciliador-demandas/logic.js'
 import { avaliarPlano, aplicarPlanoAprovado } from './antigravity-reuni/agents/avaliador-financeiro/logic.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const decisionsLogDir = path.join(__dirname, 'antigravity-reuni', 'memory', 'decisions-log')
+const decisionsLogPath = path.join(decisionsLogDir, 'log.jsonl')
+
+// Log estruturado de toda decisão do avaliador-financeiro (seção 02/07 do
+// blueprint) — um agente só, roda só server-side (nunca importado por
+// código de navegador), por isso pode usar fs diretamente aqui.
+function registrarDecisao(entrada) {
+  try {
+    if (!fs.existsSync(decisionsLogDir)) fs.mkdirSync(decisionsLogDir, { recursive: true })
+    fs.appendFileSync(decisionsLogPath, JSON.stringify(entrada) + '\n', 'utf-8')
+  } catch (err) {
+    // Nunca deixa uma falha de log quebrar o pagamento em si.
+    console.error('Erro ao gravar decisions-log:', err.message)
+  }
+}
 
 export function processarPagamentoDemanda(db, demandaId, extracao = null, orcamentosPorComissao = null) {
   const demanda = (db.demandas || []).find(d => d.id === demandaId)
@@ -32,6 +52,15 @@ export function processarPagamentoDemanda(db, demandaId, extracao = null, orcame
   }
 
   db.updatedAt = Date.now()
+
+  registrarDecisao({
+    timestamp: new Date().toISOString(),
+    subAgente: 'avaliador-financeiro',
+    demandaId,
+    plano,
+    avaliacao,
+    transacaoCriadaId: transacaoCriada?.id ?? null
+  })
 
   return { plano, avaliacao, transacaoCriada }
 }

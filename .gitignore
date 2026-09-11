@@ -15,6 +15,9 @@ dist-ssr
 # Saída de teste dos agentes (gerada por antigravity-reuni/agents/testar-*.mjs)
 data/reuni_db.staging.json
 
+# Log de decisões do avaliador-financeiro (dado de runtime, não código)
+antigravity-reuni/memory/decisions-log/log.jsonl
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
