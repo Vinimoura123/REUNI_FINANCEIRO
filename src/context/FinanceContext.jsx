@@ -111,8 +111,19 @@ export function FinanceProvider({ children }) {
     // Se a resposta do servidor for vazia ou updatedAt = 0 (ex: reinício do servidor no Render)
     if (!incomingTimestamp || incomingTimestamp === 0) {
       if (hasLocalData) {
-        // Se o cliente tem dados mas o servidor está limpo, sincroniza os dados locais para o servidor!
-        pushStateToServer()
+        // Se o cliente tem dados mas o servidor está limpo (reinício/perda de disco),
+        // restaura as 6 coleções a partir do que este cliente tem localmente.
+        // Isso é uma substituição total INTENCIONAL (recuperação de desastre),
+        // diferente do bug de sobrescrita cega: só acontece quando o servidor
+        // não tem nenhum dado (updatedAt 0), nunca por cima de dado real de outro cliente.
+        pushStateToServer({}, [
+          { op: 'replaceAll', colecao: 'demandas', items: demandasRef.current },
+          { op: 'replaceAll', colecao: 'arrecadacoes', items: arrecadacoesRef.current },
+          { op: 'replaceAll', colecao: 'transacoes', items: transacoesRef.current },
+          { op: 'replaceAll', colecao: 'bazarItems', items: bazarItemsRef.current },
+          { op: 'replaceAll', colecao: 'keepNotes', items: keepNotesRef.current },
+          { op: 'replaceAll', colecao: 'inventarioItems', items: inventarioItemsRef.current }
+        ])
       }
       return
     }
@@ -159,7 +170,7 @@ export function FinanceProvider({ children }) {
     setLastSaved(`Ao vivo: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`)
   }
 
-  const pushStateToServer = (updatedState = {}) => {
+  const pushStateToServer = (updatedState = {}, ops = []) => {
     const now = Date.now()
     lastServerTimestamp.current = now
 
@@ -190,21 +201,25 @@ export function FinanceProvider({ children }) {
     setLastSaved(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
 
     // 2. SINCRONIZAR COM O SERVIDOR BACKEND (SE DISPONÍVEL)
-    const fullPayload = {
-      demandas: nextDemandas,
-      arrecadacoes: nextArrecadacoes,
-      transacoes: nextTransacoes,
-      bazarItems: nextBazarItems,
-      keepNotes: nextKeepNotes,
-      inventarioItems: nextInventarioItems,
-      updatedAt: now
+    // Manda só a operação (criar/atualizar/apagar um item, ou substituir uma
+    // coleção inteira de propósito) — o servidor aplica em cima do estado
+    // ATUAL dele, nunca do array completo que este cliente lembra ter.
+    // Isso evita que um cliente com cópia local desatualizada apague
+    // silenciosamente o lançamento de outro (ver dbOps.js).
+    if (ops.length > 0) {
+      fetch('/api/mutate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ops })
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result && result.success && result.data) {
+            applyServerData(result.data)
+          }
+        })
+        .catch(() => {})
     }
-
-    fetch('/api/sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(fullPayload)
-    }).catch(() => {})
   }
 
   // Real-time EventSource connection & initial load & polling heartbeat
@@ -221,7 +236,16 @@ export function FinanceProvider({ children }) {
       .catch(() => {
         // Se a API /api/data der erro ou offline, garante a sincronização dos dados locais
         const hasLocal = demandasRef.current.length > 0 || transacoesRef.current.length > 0
-        if (hasLocal) pushStateToServer()
+        if (hasLocal) {
+          pushStateToServer({}, [
+            { op: 'replaceAll', colecao: 'demandas', items: demandasRef.current },
+            { op: 'replaceAll', colecao: 'arrecadacoes', items: arrecadacoesRef.current },
+            { op: 'replaceAll', colecao: 'transacoes', items: transacoesRef.current },
+            { op: 'replaceAll', colecao: 'bazarItems', items: bazarItemsRef.current },
+            { op: 'replaceAll', colecao: 'keepNotes', items: keepNotesRef.current },
+            { op: 'replaceAll', colecao: 'inventarioItems', items: inventarioItemsRef.current }
+          ])
+        }
       })
 
     let eventSource
@@ -276,7 +300,7 @@ export function FinanceProvider({ children }) {
     const updated = [newDemanda, ...demandasRef.current]
     demandasRef.current = updated
     setDemandas(updated)
-    pushStateToServer({ demandas: updated })
+    pushStateToServer({ demandas: updated }, [{ op: 'create', colecao: 'demandas', item: newDemanda }])
   }
 
   const updateDemanda = (id, updatedFields) => {
@@ -288,18 +312,19 @@ export function FinanceProvider({ children }) {
     })
     demandasRef.current = updated
     setDemandas(updated)
-    pushStateToServer({ demandas: updated })
+    pushStateToServer({ demandas: updated }, [{ op: 'update', colecao: 'demandas', id, fields: updatedFields }])
   }
 
   const deleteDemanda = (id) => {
     const updated = demandasRef.current.filter(d => d.id !== id)
     demandasRef.current = updated
     setDemandas(updated)
-    pushStateToServer({ demandas: updated })
+    pushStateToServer({ demandas: updated }, [{ op: 'delete', colecao: 'demandas', id }])
   }
 
   const updateDemandaStatus = (id, newStatus) => {
     let newTransacoes = transacoesRef.current
+    let novaTransacaoCriada = null
     const updated = demandasRef.current.map(d => {
       if (d.id === id) {
         if (newStatus === 'Pago' && d.status !== 'Pago') {
@@ -311,6 +336,7 @@ export function FinanceProvider({ children }) {
             valor: Number(d.custo),
             categoria: d.comissao
           }
+          novaTransacaoCriada = newTransacao
           newTransacoes = [newTransacao, ...transacoesRef.current]
           transacoesRef.current = newTransacoes
           setTransacoes(newTransacoes)
@@ -321,7 +347,9 @@ export function FinanceProvider({ children }) {
     })
     demandasRef.current = updated
     setDemandas(updated)
-    pushStateToServer({ demandas: updated, transacoes: newTransacoes })
+    const ops = [{ op: 'update', colecao: 'demandas', id, fields: { status: newStatus } }]
+    if (novaTransacaoCriada) ops.push({ op: 'create', colecao: 'transacoes', item: novaTransacaoCriada })
+    pushStateToServer({ demandas: updated, transacoes: newTransacoes }, ops)
   }
 
   // Arrecadacao handlers
@@ -335,28 +363,30 @@ export function FinanceProvider({ children }) {
     const updated = [newItem, ...arrecadacoesRef.current]
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
-    pushStateToServer({ arrecadacoes: updated })
+    pushStateToServer({ arrecadacoes: updated }, [{ op: 'create', colecao: 'arrecadacoes', item: newItem }])
   }
 
   const updateArrecadacao = (id, updatedFields) => {
+    const computedFields = {
+      ...updatedFields,
+      ...(updatedFields.meta !== undefined ? { meta: Number(updatedFields.meta) } : {}),
+      ...(updatedFields.atual !== undefined ? { atual: Number(updatedFields.atual) } : {})
+    }
     const updated = arrecadacoesRef.current.map(item => {
       if (item.id === id) {
-        return { 
-          ...item, 
-          ...updatedFields,
-          meta: updatedFields.meta !== undefined ? Number(updatedFields.meta) : item.meta,
-          atual: updatedFields.atual !== undefined ? Number(updatedFields.atual) : item.atual
-        }
+        return { ...item, ...computedFields }
       }
       return item
     })
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
-    pushStateToServer({ arrecadacoes: updated })
+    pushStateToServer({ arrecadacoes: updated }, [{ op: 'update', colecao: 'arrecadacoes', id, fields: computedFields }])
   }
 
   const updateArrecadacaoValor = (id, valorAdicional, descricaoTransacao, comprovanteUrl = null, dadosVenda = {}) => {
     let newTransacoes = transacoesRef.current
+    let arrecadacaoFieldsAtualizados = null
+    let transacaoCriada = null
     const updated = arrecadacoesRef.current.map(item => {
       if (item.id === id) {
         const novoAtual = Number(item.atual) + Number(valorAdicional)
@@ -389,6 +419,8 @@ export function FinanceProvider({ children }) {
         newTransacoes = [newTrans, ...transacoesRef.current]
         transacoesRef.current = newTransacoes
         setTransacoes(newTransacoes)
+        transacaoCriada = newTrans
+        arrecadacaoFieldsAtualizados = { atual: novoAtual, status: novoStatus }
 
         return { ...item, atual: novoAtual, status: novoStatus }
       }
@@ -396,14 +428,17 @@ export function FinanceProvider({ children }) {
     })
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
-    pushStateToServer({ arrecadacoes: updated, transacoes: newTransacoes })
+    pushStateToServer({ arrecadacoes: updated, transacoes: newTransacoes }, [
+      { op: 'update', colecao: 'arrecadacoes', id, fields: arrecadacaoFieldsAtualizados },
+      { op: 'create', colecao: 'transacoes', item: transacaoCriada }
+    ])
   }
 
   const deleteArrecadacao = (id) => {
     const updated = arrecadacoesRef.current.filter(a => a.id !== id)
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
-    pushStateToServer({ arrecadacoes: updated })
+    pushStateToServer({ arrecadacoes: updated }, [{ op: 'delete', colecao: 'arrecadacoes', id }])
   }
 
   // Bazar handlers
@@ -422,23 +457,23 @@ export function FinanceProvider({ children }) {
     const updated = [newItem, ...bazarItemsRef.current]
     bazarItemsRef.current = updated
     setBazarItems(updated)
-    pushStateToServer({ bazarItems: updated })
+    pushStateToServer({ bazarItems: updated }, [{ op: 'create', colecao: 'bazarItems', item: newItem }])
   }
 
   const updateBazarItem = (id, updatedFields) => {
+    const computedFields = {
+      ...updatedFields,
+      ...(updatedFields.precoAvaliado !== undefined ? { precoAvaliado: Number(updatedFields.precoAvaliado) } : {})
+    }
     const updated = bazarItemsRef.current.map(item => {
       if (item.id === id) {
-        return { 
-          ...item, 
-          ...updatedFields,
-          precoAvaliado: updatedFields.precoAvaliado !== undefined ? Number(updatedFields.precoAvaliado) : item.precoAvaliado
-        }
+        return { ...item, ...computedFields }
       }
       return item
     })
     bazarItemsRef.current = updated
     setBazarItems(updated)
-    pushStateToServer({ bazarItems: updated })
+    pushStateToServer({ bazarItems: updated }, [{ op: 'update', colecao: 'bazarItems', id, fields: computedFields }])
   }
 
   const updateBazarItemStatus = (id, newStatus) => {
@@ -450,7 +485,7 @@ export function FinanceProvider({ children }) {
     })
     bazarItemsRef.current = updated
     setBazarItems(updated)
-    pushStateToServer({ bazarItems: updated })
+    pushStateToServer({ bazarItems: updated }, [{ op: 'update', colecao: 'bazarItems', id, fields: { status: newStatus } }])
   }
 
   const venderBazarItem = (id, valorFinal, comprador, comprovanteUrl, vendedorBalcao = '', dataHoraVendaInput = '') => {
@@ -458,10 +493,12 @@ export function FinanceProvider({ children }) {
     const dataHoraVenda = dataHoraVendaInput || `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
 
     let newTransacoes = transacoesRef.current
+    let bazarItemFieldsAtualizados = null
+    let transacaoCriada = null
     const updated = bazarItemsRef.current.map(item => {
       if (item.id === id) {
         const valorVenda = Number(valorFinal) || Number(item.precoAvaliado)
-        
+
         let descTransacao = `Venda Bazar [${item.categoria}]: ${item.nome}`
         if (vendedorBalcao) descTransacao += ` (Vendedor no Balcão: ${vendedorBalcao})`
         if (comprador) descTransacao += ` (Comprador: ${comprador})`
@@ -481,10 +518,10 @@ export function FinanceProvider({ children }) {
         newTransacoes = [newTrans, ...transacoesRef.current]
         transacoesRef.current = newTransacoes
         setTransacoes(newTransacoes)
+        transacaoCriada = newTrans
 
-        return { 
-          ...item, 
-          status: 'Vendido', 
+        const camposAtualizados = {
+          status: 'Vendido',
           precoVendido: valorVenda,
           comprador: comprador,
           vendedorBalcao: vendedorBalcao,
@@ -492,19 +529,25 @@ export function FinanceProvider({ children }) {
           dataVenda: new Date().toISOString().split('T')[0],
           dataHoraVenda: dataHoraVenda
         }
+        bazarItemFieldsAtualizados = camposAtualizados
+
+        return { ...item, ...camposAtualizados }
       }
       return item
     })
     bazarItemsRef.current = updated
     setBazarItems(updated)
-    pushStateToServer({ bazarItems: updated, transacoes: newTransacoes })
+    pushStateToServer({ bazarItems: updated, transacoes: newTransacoes }, [
+      { op: 'update', colecao: 'bazarItems', id, fields: bazarItemFieldsAtualizados },
+      { op: 'create', colecao: 'transacoes', item: transacaoCriada }
+    ])
   }
 
   const deleteBazarItem = (id) => {
     const updated = bazarItemsRef.current.filter(b => b.id !== id)
     bazarItemsRef.current = updated
     setBazarItems(updated)
-    pushStateToServer({ bazarItems: updated })
+    pushStateToServer({ bazarItems: updated }, [{ op: 'delete', colecao: 'bazarItems', id }])
   }
 
   // Transacoes handlers
@@ -518,30 +561,30 @@ export function FinanceProvider({ children }) {
     const updated = [newTransacao, ...transacoesRef.current]
     transacoesRef.current = updated
     setTransacoes(updated)
-    pushStateToServer({ transacoes: updated })
+    pushStateToServer({ transacoes: updated }, [{ op: 'create', colecao: 'transacoes', item: newTransacao }])
   }
 
   const updateTransacao = (id, updatedFields) => {
+    const computedFields = {
+      ...updatedFields,
+      ...(updatedFields.valor !== undefined ? { valor: Number(updatedFields.valor) } : {})
+    }
     const updated = transacoesRef.current.map(t => {
       if (t.id === id) {
-        return { 
-          ...t, 
-          ...updatedFields,
-          valor: updatedFields.valor !== undefined ? Number(updatedFields.valor) : t.valor
-        }
+        return { ...t, ...computedFields }
       }
       return t
     })
     transacoesRef.current = updated
     setTransacoes(updated)
-    pushStateToServer({ transacoes: updated })
+    pushStateToServer({ transacoes: updated }, [{ op: 'update', colecao: 'transacoes', id, fields: computedFields }])
   }
 
   const deleteTransacao = (id) => {
     const updated = transacoesRef.current.filter(t => t.id !== id)
     transacoesRef.current = updated
     setTransacoes(updated)
-    pushStateToServer({ transacoes: updated })
+    pushStateToServer({ transacoes: updated }, [{ op: 'delete', colecao: 'transacoes', id }])
   }
 
   const attachComprovanteToTransacao = (transacaoId, comprovanteUrl) => {
@@ -553,7 +596,7 @@ export function FinanceProvider({ children }) {
     })
     transacoesRef.current = updated
     setTransacoes(updated)
-    pushStateToServer({ transacoes: updated })
+    pushStateToServer({ transacoes: updated }, [{ op: 'update', colecao: 'transacoes', id: transacaoId, fields: { comprovanteUrl } }])
   }
 
   // Keep / Informações Handlers
@@ -569,7 +612,7 @@ export function FinanceProvider({ children }) {
     const updated = [newNote, ...keepNotesRef.current]
     keepNotesRef.current = updated
     setKeepNotes(updated)
-    pushStateToServer({ keepNotes: updated })
+    pushStateToServer({ keepNotes: updated }, [{ op: 'create', colecao: 'keepNotes', item: newNote }])
   }
 
   const updateKeepNote = (id, updatedFields) => {
@@ -581,29 +624,34 @@ export function FinanceProvider({ children }) {
     })
     keepNotesRef.current = updated
     setKeepNotes(updated)
-    pushStateToServer({ keepNotes: updated })
+    pushStateToServer({ keepNotes: updated }, [{ op: 'update', colecao: 'keepNotes', id, fields: updatedFields }])
   }
 
   const togglePinKeepNote = (id) => {
+    let novoIsPinned = null
     const updated = keepNotesRef.current.map(note => {
       if (note.id === id) {
-        return { ...note, isPinned: !note.isPinned }
+        novoIsPinned = !note.isPinned
+        return { ...note, isPinned: novoIsPinned }
       }
       return note
     })
     keepNotesRef.current = updated
     setKeepNotes(updated)
-    pushStateToServer({ keepNotes: updated })
+    if (novoIsPinned !== null) {
+      pushStateToServer({ keepNotes: updated }, [{ op: 'update', colecao: 'keepNotes', id, fields: { isPinned: novoIsPinned } }])
+    }
   }
 
   const deleteKeepNote = (id) => {
     const updated = keepNotesRef.current.filter(note => note.id !== id)
     keepNotesRef.current = updated
     setKeepNotes(updated)
-    pushStateToServer({ keepNotes: updated })
+    pushStateToServer({ keepNotes: updated }, [{ op: 'delete', colecao: 'keepNotes', id }])
   }
 
   const toggleChecklistItem = (noteId, itemId) => {
+    let checklistItemsAtualizado = null
     const updated = keepNotesRef.current.map(note => {
       if (note.id === noteId && note.checklistItems) {
         const updatedItems = note.checklistItems.map(item => {
@@ -612,13 +660,16 @@ export function FinanceProvider({ children }) {
           }
           return item
         })
+        checklistItemsAtualizado = updatedItems
         return { ...note, checklistItems: updatedItems }
       }
       return note
     })
     keepNotesRef.current = updated
     setKeepNotes(updated)
-    pushStateToServer({ keepNotes: updated })
+    if (checklistItemsAtualizado !== null) {
+      pushStateToServer({ keepNotes: updated }, [{ op: 'update', colecao: 'keepNotes', id: noteId, fields: { checklistItems: checklistItemsAtualizado } }])
+    }
   }
 
   // Inventário Handlers
@@ -633,31 +684,31 @@ export function FinanceProvider({ children }) {
     const updated = [newItem, ...inventarioItemsRef.current]
     inventarioItemsRef.current = updated
     setInventarioItems(updated)
-    pushStateToServer({ inventarioItems: updated })
+    pushStateToServer({ inventarioItems: updated }, [{ op: 'create', colecao: 'inventarioItems', item: newItem }])
   }
 
   const updateInventarioItem = (id, updatedFields) => {
+    const computedFields = {
+      ...updatedFields,
+      ...(updatedFields.quantidade !== undefined ? { quantidade: Number(updatedFields.quantidade) } : {}),
+      ...(updatedFields.valorEstimadoEconomizado !== undefined ? { valorEstimadoEconomizado: Number(updatedFields.valorEstimadoEconomizado) } : {})
+    }
     const updated = inventarioItemsRef.current.map(item => {
       if (item.id === id) {
-        return { 
-          ...item, 
-          ...updatedFields,
-          quantidade: updatedFields.quantidade !== undefined ? Number(updatedFields.quantidade) : item.quantidade,
-          valorEstimadoEconomizado: updatedFields.valorEstimadoEconomizado !== undefined ? Number(updatedFields.valorEstimadoEconomizado) : item.valorEstimadoEconomizado
-        }
+        return { ...item, ...computedFields }
       }
       return item
     })
     inventarioItemsRef.current = updated
     setInventarioItems(updated)
-    pushStateToServer({ inventarioItems: updated })
+    pushStateToServer({ inventarioItems: updated }, [{ op: 'update', colecao: 'inventarioItems', id, fields: computedFields }])
   }
 
   const deleteInventarioItem = (id) => {
     const updated = inventarioItemsRef.current.filter(item => item.id !== id)
     inventarioItemsRef.current = updated
     setInventarioItems(updated)
-    pushStateToServer({ inventarioItems: updated })
+    pushStateToServer({ inventarioItems: updated }, [{ op: 'delete', colecao: 'inventarioItems', id }])
   }
 
   const resetToDefault = () => {
@@ -682,7 +733,14 @@ export function FinanceProvider({ children }) {
       bazarItems: [],
       keepNotes: [],
       inventarioItems: []
-    })
+    }, [
+      { op: 'replaceAll', colecao: 'demandas', items: [] },
+      { op: 'replaceAll', colecao: 'arrecadacoes', items: [] },
+      { op: 'replaceAll', colecao: 'transacoes', items: [] },
+      { op: 'replaceAll', colecao: 'bazarItems', items: [] },
+      { op: 'replaceAll', colecao: 'keepNotes', items: [] },
+      { op: 'replaceAll', colecao: 'inventarioItems', items: [] }
+    ])
   }
 
   const clearAllData = () => {
@@ -707,7 +765,14 @@ export function FinanceProvider({ children }) {
       bazarItems: [],
       keepNotes: [],
       inventarioItems: []
-    })
+    }, [
+      { op: 'replaceAll', colecao: 'demandas', items: [] },
+      { op: 'replaceAll', colecao: 'arrecadacoes', items: [] },
+      { op: 'replaceAll', colecao: 'transacoes', items: [] },
+      { op: 'replaceAll', colecao: 'bazarItems', items: [] },
+      { op: 'replaceAll', colecao: 'keepNotes', items: [] },
+      { op: 'replaceAll', colecao: 'inventarioItems', items: [] }
+    ])
   }
 
   // Calculated values
