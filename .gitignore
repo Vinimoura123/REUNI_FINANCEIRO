@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Banco real (dado financeiro de verdade, nunca deve ir pro repositório).
+# Se o arquivo não existir, server.js recria a estrutura vazia sozinho.
+data/reuni_db.json
+
 # Saída de teste dos agentes (gerada por antigravity-reuni/agents/testar-*.mjs)
 data/reuni_db.staging.json
 
