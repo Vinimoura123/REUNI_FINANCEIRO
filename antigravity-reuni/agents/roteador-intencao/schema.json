@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RoteadorIntencaoOutput",
+  "description": "Ver prompt.md — classificador por palavra-chave, não substitui interpretação de linguagem natural real.",
+  "type": "object",
+  "required": ["sub_agente", "confianca", "ambiguo", "motivo"],
+  "additionalProperties": false,
+  "properties": {
+    "sub_agente": {
+      "anyOf": [
+        { "enum": ["consulta-financeira", "conciliador-demandas", "radar-arrecadacao", "prestacao-contas", "radar-editais", "extrator-comprovante"] },
+        { "type": "null" }
+      ]
+    },
+    "confianca": { "type": "number", "minimum": 0, "maximum": 1 },
+    "ambiguo": { "type": "boolean" },
+    "motivo": { "type": "string" }
+  }
+}
