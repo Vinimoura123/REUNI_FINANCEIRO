@@ -11,7 +11,8 @@ export default function AddArrecadacaoModal({ isOpen, onClose, arrecadacaoToEdit
     meta: '',
     atual: '0',
     status: 'Ativo',
-    observacao: ''
+    observacao: '',
+    prazoFinal: ''
   })
 
   useEffect(() => {
@@ -22,7 +23,8 @@ export default function AddArrecadacaoModal({ isOpen, onClose, arrecadacaoToEdit
         meta: arrecadacaoToEdit.meta || '',
         atual: arrecadacaoToEdit.atual || '0',
         status: arrecadacaoToEdit.status || 'Ativo',
-        observacao: arrecadacaoToEdit.observacao || ''
+        observacao: arrecadacaoToEdit.observacao || '',
+        prazoFinal: arrecadacaoToEdit.prazoFinal || ''
       })
     } else {
       setFormData({
@@ -31,7 +33,8 @@ export default function AddArrecadacaoModal({ isOpen, onClose, arrecadacaoToEdit
         meta: '',
         atual: '0',
         status: 'Ativo',
-        observacao: ''
+        observacao: '',
+        prazoFinal: ''
       })
     }
   }, [arrecadacaoToEdit, isOpen])
@@ -113,6 +116,17 @@ export default function AddArrecadacaoModal({ isOpen, onClose, arrecadacaoToEdit
               className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Prazo Final da Campanha (opcional)</label>
+          <input
+            type="date"
+            value={formData.prazoFinal}
+            onChange={(e) => setFormData({ ...formData, prazoFinal: e.target.value })}
+            className="w-full px-3 py-2 border rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
+          />
+          <p className="text-xs text-muted-foreground mt-1">Usado pelo radar de arrecadação pra calcular se a campanha está no ritmo.</p>
         </div>
 
         <div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Plus, HandCoins, Trash2, CheckCircle2, TrendingUp, DollarSign, Info, Edit3 } from 'lucide-react'
+import { Plus, HandCoins, Trash2, CheckCircle2, TrendingUp, DollarSign, Info, Edit3, Calendar } from 'lucide-react'
 import { useFinance } from '../context/FinanceContext'
 import AddArrecadacaoModal from '../components/AddArrecadacaoModal'
 import AddValorModal from '../components/AddValorModal'
@@ -131,6 +131,12 @@ export default function Arrecadacao() {
                   {item.observacao && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                       {item.observacao}
+                    </p>
+                  )}
+                  {item.prazoFinal && (
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground mt-1.5">
+                      <Calendar className="w-3 h-3" />
+                      Prazo: {new Date(item.prazoFinal + 'T00:00:00').toLocaleDateString('pt-BR')}
                     </p>
                   )}
                 </div>
