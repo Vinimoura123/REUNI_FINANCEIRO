@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ConsultaFinanceiraOutput",
+  "description": "Resposta do consulta-financeira (ver prompt.md). Só leitura.",
+  "type": "object",
+  "required": ["query", "resultado", "resumo_em_texto"],
+  "additionalProperties": false,
+  "properties": {
+    "query": {
+      "type": ["string", "null"],
+      "description": "Qual função determinística + parâmetros foi usada. null quando a pergunta não é suportada."
+    },
+    "resultado": {
+      "description": "Formato varia pela pergunta (número, lista, objeto agrupado). null só quando query também é null."
+    },
+    "resumo_em_texto": { "type": "string" }
+  }
+}
