@@ -3,6 +3,7 @@ import { Plus, Search, Trash2, CheckCircle, Clock, AlertCircle, Filter, Edit3, F
 import { useFinance } from '../context/FinanceContext'
 import AddDemandaModal from '../components/AddDemandaModal'
 import ImportPlanilhaModal from '../components/ImportPlanilhaModal'
+import PagarDemandaModal from '../components/PagarDemandaModal'
 import { COMISSOES } from '../constants/comissoes'
 
 export default function Demandas() {
@@ -10,6 +11,7 @@ export default function Demandas() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [demandaToEdit, setDemandaToEdit] = useState(null)
+  const [demandaParaPagar, setDemandaParaPagar] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedComissao, setSelectedComissao] = useState('Todas')
   const [selectedPrioridade, setSelectedPrioridade] = useState('Todas')
@@ -172,7 +174,14 @@ export default function Demandas() {
                       </td>
                       <td className="px-6 py-4">
                         <button
-                          onClick={() => updateDemandaStatus(d.id, d.status === 'Pago' ? 'Pendente' : d.status === 'Pendente' ? 'Aprovado' : 'Pago')}
+                          onClick={() => {
+                            const proximoStatus = d.status === 'Pago' ? 'Pendente' : d.status === 'Pendente' ? 'Aprovado' : 'Pago'
+                            if (proximoStatus === 'Pago') {
+                              setDemandaParaPagar(d)
+                            } else {
+                              updateDemandaStatus(d.id, proximoStatus)
+                            }
+                          }}
                           className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 ${
                             d.status === 'Pago'
                               ? 'bg-green-500/10 text-green-600 dark:text-green-400'
@@ -228,6 +237,11 @@ export default function Demandas() {
         isOpen={isImportModalOpen}
         onClose={() => setIsImportModalOpen(false)}
         defaultModule="demandas"
+      />
+      <PagarDemandaModal
+        isOpen={!!demandaParaPagar}
+        onClose={() => setDemandaParaPagar(null)}
+        demanda={demandaParaPagar}
       />
     </div>
   )

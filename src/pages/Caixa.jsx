@@ -262,6 +262,7 @@ export default function Caixa() {
                         <button
                           onClick={() => setViewComprovante({
                             url: t.comprovanteUrl,
+                            id: t.id,
                             titulo: `Comprovante: ${t.descricao}`,
                             detalhe: `Data: ${t.data} | Categoria: ${t.categoria} | Valor: R$ ${Number(t.valor).toFixed(2)}`
                           })}
@@ -352,7 +353,7 @@ export default function Caixa() {
 
                     {/* Image Preview */}
                     <div className="mb-3 rounded-xl overflow-hidden border border-border/80 bg-black/40 h-44 flex items-center justify-center relative group">
-                      {item.comprovanteUrl.startsWith('data:image') || item.comprovanteUrl.startsWith('http') || item.comprovanteUrl.startsWith('blob:') ? (
+                      {item.comprovanteUrl.startsWith('data:image') || item.comprovanteUrl.startsWith('http') || item.comprovanteUrl.startsWith('blob:') || item.comprovanteUrl.startsWith('/api/documents/') ? (
                         <img src={withAccessToken(item.comprovanteUrl)} alt={item.descricao} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <FileText className="w-12 h-12 text-primary opacity-60" />
@@ -361,6 +362,7 @@ export default function Caixa() {
                       <button
                         onClick={() => setViewComprovante({
                           url: item.comprovanteUrl,
+                          id: item.id,
                           titulo: `Comprovante: ${item.descricao}`,
                           detalhe: `Data: ${item.data} | Categoria: ${item.categoria} | Valor: R$ ${Number(item.valor).toFixed(2)}`
                         })}
@@ -381,6 +383,7 @@ export default function Caixa() {
                     <button
                       onClick={() => setViewComprovante({
                         url: item.comprovanteUrl,
+                        id: item.id,
                         titulo: `Comprovante: ${item.descricao}`,
                         detalhe: `Data: ${item.data} | Categoria: ${item.categoria} | Valor: R$ ${Number(item.valor).toFixed(2)}`
                       })}
@@ -407,12 +410,14 @@ export default function Caixa() {
       />
       <UploadComprovanteModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} />
       
-      <ViewComprovanteModal 
-        isOpen={!!viewComprovante} 
-        onClose={() => setViewComprovante(null)} 
+      <ViewComprovanteModal
+        isOpen={!!viewComprovante}
+        onClose={() => setViewComprovante(null)}
         comprovanteUrl={viewComprovante?.url}
         titulo={viewComprovante?.titulo}
         detalhe={viewComprovante?.detalhe}
+        colecao="transacoes"
+        recordId={viewComprovante?.id}
       />
     </div>
   )
