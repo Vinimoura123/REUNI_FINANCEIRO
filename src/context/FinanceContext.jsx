@@ -327,33 +327,49 @@ export function FinanceProvider({ children }) {
   }
 
   const updateDemandaStatus = (id, newStatus) => {
-    let newTransacoes = transacoesRef.current
-    let novaTransacaoCriada = null
-    const updated = demandasRef.current.map(d => {
-      if (d.id === id) {
-        if (newStatus === 'Pago' && d.status !== 'Pago') {
-          const newTransacao = {
-            id: Date.now().toString(),
-            data: new Date().toISOString().split('T')[0],
-            descricao: `Pagamento Demanda: ${d.item} (${d.comissao})`,
-            tipo: 'Saída',
-            valor: Number(d.custo),
-            categoria: d.comissao
+    const demandaAtual = demandasRef.current.find(d => d.id === id)
+    const vaiVirarPago = newStatus === 'Pago' && demandaAtual && demandaAtual.status !== 'Pago'
+
+    if (vaiVirarPago) {
+      // Passa pelo gate conciliador-demandas -> avaliador-financeiro no
+      // servidor (nunca no cliente — checagem de duplicidade precisa do
+      // estado real, não de uma cópia que este navegador tem). O status
+      // "Pago" é sempre gravado; a transação só é criada se aprovada.
+      const updatedOtimista = demandasRef.current.map(d => d.id === id ? { ...d, status: newStatus } : d)
+      demandasRef.current = updatedOtimista
+      setDemandas(updatedOtimista)
+
+      fetch('/api/demandas/pagar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ demandaId: id })
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result && result.success && result.data) {
+            applyServerData(result.data)
+            if (result.avaliacao && !result.avaliacao.aprovado) {
+              alert(
+                `Demanda marcada como paga, mas o lançamento automático da transação NÃO foi feito:\n\n` +
+                `${result.avaliacao.justificativa}\n\n` +
+                `Alertas: ${result.avaliacao.alertas.join(', ') || 'nenhum'}\n\n` +
+                `Lance manualmente em Gestão de Caixa depois de conferir.`
+              )
+            }
+          } else if (result && result.error) {
+            alert(`Não foi possível processar o pagamento: ${result.error}`)
           }
-          novaTransacaoCriada = newTransacao
-          newTransacoes = [newTransacao, ...transacoesRef.current]
-          transacoesRef.current = newTransacoes
-          setTransacoes(newTransacoes)
-        }
-        return { ...d, status: newStatus }
-      }
-      return d
-    })
+        })
+        .catch(() => {})
+      return
+    }
+
+    // Qualquer outra transição de status (não envolve criar transação
+    // automática) segue o caminho normal de update.
+    const updated = demandasRef.current.map(d => d.id === id ? { ...d, status: newStatus } : d)
     demandasRef.current = updated
     setDemandas(updated)
-    const ops = [{ op: 'update', colecao: 'demandas', id, fields: { status: newStatus } }]
-    if (novaTransacaoCriada) ops.push({ op: 'create', colecao: 'transacoes', item: novaTransacaoCriada })
-    pushStateToServer({ demandas: updated, transacoes: newTransacoes }, ops)
+    pushStateToServer({ demandas: updated }, [{ op: 'update', colecao: 'demandas', id, fields: { status: newStatus } }])
   }
 
   // Arrecadacao handlers

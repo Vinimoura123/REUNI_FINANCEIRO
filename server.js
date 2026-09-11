@@ -4,6 +4,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { applyOps, emptyDb } from './dbOps.js'
 import { isAuthorized } from './auth.js'
+import { processarPagamentoDemanda } from './pagamentoDemanda.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -129,7 +130,8 @@ const ROTAS_PROTEGIDAS = [
   { path: '/api/events', method: 'GET' },
   { path: '/api/mutate', method: 'POST' },
   { path: '/api/documents/upload', method: 'POST' },
-  { path: '/api/auth/verify', method: 'POST' }
+  { path: '/api/auth/verify', method: 'POST' },
+  { path: '/api/demandas/pagar', method: 'POST' }
 ]
 
 const server = http.createServer((req, res) => {
@@ -247,6 +249,44 @@ const server = http.createServer((req, res) => {
           updatedAt: current.updatedAt,
           data: current,
           ssdSynced: hasSSD
+        }))
+      } catch (err) {
+        res.writeHead(400, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({ error: err.message }))
+      }
+    })
+    return
+  }
+
+  // API Pagamento de demanda — passa pelo gate conciliador-demandas ->
+  // avaliador-financeiro antes de criar a transação correspondente.
+  // O status "Pago" é sempre gravado; a transação só é criada se aprovada.
+  if (urlPath === '/api/demandas/pagar' && req.method === 'POST') {
+    let body = ''
+    req.on('data', chunk => { body += chunk })
+    req.on('end', () => {
+      try {
+        const { demandaId, extracao } = JSON.parse(body)
+        if (!demandaId) {
+          res.writeHead(400, { 'Content-Type': 'application/json' })
+          return res.end(JSON.stringify({ error: '"demandaId" é obrigatório' }))
+        }
+
+        const current = readCurrentDb() || emptyDb()
+        const { plano, avaliacao, transacaoCriada } = processarPagamentoDemanda(current, demandaId, extracao || null)
+
+        fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+        syncToSSDAndBackups(current)
+        broadcast(current)
+
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify({
+          success: true,
+          updatedAt: current.updatedAt,
+          data: current,
+          plano,
+          avaliacao,
+          transacaoCriada
         }))
       } catch (err) {
         res.writeHead(400, { 'Content-Type': 'application/json' })
