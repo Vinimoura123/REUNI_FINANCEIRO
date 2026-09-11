@@ -5,6 +5,7 @@ import { fileURLToPath, URL } from 'node:url'
 import fs from 'node:fs'
 import path from 'node:path'
 import { applyOps, emptyDb } from './dbOps.js'
+import { isAuthorized } from './auth.js'
 
 function syncServerPlugin() {
   const dbPath = fileURLToPath(new URL('./data/reuni_db.json', import.meta.url))
@@ -40,14 +41,31 @@ function syncServerPlugin() {
     name: 'reuni-sync-server',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        const url = req.url?.split('?')[0]
+        const parsedUrl = new URL(req.url, 'http://internal')
+        const url = parsedUrl.pathname
+
+        const ROTAS_PROTEGIDAS = [
+          { path: '/api/data', method: 'GET' },
+          { path: '/api/events', method: 'GET' },
+          { path: '/api/mutate', method: 'POST' },
+          { path: '/api/auth/verify', method: 'POST' }
+        ]
+        const precisaAutorizacao = ROTAS_PROTEGIDAS.some(r => r.path === url && r.method === req.method)
+        if (precisaAutorizacao && !isAuthorized(req, parsedUrl)) {
+          res.writeHead(401, { 'Content-Type': 'application/json' })
+          return res.end(JSON.stringify({ error: 'Não autorizado' }))
+        }
+
+        if (url === '/api/auth/verify' && req.method === 'POST') {
+          res.writeHead(200, { 'Content-Type': 'application/json' })
+          return res.end(JSON.stringify({ ok: true }))
+        }
 
         if (url === '/api/events') {
           res.writeHead(200, {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
-            'Access-Control-Allow-Origin': '*'
+            'Connection': 'keep-alive'
           })
           res.write('retry: 1500\n\n')
           sseClients.push(res)
@@ -68,7 +86,7 @@ function syncServerPlugin() {
         }
 
         if (url === '/api/data' && req.method === 'GET') {
-          res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' })
+          res.writeHead(200, { 'Content-Type': 'application/json' })
           if (fs.existsSync(dbPath)) {
             try {
               const content = fs.readFileSync(dbPath, 'utf-8')
@@ -105,7 +123,7 @@ function syncServerPlugin() {
 
               fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
               broadcast(current)
-              res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' })
+              res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current }))
             } catch (err) {
               res.writeHead(400, { 'Content-Type': 'application/json' })

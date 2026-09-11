@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
+import { withAccessToken } from '../lib/auth'
 import { Upload, X, DollarSign, CheckCircle2, User, Clock, Calendar } from 'lucide-react'
 
 export default function VenderBazarItemModal({ isOpen, onClose, item }) {
@@ -156,7 +157,7 @@ export default function VenderBazarItemModal({ isOpen, onClose, item }) {
 
           {comprovanteUrl ? (
             <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-emerald-500/10 p-2 flex items-center gap-3">
-              <img src={comprovanteUrl} alt="Comprovante" className="w-16 h-16 object-cover rounded-xl border border-emerald-500/20" />
+              <img src={withAccessToken(comprovanteUrl)} alt="Comprovante" className="w-16 h-16 object-cover rounded-xl border border-emerald-500/20" />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-emerald-400 block truncate flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Comprovante Anexado

@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { applyOps, emptyDb } from './dbOps.js'
+import { isAuthorized } from './auth.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -118,17 +119,36 @@ const MIME_TYPES = {
   '.woff2': 'font/woff2'
 }
 
+// Rotas que exigem REUNI_ACCESS_TOKEN válido (ver auth.js). O front-end e a
+// API sempre rodam na mesma origem (este mesmo processo serve os dois), então
+// não existe CORS legítimo a preservar — por isso ele foi removido, não
+// restrito a uma allowlist. Chamada servidor-a-servidor (um futuro sub-agente,
+// por exemplo) nunca passa por CORS de qualquer forma.
+const ROTAS_PROTEGIDAS = [
+  { path: '/api/data', method: 'GET' },
+  { path: '/api/events', method: 'GET' },
+  { path: '/api/mutate', method: 'POST' },
+  { path: '/api/documents/upload', method: 'POST' },
+  { path: '/api/auth/verify', method: 'POST' }
+]
+
 const server = http.createServer((req, res) => {
-  const urlPath = req.url?.split('?')[0] || '/'
+  const parsedUrl = new URL(req.url, 'http://internal')
+  const urlPath = parsedUrl.pathname
 
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, DELETE')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  const precisaAutorizacao =
+    ROTAS_PROTEGIDAS.some(r => r.path === urlPath && r.method === req.method) ||
+    (urlPath.startsWith('/api/documents/') && urlPath !== '/api/documents/upload' && req.method === 'GET')
 
-  if (req.method === 'OPTIONS') {
-    res.writeHead(204)
-    return res.end()
+  if (precisaAutorizacao && !isAuthorized(req, parsedUrl)) {
+    res.writeHead(401, { 'Content-Type': 'application/json' })
+    return res.end(JSON.stringify({ error: 'Não autorizado' }))
+  }
+
+  // Endpoint só para a tela de login validar o token na hora (não grava/lê nada)
+  if (urlPath === '/api/auth/verify' && req.method === 'POST') {
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    return res.end(JSON.stringify({ ok: true }))
   }
 
   // API Status & Telemetria do SSD
@@ -158,8 +178,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-      'Access-Control-Allow-Origin': '*'
+      'Connection': 'keep-alive'
     })
     res.write('retry: 1500\n\n')
     sseClients.push(res)

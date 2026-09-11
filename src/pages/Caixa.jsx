@@ -17,6 +17,7 @@ import {
   Edit3 
 } from 'lucide-react'
 import { useFinance } from '../context/FinanceContext'
+import { withAccessToken } from '../lib/auth'
 import AddTransacaoModal from '../components/AddTransacaoModal'
 import UploadComprovanteModal from '../components/UploadComprovanteModal'
 import ViewComprovanteModal from '../components/ViewComprovanteModal'
@@ -352,7 +353,7 @@ export default function Caixa() {
                     {/* Image Preview */}
                     <div className="mb-3 rounded-xl overflow-hidden border border-border/80 bg-black/40 h-44 flex items-center justify-center relative group">
                       {item.comprovanteUrl.startsWith('data:image') || item.comprovanteUrl.startsWith('http') || item.comprovanteUrl.startsWith('blob:') ? (
-                        <img src={item.comprovanteUrl} alt={item.descricao} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <img src={withAccessToken(item.comprovanteUrl)} alt={item.descricao} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                       ) : (
                         <FileText className="w-12 h-12 text-primary opacity-60" />
                       )}

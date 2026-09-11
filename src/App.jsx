@@ -6,6 +6,7 @@ import {
   Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes, FileSpreadsheet, Download
 } from 'lucide-react'
 import { FinanceProvider, useFinance } from './context/FinanceContext'
+import AuthGate from './components/AuthGate'
 import { cn } from './lib/utils'
 import { exportToExcel } from './utils/excelExporter'
 
@@ -442,21 +443,23 @@ function Layout({ children }) {
 
 export default function App() {
   return (
-    <FinanceProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/demandas" element={<Demandas />} />
-            <Route path="/arrecadacao" element={<Arrecadacao />} />
-            <Route path="/bazar" element={<Bazar />} />
-            <Route path="/inventario" element={<Inventario />} />
-            <Route path="/informacoes" element={<Informacoes />} />
-            <Route path="/caixa" element={<Caixa />} />
-          </Routes>
-        </Layout>
-      </Router>
-    </FinanceProvider>
+    <AuthGate>
+      <FinanceProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/demandas" element={<Demandas />} />
+              <Route path="/arrecadacao" element={<Arrecadacao />} />
+              <Route path="/bazar" element={<Bazar />} />
+              <Route path="/inventario" element={<Inventario />} />
+              <Route path="/informacoes" element={<Informacoes />} />
+              <Route path="/caixa" element={<Caixa />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </FinanceProvider>
+    </AuthGate>
   )
 }
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
+import { withAccessToken } from '../lib/auth'
 import { Upload, X, CheckCircle2, User, Hash, Ticket, Calendar, Clock } from 'lucide-react'
 
 export default function AddValorModal({ isOpen, onClose, item }) {
@@ -203,7 +204,7 @@ export default function AddValorModal({ isOpen, onClose, item }) {
 
           {comprovanteUrl ? (
             <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-emerald-500/10 p-2 flex items-center gap-3">
-              <img src={comprovanteUrl} alt="Comprovante Rifa" className="w-14 h-14 object-cover rounded-xl border border-emerald-500/20" />
+              <img src={withAccessToken(comprovanteUrl)} alt="Comprovante Rifa" className="w-14 h-14 object-cover rounded-xl border border-emerald-500/20" />
               <div className="flex-1 min-w-0">
                 <span className="text-xs font-bold text-emerald-400 block truncate flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Comprovante PIX Anexado

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
+import { authHeaders, getAccessToken } from '../lib/auth'
 
 const FinanceContext = createContext()
 
@@ -209,7 +210,7 @@ export function FinanceProvider({ children }) {
     if (ops.length > 0) {
       fetch('/api/mutate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ ops })
       })
         .then(res => res.json())
@@ -225,7 +226,7 @@ export function FinanceProvider({ children }) {
   // Real-time EventSource connection & initial load & polling heartbeat
   useEffect(() => {
     // Sincronizar inicialmente com dados do servidor se houver
-    fetch('/api/data')
+    fetch('/api/data', { headers: { ...authHeaders() } })
       .then(res => {
         if (!res.ok) throw new Error('Servidor sem rota estática')
         return res.json()
@@ -248,9 +249,12 @@ export function FinanceProvider({ children }) {
         }
       })
 
+    // EventSource nativo não manda header customizado, então o token vai
+    // como query string aqui (mesmo mecanismo de auth.js, aceito via ?token=)
     let eventSource
     try {
-      eventSource = new EventSource('/api/events')
+      const token = getAccessToken()
+      eventSource = new EventSource(`/api/events${token ? `?token=${encodeURIComponent(token)}` : ''}`)
       eventSource.onmessage = (e) => {
         try {
           const data = JSON.parse(e.data)
@@ -260,7 +264,7 @@ export function FinanceProvider({ children }) {
     } catch (err) {}
 
     const intervalId = setInterval(() => {
-      fetch('/api/data')
+      fetch('/api/data', { headers: { ...authHeaders() } })
         .then(res => {
           if (!res.ok) return null
           return res.json()
@@ -800,7 +804,7 @@ export function FinanceProvider({ children }) {
           const base64 = reader.result
           const res = await fetch('/api/documents/upload', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...authHeaders() },
             body: JSON.stringify({
               fileName: file.name,
               fileType: file.type,
