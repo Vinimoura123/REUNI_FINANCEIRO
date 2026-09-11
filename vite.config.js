@@ -6,6 +6,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { applyOps, emptyDb } from './dbOps.js'
 import { isAuthorized } from './auth.js'
+import { processarPagamentoDemanda } from './pagamentoDemanda.js'
 
 function syncServerPlugin() {
   const dbPath = fileURLToPath(new URL('./data/reuni_db.json', import.meta.url))
@@ -48,7 +49,8 @@ function syncServerPlugin() {
           { path: '/api/data', method: 'GET' },
           { path: '/api/events', method: 'GET' },
           { path: '/api/mutate', method: 'POST' },
-          { path: '/api/auth/verify', method: 'POST' }
+          { path: '/api/auth/verify', method: 'POST' },
+          { path: '/api/demandas/pagar', method: 'POST' }
         ]
         const precisaAutorizacao = ROTAS_PROTEGIDAS.some(r => r.path === url && r.method === req.method)
         if (precisaAutorizacao && !isAuthorized(req, parsedUrl)) {
@@ -125,6 +127,39 @@ function syncServerPlugin() {
               broadcast(current)
               res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current }))
+            } catch (err) {
+              res.writeHead(400, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify({ error: err.message }))
+            }
+          })
+          return
+        }
+
+        if (url === '/api/demandas/pagar' && req.method === 'POST') {
+          let body = ''
+          req.on('data', chunk => { body += chunk })
+          req.on('end', () => {
+            try {
+              const { demandaId, extracao } = JSON.parse(body)
+              if (!demandaId) {
+                res.writeHead(400, { 'Content-Type': 'application/json' })
+                return res.end(JSON.stringify({ error: '"demandaId" é obrigatório' }))
+              }
+
+              let current = emptyDb()
+              if (fs.existsSync(dbPath)) {
+                try {
+                  const raw = fs.readFileSync(dbPath, 'utf-8')
+                  if (raw.trim()) current = JSON.parse(raw)
+                } catch (e) {}
+              }
+
+              const { plano, avaliacao, transacaoCriada } = processarPagamentoDemanda(current, demandaId, extracao || null)
+
+              fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+              broadcast(current)
+              res.writeHead(200, { 'Content-Type': 'application/json' })
+              res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current, plano, avaliacao, transacaoCriada }))
             } catch (err) {
               res.writeHead(400, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ error: err.message }))
