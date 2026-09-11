@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ExtratorComprovanteOutput",
+  "description": "Saída do agente extrator-comprovante (ver prompt.md). Insumo do avaliador-financeiro (3.2) — nunca aplicada diretamente contra o banco.",
+  "type": "object",
+  "required": ["transacaoId", "valor_extraido", "data_extraida", "fornecedor_extraido", "confianca"],
+  "additionalProperties": false,
+  "properties": {
+    "transacaoId": {
+      "type": "string",
+      "description": "Id do registro em transacoes ao qual esta extração se refere."
+    },
+    "valor_extraido": {
+      "type": ["number", "null"],
+      "description": "Valor total pago, extraído do comprovante. null se ilegível/ausente — nunca uma estimativa."
+    },
+    "data_extraida": {
+      "type": ["string", "null"],
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "Data da transação no formato AAAA-MM-DD. null se ilegível, ausente, ou incompleta (ex.: sem ano)."
+    },
+    "fornecedor_extraido": {
+      "type": ["string", "null"],
+      "description": "Nome do fornecedor/beneficiário exatamente como impresso no documento. null se ilegível/ausente."
+    },
+    "confianca": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Confiança conjunta sobre os três campos acima, não uma média otimista."
+    }
+  }
+}
