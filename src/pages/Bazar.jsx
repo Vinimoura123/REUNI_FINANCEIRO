@@ -309,6 +309,7 @@ export default function Bazar() {
                           <button
                             onClick={() => setViewComprovante({
                               url: item.comprovanteUrl,
+                              id: item.id,
                               titulo: `Comprovante de Venda - ${item.nome}`,
                               detalhe: `Comprador: ${item.comprador || 'Não informado'} | Valor: R$ ${Number(item.precoVendido || item.precoAvaliado).toFixed(2)}`
                             })}
@@ -348,12 +349,14 @@ export default function Bazar() {
         item={itemForSale} 
       />
 
-      <ViewComprovanteModal 
-        isOpen={!!viewComprovante} 
-        onClose={() => setViewComprovante(null)} 
+      <ViewComprovanteModal
+        isOpen={!!viewComprovante}
+        onClose={() => setViewComprovante(null)}
         comprovanteUrl={viewComprovante?.url}
         titulo={viewComprovante?.titulo}
         detalhe={viewComprovante?.detalhe}
+        colecao="bazarItems"
+        recordId={viewComprovante?.id}
       />
     </div>
   )

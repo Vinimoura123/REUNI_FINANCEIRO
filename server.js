@@ -4,7 +4,8 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { applyOps, emptyDb } from './dbOps.js'
 import { isAuthorized } from './auth.js'
-import { processarPagamentoDemanda } from './pagamentoDemanda.js'
+import { processarPagamentoDemanda, processarPagamentoDemandaComComprovante } from './pagamentoDemanda.js'
+import { salvarDocumento, localizarDocumento, apagarDocumento } from './armazenamentoDocumentos.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -140,7 +141,7 @@ const server = http.createServer((req, res) => {
 
   const precisaAutorizacao =
     ROTAS_PROTEGIDAS.some(r => r.path === urlPath && r.method === req.method) ||
-    (urlPath.startsWith('/api/documents/') && urlPath !== '/api/documents/upload' && req.method === 'GET')
+    (urlPath.startsWith('/api/documents/') && urlPath !== '/api/documents/upload' && (req.method === 'GET' || req.method === 'DELETE'))
 
   if (precisaAutorizacao && !isAuthorized(req, parsedUrl)) {
     res.writeHead(401, { 'Content-Type': 'application/json' })
@@ -264,16 +265,23 @@ const server = http.createServer((req, res) => {
   if (urlPath === '/api/demandas/pagar' && req.method === 'POST') {
     let body = ''
     req.on('data', chunk => { body += chunk })
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
-        const { demandaId, extracao } = JSON.parse(body)
+        const { demandaId, extracao, comprovante } = JSON.parse(body)
         if (!demandaId) {
           res.writeHead(400, { 'Content-Type': 'application/json' })
           return res.end(JSON.stringify({ error: '"demandaId" é obrigatório' }))
         }
 
         const current = readCurrentDb() || emptyDb()
-        const { plano, avaliacao, transacaoCriada } = processarPagamentoDemanda(current, demandaId, extracao || null)
+
+        // Se veio um comprovante no pedido, roda o extrator-comprovante de
+        // verdade (Gemini) antes de avaliar — nunca no cliente, a chave
+        // fica só aqui no servidor. Sem comprovante, comportamento igual
+        // a antes (extracao explícita ou null).
+        const { plano, avaliacao, transacaoCriada, erroExtracao } = comprovante
+          ? await processarPagamentoDemandaComComprovante(current, demandaId, comprovante)
+          : processarPagamentoDemanda(current, demandaId, extracao || null)
 
         fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
         syncToSSDAndBackups(current)
@@ -286,7 +294,8 @@ const server = http.createServer((req, res) => {
           data: current,
           plano,
           avaliacao,
-          transacaoCriada
+          transacaoCriada,
+          erroExtracao: erroExtracao || null
         }))
       } catch (err) {
         res.writeHead(400, { 'Content-Type': 'application/json' })
@@ -311,29 +320,12 @@ const server = http.createServer((req, res) => {
         const cleanBase64 = base64.replace(/^data:[^;]+;base64,/, '')
         const buffer = Buffer.from(cleanBase64, 'base64')
         const fileExt = path.extname(fileName) || (fileType?.includes('pdf') ? '.pdf' : '.png')
-        const uniqueId = `doc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
-        const safeFileName = `${uniqueId}${fileExt}`
+        const { fileId, url: fileUrl, savedOnSSD } = salvarDocumento(buffer, fileExt)
 
-        // Save local
-        const localPath = path.join(localDocsDir, safeFileName)
-        fs.writeFileSync(localPath, buffer)
-
-        // Save to SSD if available
-        let savedOnSSD = false
-        if (hasSSD && ssdDocsDir) {
-          try {
-            fs.writeFileSync(path.join(ssdDocsDir, safeFileName), buffer)
-            savedOnSSD = true
-          } catch (e) {
-            console.error('Erro ao gravar arquivo no SSD:', e.message)
-          }
-        }
-
-        const fileUrl = `/api/documents/${safeFileName}`
         res.writeHead(200, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({
           success: true,
-          fileId: safeFileName,
+          fileId,
           fileName,
           url: fileUrl,
           size: buffer.length,
@@ -349,23 +341,9 @@ const server = http.createServer((req, res) => {
   }
 
   // API Servir Documentos / PDFs / Fotos do SSD ou Local
-  if (urlPath.startsWith('/api/documents/') && req.method === 'GET') {
+  if (urlPath.startsWith('/api/documents/') && urlPath !== '/api/documents/upload' && req.method === 'GET') {
     const fileId = urlPath.replace('/api/documents/', '')
-    const safeFileId = path.basename(fileId)
-
-    let targetPath = null
-
-    // Tentar no SSD primeiro
-    if (hasSSD && ssdDocsDir) {
-      const ssdFilePath = path.join(ssdDocsDir, safeFileId)
-      if (fs.existsSync(ssdFilePath)) targetPath = ssdFilePath
-    }
-
-    // Fallback para pasta local
-    if (!targetPath) {
-      const localFilePath = path.join(localDocsDir, safeFileId)
-      if (fs.existsSync(localFilePath)) targetPath = localFilePath
-    }
+    const targetPath = localizarDocumento(fileId)
 
     if (targetPath) {
       const ext = path.extname(targetPath).toLowerCase()
@@ -375,7 +353,7 @@ const server = http.createServer((req, res) => {
           res.writeHead(500)
           res.end('Erro ao ler documento')
         } else {
-          res.writeHead(200, { 
+          res.writeHead(200, {
             'Content-Type': contentType,
             'Cache-Control': 'public, max-age=86400'
           })
@@ -387,6 +365,16 @@ const server = http.createServer((req, res) => {
       res.writeHead(404, { 'Content-Type': 'application/json' })
       return res.end(JSON.stringify({ error: 'Documento não encontrado' }))
     }
+  }
+
+  // API Apagar Documento — do local e do SSD (quando existir). Quem chama
+  // ainda precisa limpar o comprovanteUrl do registro que apontava pra
+  // ele via /api/mutate — apagar o arquivo aqui não mexe nesses registros.
+  if (urlPath.startsWith('/api/documents/') && urlPath !== '/api/documents/upload' && req.method === 'DELETE') {
+    const fileId = urlPath.replace('/api/documents/', '')
+    const apagou = apagarDocumento(fileId)
+    res.writeHead(apagou ? 200 : 404, { 'Content-Type': 'application/json' })
+    return res.end(JSON.stringify({ success: apagou }))
   }
 
   // Servir arquivos estáticos da SPA em /dist

@@ -326,28 +326,36 @@ export function FinanceProvider({ children }) {
     pushStateToServer({ demandas: updated }, [{ op: 'delete', colecao: 'demandas', id }])
   }
 
-  const updateDemandaStatus = (id, newStatus) => {
+  // Passa pelo gate conciliador-demandas -> avaliador-financeiro no
+  // servidor (nunca no cliente — checagem de duplicidade precisa do
+  // estado real, não de uma cópia que este navegador tem). O status
+  // "Pago" é sempre gravado; a transação só é criada se aprovada.
+  // comprovanteFile é opcional — quando informado, o servidor roda o
+  // extrator-comprovante de verdade (Gemini) antes de avaliar.
+  const pagarDemanda = (id, comprovanteFile = null) => {
     const demandaAtual = demandasRef.current.find(d => d.id === id)
-    const vaiVirarPago = newStatus === 'Pago' && demandaAtual && demandaAtual.status !== 'Pago'
+    if (!demandaAtual || demandaAtual.status === 'Pago') return
 
-    if (vaiVirarPago) {
-      // Passa pelo gate conciliador-demandas -> avaliador-financeiro no
-      // servidor (nunca no cliente — checagem de duplicidade precisa do
-      // estado real, não de uma cópia que este navegador tem). O status
-      // "Pago" é sempre gravado; a transação só é criada se aprovada.
-      const updatedOtimista = demandasRef.current.map(d => d.id === id ? { ...d, status: newStatus } : d)
-      demandasRef.current = updatedOtimista
-      setDemandas(updatedOtimista)
+    const updatedOtimista = demandasRef.current.map(d => d.id === id ? { ...d, status: 'Pago' } : d)
+    demandasRef.current = updatedOtimista
+    setDemandas(updatedOtimista)
 
+    const enviar = (comprovantePayload) => {
       fetch('/api/demandas/pagar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify({ demandaId: id })
+        body: JSON.stringify({ demandaId: id, ...(comprovantePayload ? { comprovante: comprovantePayload } : {}) })
       })
         .then(res => res.json())
         .then(result => {
           if (result && result.success && result.data) {
             applyServerData(result.data)
+            if (result.erroExtracao) {
+              alert(
+                `Comprovante anexado, mas a extração automática falhou:\n\n${result.erroExtracao}\n\n` +
+                `O pagamento seguiu sem extração (confiança baixa, revisão humana).`
+              )
+            }
             if (result.avaliacao && !result.avaliacao.aprovado) {
               alert(
                 `Demanda marcada como paga, mas o lançamento automático da transação NÃO foi feito:\n\n` +
@@ -361,6 +369,26 @@ export function FinanceProvider({ children }) {
           }
         })
         .catch(() => {})
+    }
+
+    if (comprovanteFile) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        enviar({ base64: reader.result, mimeType: comprovanteFile.type, fileName: comprovanteFile.name })
+      }
+      reader.onerror = () => enviar(null)
+      reader.readAsDataURL(comprovanteFile)
+    } else {
+      enviar(null)
+    }
+  }
+
+  const updateDemandaStatus = (id, newStatus) => {
+    const demandaAtual = demandasRef.current.find(d => d.id === id)
+    const vaiVirarPago = newStatus === 'Pago' && demandaAtual && demandaAtual.status !== 'Pago'
+
+    if (vaiVirarPago) {
+      pagarDemanda(id, null)
       return
     }
 
@@ -842,6 +870,21 @@ export function FinanceProvider({ children }) {
     })
   }
 
+  // Apaga o arquivo físico (local + SSD) quando a URL veio de
+  // /api/documents/upload. URLs data: (base64 embutido, ex.: comprovante
+  // de venda de rifa) não têm arquivo no servidor — não faz nada nesse
+  // caso, quem chamou só precisa limpar o campo comprovanteUrl do registro.
+  const deleteDocument = async (comprovanteUrl) => {
+    if (!comprovanteUrl || !comprovanteUrl.startsWith('/api/documents/')) return
+    const fileId = comprovanteUrl.split('/').pop().split('?')[0]
+    try {
+      await fetch(`/api/documents/${fileId}`, {
+        method: 'DELETE',
+        headers: { ...authHeaders() }
+      })
+    } catch (e) {}
+  }
+
   return (
     <FinanceContext.Provider value={{
       demandas,
@@ -854,10 +897,12 @@ export function FinanceProvider({ children }) {
       lastSaved,
       toggleTheme,
       uploadDocument,
+      deleteDocument,
       addDemanda,
       updateDemanda,
       deleteDemanda,
       updateDemandaStatus,
+      pagarDemanda,
       addArrecadacao,
       updateArrecadacao,
       updateArrecadacaoValor,

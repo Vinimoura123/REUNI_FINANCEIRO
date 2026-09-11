@@ -14,6 +14,8 @@ import { fileURLToPath } from 'node:url'
 import { applyOps } from './dbOps.js'
 import { proporPlano } from './antigravity-reuni/agents/conciliador-demandas/logic.js'
 import { avaliarPlano, aplicarPlanoAprovado } from './antigravity-reuni/agents/avaliador-financeiro/logic.js'
+import { extrairComprovanteViaGemini } from './visaoGemini.js'
+import { salvarDocumento } from './armazenamentoDocumentos.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const decisionsLogDir = path.join(__dirname, 'antigravity-reuni', 'memory', 'decisions-log')
@@ -63,4 +65,48 @@ export function processarPagamentoDemanda(db, demandaId, extracao = null, orcame
   })
 
   return { plano, avaliacao, transacaoCriada }
+}
+
+// Variante que recebe um comprovante (base64) junto do pedido de pagamento:
+// salva o arquivo, roda o extrator-comprovante de verdade via Gemini
+// (visaoGemini.js) e só então avalia o plano com a extração real. Se a
+// extração falhar por qualquer motivo (sem GEMINI_API_KEY, erro de rede,
+// resposta inesperada), NUNCA bloqueia o pagamento — cai de volta pro
+// comportamento sem comprovante (confiança baixa, revisão humana), com o
+// erro registrado em erroExtracao pra quem chamou saber o que aconteceu.
+export async function processarPagamentoDemandaComComprovante(db, demandaId, comprovante) {
+  const { base64, mimeType, fileName } = comprovante || {}
+  let comprovanteUrl = null
+  let extracao = null
+  let erroExtracao = null
+
+  if (base64) {
+    try {
+      const cleanBase64 = base64.replace(/^data:[^;]+;base64,/, '')
+      const buffer = Buffer.from(cleanBase64, 'base64')
+      const fileExt = (fileName && fileName.includes('.')) ? fileName.slice(fileName.lastIndexOf('.')) : '.jpg'
+      const salvo = salvarDocumento(buffer, fileExt)
+      comprovanteUrl = salvo.url
+
+      extracao = await extrairComprovanteViaGemini(cleanBase64, mimeType || 'image/jpeg')
+    } catch (err) {
+      erroExtracao = err.message
+      extracao = null
+    }
+  }
+
+  const resultado = processarPagamentoDemanda(db, demandaId, extracao)
+
+  // Guarda o comprovante na demanda (auditoria, mesmo se foi pra revisão) e
+  // também na transação, se uma foi criada — consistente com o resto do
+  // app, onde toda transação pode ter um comprovanteUrl.
+  if (comprovanteUrl) {
+    applyOps(db, [{ op: 'update', colecao: 'demandas', id: demandaId, fields: { comprovanteUrl } }])
+    if (resultado.transacaoCriada) {
+      applyOps(db, [{ op: 'update', colecao: 'transacoes', id: resultado.transacaoCriada.id, fields: { comprovanteUrl } }])
+      resultado.transacaoCriada.comprovanteUrl = comprovanteUrl
+    }
+  }
+
+  return { ...resultado, erroExtracao }
 }
