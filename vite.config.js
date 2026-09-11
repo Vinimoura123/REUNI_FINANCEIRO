@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 import fs from 'node:fs'
 import path from 'node:path'
+import { applyOps, emptyDb } from './dbOps.js'
 
 function syncServerPlugin() {
   const dbPath = fileURLToPath(new URL('./data/reuni_db.json', import.meta.url))
@@ -80,19 +81,34 @@ function syncServerPlugin() {
           }
         }
 
-        if (url === '/api/sync' && req.method === 'POST') {
+        if (url === '/api/mutate' && req.method === 'POST') {
           let body = ''
           req.on('data', chunk => { body += chunk })
           req.on('end', () => {
             try {
-              const data = JSON.parse(body)
-              data.updatedAt = Date.now()
-              fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf-8')
-              broadcast(data)
+              const { ops } = JSON.parse(body)
+              if (!Array.isArray(ops) || ops.length === 0) {
+                res.writeHead(400, { 'Content-Type': 'application/json' })
+                return res.end(JSON.stringify({ error: '"ops" precisa ser um array não vazio' }))
+              }
+
+              let current = emptyDb()
+              if (fs.existsSync(dbPath)) {
+                try {
+                  const raw = fs.readFileSync(dbPath, 'utf-8')
+                  if (raw.trim()) current = JSON.parse(raw)
+                } catch (e) {}
+              }
+
+              applyOps(current, ops)
+              current.updatedAt = Date.now()
+
+              fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+              broadcast(current)
               res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' })
-              res.end(JSON.stringify({ success: true, updatedAt: data.updatedAt }))
+              res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current }))
             } catch (err) {
-              res.writeHead(500, { 'Content-Type': 'application/json' })
+              res.writeHead(400, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ error: err.message }))
             }
           })

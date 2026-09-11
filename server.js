@@ -2,6 +2,7 @@ import http from 'node:http'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { applyOps, emptyDb } from './dbOps.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -55,6 +56,17 @@ if (hasSSD && ssdDbDir && !fs.existsSync(path.join(ssdDbDir, 'reuni_db.json'))) 
 }
 
 let sseClients = []
+
+// Lê o estado ATUAL do disco (nunca confia no que o cliente lembra ter)
+const readCurrentDb = () => {
+  if (!fs.existsSync(dbPath)) return null
+  try {
+    const raw = fs.readFileSync(dbPath, 'utf-8')
+    return raw.trim() ? JSON.parse(raw) : null
+  } catch (e) {
+    return null
+  }
+}
 
 const broadcast = (data) => {
   const payload = `data: ${JSON.stringify(data)}\n\n`
@@ -182,32 +194,43 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  // API Sincronizar Estado
-  if (urlPath === '/api/sync' && req.method === 'POST') {
+  // API Mutação atômica (create/update/delete/replaceAll de uma coleção)
+  // Aplicada sempre em cima do estado ATUAL do arquivo, nunca de uma cópia
+  // que o cliente mandou — isso é o que evita o lost-update de duas pessoas
+  // gravando quase ao mesmo tempo (ver dbOps.js para o porquê).
+  if (urlPath === '/api/mutate' && req.method === 'POST') {
     let body = ''
     req.on('data', chunk => { body += chunk })
     req.on('end', () => {
       try {
-        const data = JSON.parse(body)
-        data.updatedAt = Date.now()
-        
+        const { ops } = JSON.parse(body)
+        if (!Array.isArray(ops) || ops.length === 0) {
+          res.writeHead(400, { 'Content-Type': 'application/json' })
+          return res.end(JSON.stringify({ error: '"ops" precisa ser um array não vazio' }))
+        }
+
+        const current = readCurrentDb() || emptyDb()
+        applyOps(current, ops)
+        current.updatedAt = Date.now()
+
         // 1. Grava no DB local
-        fs.writeFileSync(dbPath, JSON.stringify(data, null, 2), 'utf-8')
-        
+        fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+
         // 2. Grava no SSD e cria backup
-        syncToSSDAndBackups(data)
+        syncToSSDAndBackups(current)
 
         // 3. Notifica todos os navegadores em tempo real
-        broadcast(data)
+        broadcast(current)
 
         res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({ 
-          success: true, 
-          updatedAt: data.updatedAt,
-          ssdSynced: hasSSD 
+        res.end(JSON.stringify({
+          success: true,
+          updatedAt: current.updatedAt,
+          data: current,
+          ssdSynced: hasSSD
         }))
       } catch (err) {
-        res.writeHead(500, { 'Content-Type': 'application/json' })
+        res.writeHead(400, { 'Content-Type': 'application/json' })
         res.end(JSON.stringify({ error: err.message }))
       }
     })
