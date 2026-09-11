@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PrestacaoContasOutput",
+  "description": "Prestação de contas de uma edição (ver prompt.md). Só leitura — não altera transacoes/demandas/inventarioItems.",
+  "type": "object",
+  "required": [
+    "edicao", "totalArrecadado", "totalGasto", "saldo",
+    "gastoPorComissao", "arrecadadoPorCategoria",
+    "demandasPendentes", "totalDemandasPendentes",
+    "valorTotalEconomizado", "comparacaoEdicaoAnterior"
+  ],
+  "properties": {
+    "edicao": { "type": "string" },
+    "totalArrecadado": { "type": "number" },
+    "totalGasto": { "type": "number" },
+    "saldo": { "type": "number" },
+    "gastoPorComissao": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "arrecadadoPorCategoria": {
+      "type": "object",
+      "additionalProperties": { "type": "number" }
+    },
+    "demandasPendentes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "item": { "type": "string" },
+          "comissao": { "type": "string" },
+          "custo": { "type": "number" }
+        }
+      }
+    },
+    "totalDemandasPendentes": { "type": "number" },
+    "valorTotalEconomizado": { "type": "number" },
+    "comparacaoEdicaoAnterior": {
+      "type": "object",
+      "description": "comparavel:false e' um resultado valido, nao um erro - significa que nao ha edicao anterior real pra comparar.",
+      "properties": {
+        "comparavel": { "type": "boolean" },
+        "motivo": { "type": "string" },
+        "variacaoGastoTotalPercentual": { "type": ["number", "null"] },
+        "variacaoPorComissao": { "type": ["object", "null"] }
+      }
+    },
+    "memoriaCustos": {
+      "type": ["object", "null"],
+      "description": "Presente so' quando historicoEdicoes foi informado.",
+      "properties": {
+        "custoMedioPorCategoria": { "type": "object" },
+        "amostraUnica": { "type": "boolean" },
+        "edicoesConsideradas": { "type": "integer" }
+      }
+    }
+  }
+}
