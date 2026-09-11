@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ConciliadorDemandasOutput",
+  "description": "Plano proposto pelo conciliador-demandas quando uma demanda vira Pago. Nunca executado por este agente — vai para o avaliador-financeiro.",
+  "type": "object",
+  "required": ["acao", "tabela", "dados", "confianca"],
+  "additionalProperties": false,
+  "properties": {
+    "acao": { "const": "insert" },
+    "tabela": { "const": "transacoes" },
+    "dados": {
+      "type": "object",
+      "required": ["descricao", "tipo", "valor", "categoria", "demandaId"],
+      "additionalProperties": false,
+      "properties": {
+        "descricao": { "type": "string" },
+        "tipo": { "const": "Saída" },
+        "valor": { "type": "number" },
+        "categoria": { "type": "string" },
+        "demandaId": { "type": "string" }
+      }
+    },
+    "confianca": { "type": "number", "minimum": 0, "maximum": 1 },
+    "extracaoRef": {
+      "type": ["object", "null"],
+      "description": "Presente só quando havia extração do extrator-comprovante (3.1) para cruzar com o custo.",
+      "properties": {
+        "valor_extraido": { "type": ["number", "null"] },
+        "confianca_extracao": { "type": "number" }
+      }
+    }
+  }
+}

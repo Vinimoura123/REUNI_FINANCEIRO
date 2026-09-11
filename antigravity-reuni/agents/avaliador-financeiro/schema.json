@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AvaliadorFinanceiroOutput",
+  "description": "Decisão do avaliador-financeiro sobre um plano de write action (ver prompt.md). É o único gate que autoriza uma escrita real.",
+  "type": "object",
+  "required": ["aprovado", "justificativa", "alertas"],
+  "additionalProperties": false,
+  "properties": {
+    "aprovado": { "type": "boolean" },
+    "justificativa": { "type": "string" },
+    "alertas": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "duplicidade",
+          "confianca_baixa",
+          "valor_divergente",
+          "orcamento_estourado",
+          "orcamento_nao_configurado"
+        ]
+      }
+    }
+  }
+}
