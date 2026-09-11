@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RadarEditaisOutput",
+  "description": "Ver prompt.md. Só sugestão — nunca decide concorrer a um edital sozinho.",
+  "type": "object",
+  "required": ["edital_novo", "top_similares"],
+  "additionalProperties": false,
+  "properties": {
+    "edital_novo": { "type": "string" },
+    "top_similares": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["titulo", "score", "ano"],
+        "properties": {
+          "titulo": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "ano": { "type": ["integer", "null"] }
+        }
+      }
+    }
+  }
+}
