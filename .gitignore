@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Saída de teste dos agentes (gerada por antigravity-reuni/agents/testar-*.mjs)
+data/reuni_db.staging.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
