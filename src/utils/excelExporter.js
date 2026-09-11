@@ -142,16 +142,16 @@ export function exportToExcel({ demandas = [], arrecadacoes = [], transacoes = [
   // -------------------------------------------------------------
   const arrecadacaoRows = arrecadacoes.map((a, index) => {
     const meta = Number(a.meta || 0)
-    const arrecadado = Number(a.arrecadado || 0)
-    const pct = meta > 0 ? ((arrecadado / meta) * 100).toFixed(1) : '0.0'
+    const atual = Number(a.atual || 0)
+    const pct = meta > 0 ? ((atual / meta) * 100).toFixed(1) : '0.0'
     return {
       'Nº': index + 1,
-      'Ação / Origem': a.origem,
-      'Responsável / Comissão': a.comissao,
+      'Ação / Nome': a.nome,
+      'Tipo de Captação': a.tipo,
       'Meta Prevista (R$)': `R$ ${formatCurrency(meta)}`,
-      'Arrecadado (R$)': `R$ ${formatCurrency(arrecadado)}`,
+      'Arrecadado (R$)': `R$ ${formatCurrency(atual)}`,
       'Progresso (%)': `${pct}%`,
-      'Status': a.status || (arrecadado >= meta ? 'Concluída' : 'Em Andamento')
+      'Status': a.status || (atual >= meta ? 'Concluída' : 'Em Andamento')
     }
   })
 
@@ -174,9 +174,9 @@ export function exportToExcel({ demandas = [], arrecadacoes = [], transacoes = [
     'Nº': index + 1,
     'Item do Acervo': b.nome,
     'Categoria': b.categoria,
-    'Quantidade': b.quantidade || 1,
-    'Valor de Venda (R$)': `R$ ${formatCurrency(b.preco)}`,
-    'Status': b.status || 'Disponível',
+    'Preço Avaliado (R$)': `R$ ${formatCurrency(b.precoAvaliado)}`,
+    'Status': b.status || 'Em Avaliação',
+    'Preço Vendido (R$)': b.precoVendido ? `R$ ${formatCurrency(b.precoVendido)}` : '-',
     'Comprador': b.comprador || '-'
   }))
 
@@ -200,9 +200,9 @@ export function exportToExcel({ demandas = [], arrecadacoes = [], transacoes = [
     'Material / Equipamento': inv.item,
     'Comissão / Guarda': inv.comissao,
     'Quantidade': inv.quantidade || 1,
-    'Estado de Conservação': inv.estado,
-    'Valor Estimado (R$)': `R$ ${formatCurrency(inv.valorEstimado)}`,
-    'Origem': inv.origem || 'Acervo REUNI'
+    'Estado de Conservação': inv.estadoConservacao,
+    'Valor Economizado (R$)': `R$ ${formatCurrency(inv.valorEstimadoEconomizado)}`,
+    'Responsável pela Guarda': inv.responsavelGuarda || '-'
   }))
 
   const wsInventario = XLSX.utils.json_to_sheet(inventarioRows)
