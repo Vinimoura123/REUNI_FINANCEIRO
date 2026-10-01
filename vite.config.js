@@ -10,6 +10,7 @@ import { processarPagamentoDemanda } from './pagamentoDemanda.js'
 
 function syncServerPlugin() {
   const dbPath = fileURLToPath(new URL('./data/reuni_db.json', import.meta.url))
+  const seedDbPath = fileURLToPath(new URL('./data/reuni_db.seed.json', import.meta.url))
   const oldDbPath = fileURLToPath(new URL('./src/data/reuni_db.json', import.meta.url))
   const dataDir = path.dirname(dbPath)
 
@@ -17,11 +18,42 @@ function syncServerPlugin() {
     fs.mkdirSync(dataDir, { recursive: true })
   }
 
-  // Migrate old db if present and new db does not exist yet
-  if (!fs.existsSync(dbPath) && fs.existsSync(oldDbPath)) {
-    try {
-      fs.copyFileSync(oldDbPath, dbPath)
-    } catch (e) {}
+  const safeWriteDb = (targetPath, data) => {
+    const tempPath = `${targetPath}.${Date.now()}.${Math.random().toString(36).substring(2, 6)}.tmp`
+    fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf-8')
+    fs.renameSync(tempPath, targetPath)
+  }
+
+  // Migrate or recover db if present and new db does not exist yet
+  if (!fs.existsSync(dbPath)) {
+    if (fs.existsSync(seedDbPath)) {
+      try { fs.copyFileSync(seedDbPath, dbPath) } catch (e) {}
+    } else if (fs.existsSync(oldDbPath)) {
+      try { fs.copyFileSync(oldDbPath, dbPath) } catch (e) {}
+    }
+  }
+
+  const readCurrentDb = () => {
+    if (fs.existsSync(dbPath)) {
+      try {
+        const raw = fs.readFileSync(dbPath, 'utf-8')
+        if (raw.trim()) {
+          const parsed = JSON.parse(raw)
+          if (parsed && typeof parsed === 'object') return parsed
+        }
+      } catch (e) {}
+    }
+    if (fs.existsSync(seedDbPath)) {
+      try {
+        const raw = fs.readFileSync(seedDbPath, 'utf-8')
+        if (raw.trim()) {
+          const parsed = JSON.parse(raw)
+          safeWriteDb(dbPath, parsed)
+          return parsed
+        }
+      } catch (e) {}
+    }
+    return emptyDb()
   }
 
   let sseClients = []
@@ -72,13 +104,9 @@ function syncServerPlugin() {
           res.write('retry: 1500\n\n')
           sseClients.push(res)
 
-          if (fs.existsSync(dbPath)) {
-            try {
-              const currentData = fs.readFileSync(dbPath, 'utf-8')
-              if (currentData.trim()) {
-                res.write(`data: ${currentData}\n\n`)
-              }
-            } catch (err) {}
+          const currentData = readCurrentDb()
+          if (currentData) {
+            res.write(`data: ${JSON.stringify(currentData)}\n\n`)
           }
 
           req.on('close', () => {
@@ -88,17 +116,9 @@ function syncServerPlugin() {
         }
 
         if (url === '/api/data' && req.method === 'GET') {
+          const currentData = readCurrentDb()
           res.writeHead(200, { 'Content-Type': 'application/json' })
-          if (fs.existsSync(dbPath)) {
-            try {
-              const content = fs.readFileSync(dbPath, 'utf-8')
-              return res.end(content || '{}')
-            } catch (e) {
-              return res.end('{}')
-            }
-          } else {
-            return res.end(JSON.stringify({}))
-          }
+          return res.end(JSON.stringify(currentData))
         }
 
         if (url === '/api/mutate' && req.method === 'POST') {
@@ -123,12 +143,15 @@ function syncServerPlugin() {
               applyOps(current, ops)
               current.updatedAt = Date.now()
 
-              fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+              safeWriteDb(dbPath, current)
+              safeWriteDb(seedDbPath, current)
               broadcast(current)
               res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current }))
             } catch (err) {
-              res.writeHead(400, { 'Content-Type': 'application/json' })
+              if (!res.headersSent) {
+                res.writeHead(400, { 'Content-Type': 'application/json' })
+              }
               res.end(JSON.stringify({ error: err.message }))
             }
           })
@@ -156,12 +179,15 @@ function syncServerPlugin() {
 
               const { plano, avaliacao, transacaoCriada } = processarPagamentoDemanda(current, demandaId, extracao || null)
 
-              fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+              safeWriteDb(dbPath, current)
+              safeWriteDb(seedDbPath, current)
               broadcast(current)
               res.writeHead(200, { 'Content-Type': 'application/json' })
               res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current, plano, avaliacao, transacaoCriada }))
             } catch (err) {
-              res.writeHead(400, { 'Content-Type': 'application/json' })
+              if (!res.headersSent) {
+                res.writeHead(400, { 'Content-Type': 'application/json' })
+              }
               res.end(JSON.stringify({ error: err.message }))
             }
           })

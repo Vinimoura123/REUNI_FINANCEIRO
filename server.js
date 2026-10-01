@@ -18,35 +18,127 @@ const localDocsDir = path.join(__dirname, 'data', 'comprovantes')
 // Garantir criação das pastas locais da hospedagem
 const dataDir = path.dirname(dbPath)
 const localBackupsDir = path.join(__dirname, 'data', 'backups')
+const seedDbPath = path.join(__dirname, 'data', 'reuni_db.seed.json')
+
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 if (!fs.existsSync(localDocsDir)) fs.mkdirSync(localDocsDir, { recursive: true })
 if (!fs.existsSync(localBackupsDir)) fs.mkdirSync(localBackupsDir, { recursive: true })
 
-if (!fs.existsSync(dbPath)) {
-  const initialData = JSON.stringify({
-    demandas: [],
-    arrecadacoes: [],
-    transacoes: [],
-    bazarItems: [],
-    keepNotes: [],
-    inventarioItems: [],
-    documents: [],
-    updatedAt: 0
-  }, null, 2)
-  fs.writeFileSync(dbPath, initialData, 'utf-8')
+// Escrita atômica segura anti-crash: grava primeiro em arquivo temporário e depois renomeia
+const safeWriteDb = (targetPath, data) => {
+  const tempPath = `${targetPath}.${Date.now()}.${Math.random().toString(36).substring(2, 6)}.tmp`
+  fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), 'utf-8')
+  fs.renameSync(tempPath, targetPath)
 }
+
+// Inicialização com Auto-Recuperação em Cascata (nunca apaga dados existentes)
+const initDb = () => {
+  let restored = null
+
+  if (fs.existsSync(dbPath)) {
+    try {
+      const raw = fs.readFileSync(dbPath, 'utf-8')
+      if (raw.trim()) {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') restored = parsed
+      }
+    } catch (e) {
+      console.warn('⚠️ [Auto-Recovery] reuni_db.json principal corrompido, tentando restaurar de backup...')
+    }
+  }
+
+  // Se o principal não existe ou está corrompido, busca do backup mais recente
+  const latestBackup = path.join(localBackupsDir, 'reuni_db_latest.json')
+  if (!restored && fs.existsSync(latestBackup)) {
+    try {
+      const raw = fs.readFileSync(latestBackup, 'utf-8')
+      if (raw.trim()) {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') {
+          safeWriteDb(dbPath, parsed)
+          console.log('✅ [Auto-Recovery] Restaurado com sucesso de data/backups/reuni_db_latest.json')
+          restored = parsed
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Se ainda não restaurou, busca de reuni_db.seed.json
+  if (!restored && fs.existsSync(seedDbPath)) {
+    try {
+      const raw = fs.readFileSync(seedDbPath, 'utf-8')
+      if (raw.trim()) {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') {
+          safeWriteDb(dbPath, parsed)
+          console.log('✅ [Auto-Recovery] Restaurado com sucesso de data/reuni_db.seed.json')
+          restored = parsed
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Se não encontrou nenhum backup prévio, cria a estrutura inicial e guarda no seed
+  if (!restored) {
+    const initialData = {
+      demandas: [],
+      arrecadacoes: [],
+      transacoes: [],
+      bazarItems: [],
+      keepNotes: [],
+      inventarioItems: [],
+      documents: [],
+      updatedAt: 0
+    }
+    safeWriteDb(dbPath, initialData)
+    safeWriteDb(seedDbPath, initialData)
+  }
+}
+
+initDb()
 
 let sseClients = []
 
-// Lê o estado ATUAL do disco (nunca confia no que o cliente lembra ter)
+// Lê o estado ATUAL do disco com tolerância a falhas
 const readCurrentDb = () => {
-  if (!fs.existsSync(dbPath)) return null
-  try {
-    const raw = fs.readFileSync(dbPath, 'utf-8')
-    return raw.trim() ? JSON.parse(raw) : null
-  } catch (e) {
-    return null
+  if (fs.existsSync(dbPath)) {
+    try {
+      const raw = fs.readFileSync(dbPath, 'utf-8')
+      if (raw.trim()) {
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') return parsed
+      }
+    } catch (e) {
+      console.error('⚠️ [Auto-Recovery] Erro ao ler reuni_db.json, buscando backup...')
+    }
   }
+
+  // Fallback para backup latest
+  const latestBackup = path.join(localBackupsDir, 'reuni_db_latest.json')
+  if (fs.existsSync(latestBackup)) {
+    try {
+      const raw = fs.readFileSync(latestBackup, 'utf-8')
+      if (raw.trim()) {
+        const parsed = JSON.parse(raw)
+        safeWriteDb(dbPath, parsed)
+        return parsed
+      }
+    } catch (e) {}
+  }
+
+  // Fallback para seed
+  if (fs.existsSync(seedDbPath)) {
+    try {
+      const raw = fs.readFileSync(seedDbPath, 'utf-8')
+      if (raw.trim()) {
+        const parsed = JSON.parse(raw)
+        safeWriteDb(dbPath, parsed)
+        return parsed
+      }
+    } catch (e) {}
+  }
+
+  return null
 }
 
 const broadcast = (data) => {
@@ -61,14 +153,15 @@ const broadcast = (data) => {
   })
 }
 
-// Criar backups versionados no servidor local
+// Grava backups versionados e mantém o seed sincronizado
 const syncBackups = (data) => {
   try {
-    fs.writeFileSync(path.join(localBackupsDir, 'reuni_db_latest.json'), JSON.stringify(data, null, 2), 'utf-8')
+    safeWriteDb(path.join(localBackupsDir, 'reuni_db_latest.json'), data)
+    safeWriteDb(seedDbPath, data)
     const backupName = `reuni_db_backup_${new Date().toISOString().replace(/[:.]/g, '-')}.json`
     const backupFiles = fs.readdirSync(localBackupsDir).filter(f => f.startsWith('reuni_db_backup_'))
     if (backupFiles.length < 50) {
-      fs.writeFileSync(path.join(localBackupsDir, backupName), JSON.stringify(data, null, 2), 'utf-8')
+      safeWriteDb(path.join(localBackupsDir, backupName), data)
     }
   } catch (err) {
     console.error('Erro ao gravar backup no servidor:', err.message)
@@ -149,13 +242,9 @@ const server = http.createServer((req, res) => {
     res.write('retry: 1500\n\n')
     sseClients.push(res)
 
-    if (fs.existsSync(dbPath)) {
-      try {
-        const currentData = fs.readFileSync(dbPath, 'utf-8')
-        if (currentData.trim()) {
-          res.write(`data: ${currentData}\n\n`)
-        }
-      } catch (err) {}
+    const currentData = readCurrentDb()
+    if (currentData) {
+      res.write(`data: ${JSON.stringify(currentData)}\n\n`)
     }
 
     req.on('close', () => {
@@ -164,19 +253,11 @@ const server = http.createServer((req, res) => {
     return
   }
 
-  // API Obter Dados
+  // API Obter Dados (sempre utiliza auto-recuperação do banco caso o arquivo tenha sido movido ou corrompido)
   if (urlPath === '/api/data' && req.method === 'GET') {
+    const currentData = readCurrentDb()
     res.writeHead(200, { 'Content-Type': 'application/json' })
-    if (fs.existsSync(dbPath)) {
-      try {
-        const content = fs.readFileSync(dbPath, 'utf-8')
-        return res.end(content || '{}')
-      } catch (e) {
-        return res.end('{}')
-      }
-    } else {
-      return res.end(JSON.stringify({}))
-    }
+    return res.end(JSON.stringify(currentData || emptyDb()))
   }
 
   // API Mutação atômica (create/update/delete/replaceAll de uma coleção)
@@ -198,8 +279,8 @@ const server = http.createServer((req, res) => {
         applyOps(current, ops)
         current.updatedAt = Date.now()
 
-        // 1. Grava no DB local
-        fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+        // 1. Grava no DB local de forma atômica e segura
+        safeWriteDb(dbPath, current)
 
         // 2. Grava backup no servidor
         syncBackups(current)
@@ -250,7 +331,7 @@ const server = http.createServer((req, res) => {
           ? await processarPagamentoDemandaComComprovante(current, demandaId, comprovante)
           : processarPagamentoDemanda(current, demandaId, extracao || null)
 
-        fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
+        safeWriteDb(dbPath, current)
         syncBackups(current)
         broadcast(current)
 

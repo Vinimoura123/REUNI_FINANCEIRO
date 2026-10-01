@@ -96,12 +96,80 @@ export function FinanceProvider({ children }) {
 
   const lastServerTimestamp = useRef(0)
 
+  const autoRestoreServerFromLocal = () => {
+    const ops = []
+    if (demandasRef.current && demandasRef.current.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'demandas', items: demandasRef.current })
+    }
+    if (transacoesRef.current && transacoesRef.current.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'transacoes', items: transacoesRef.current })
+    }
+    if (arrecadacoesRef.current && arrecadacoesRef.current.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'arrecadacoes', items: arrecadacoesRef.current })
+    }
+    if (bazarItemsRef.current && bazarItemsRef.current.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'bazarItems', items: bazarItemsRef.current })
+    }
+    if (keepNotesRef.current && keepNotesRef.current.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'keepNotes', items: keepNotesRef.current })
+    }
+    if (inventarioItemsRef.current && inventarioItemsRef.current.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'inventarioItems', items: inventarioItemsRef.current })
+    }
+
+    if (ops.length > 0) {
+      console.warn('🛡️ [Proteção Anti-Wipe] Servidor vazio detectado. Restaurando dados locais no servidor automaticamente...')
+      fetch('/api/mutate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ ops })
+      })
+        .then(res => res.json())
+        .then(result => {
+          if (result && result.success) {
+            console.log('✅ [Proteção Anti-Wipe] Banco do servidor restaurado com sucesso a partir dos dados locais!')
+          }
+        })
+        .catch(err => {
+          console.error('Falha ao restaurar banco do servidor:', err)
+        })
+    }
+  }
+
   const applyServerData = (data) => {
     if (!data || typeof data !== 'object') return
     const incomingTimestamp = data.updatedAt || 0
 
     // O servidor é a fonte única da verdade. Ignora payloads mais antigos ou iguais.
     if (incomingTimestamp && incomingTimestamp <= lastServerTimestamp.current) {
+      return
+    }
+
+    // PROTEÇÃO CRÍTICA ANTI-WIPE:
+    // Se o servidor estiver vazio (0 demandas, 0 transações, 0 arrecadações, etc.),
+    // mas o cliente local já possui dados no cache/localStorage, NÃO permitir que
+    // o servidor vazio destrua as informações do usuário. Em vez disso, envia os dados
+    // do cliente para repovoar o servidor automaticamente!
+    const serverVazio = (
+      (!data.demandas || data.demandas.length === 0) &&
+      (!data.transacoes || data.transacoes.length === 0) &&
+      (!data.arrecadacoes || data.arrecadacoes.length === 0) &&
+      (!data.bazarItems || data.bazarItems.length === 0) &&
+      (!data.keepNotes || data.keepNotes.length === 0) &&
+      (!data.inventarioItems || data.inventarioItems.length === 0)
+    )
+
+    const clienteTemDados = (
+      (demandasRef.current && demandasRef.current.length > 0) ||
+      (transacoesRef.current && transacoesRef.current.length > 0) ||
+      (arrecadacoesRef.current && arrecadacoesRef.current.length > 0) ||
+      (bazarItemsRef.current && bazarItemsRef.current.length > 0) ||
+      (keepNotesRef.current && keepNotesRef.current.length > 0) ||
+      (inventarioItemsRef.current && inventarioItemsRef.current.length > 0)
+    )
+
+    if (serverVazio && clienteTemDados) {
+      autoRestoreServerFromLocal()
       return
     }
 
@@ -138,6 +206,14 @@ export function FinanceProvider({ children }) {
       setInventarioItems(data.inventarioItems)
       try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems)) } catch (e) {}
     }
+
+    // Snapshot de emergência para recuperação em caso de limpeza de cache
+    try {
+      localStorage.setItem('reuni_emergency_snapshot', JSON.stringify({
+        data,
+        timestamp: Date.now()
+      }))
+    } catch (e) {}
 
     setLastSaved(`Ao vivo: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`)
   }
