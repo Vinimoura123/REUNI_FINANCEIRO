@@ -37,6 +37,9 @@ export default function DetalhamentoModal({ isOpen, onClose, demanda }) {
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-primary/10 text-primary border border-primary/20">
                 {demanda.comissao || 'Subcomissão'}
               </span>
+              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-secondary/90 text-foreground border border-border/80">
+                Qtd: {demanda.quantidade !== undefined && demanda.quantidade !== null ? demanda.quantidade : 1}
+              </span>
               <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
                 demanda.status === 'Pago' 
                   ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 

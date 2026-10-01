@@ -130,6 +130,7 @@ export default function Demandas() {
               <tr>
                 <th className="px-5 py-4">Comissão</th>
                 <th className="px-5 py-4">Nome do Item</th>
+                <th className="px-5 py-4 text-center">Qtd</th>
                 <th className="px-5 py-4">Detalhamento</th>
                 <th className="px-5 py-4">Custo Est.</th>
                 <th className="px-5 py-4">Prioridade</th>
@@ -141,7 +142,7 @@ export default function Demandas() {
             <tbody className="divide-y divide-border/60">
               {demandasFiltradas.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="px-6 py-12 text-center text-muted-foreground text-sm">
+                  <td colSpan="9" className="px-6 py-12 text-center text-muted-foreground text-sm">
                     Nenhuma demanda encontrada para os filtros selecionados.
                   </td>
                 </tr>
@@ -181,6 +182,13 @@ export default function Demandas() {
                       <td className="px-5 py-3.5 text-foreground font-bold">
                         <span className="block max-w-[220px] truncate" title={d.item}>
                           {d.item}
+                        </span>
+                      </td>
+
+                      {/* Quantidade */}
+                      <td className="px-5 py-3.5 text-center whitespace-nowrap">
+                        <span className="inline-flex items-center justify-center min-w-[32px] px-2 py-0.5 rounded-lg bg-secondary/80 text-foreground font-extrabold text-xs border border-border/60">
+                          {d.quantidade !== undefined && d.quantidade !== null ? d.quantidade : 1}
                         </span>
                       </td>
 

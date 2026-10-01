@@ -93,6 +93,7 @@ export function exportToExcel({ demandas = [], arrecadacoes = [], transacoes = [
       'Nº': index + 1,
       'Comissão': d.comissao || 'Geral',
       'Nome do Item': d.item,
+      'Quantidade': d.quantidade !== undefined && d.quantidade !== null ? d.quantidade : 1,
       'Detalhamento / Especificações': d.detalhamento || d.observacoes || '-',
       'Custo Estimado': rotuloCusto,
       'Prioridade': d.prioridade,
@@ -107,11 +108,11 @@ export function exportToExcel({ demandas = [], arrecadacoes = [], transacoes = [
     { wch: 20 },
     { wch: 35 },
     { wch: 12 },
-    { wch: 20 },
-    { wch: 20 },
+    { wch: 40 },
+    { wch: 18 },
     { wch: 15 },
-    { wch: 12 },
-    { wch: 30 }
+    { wch: 20 },
+    { wch: 14 }
   ]
   XLSX.utils.book_append_sheet(wb, wsDemandas, 'Demandas por Comissão')
 

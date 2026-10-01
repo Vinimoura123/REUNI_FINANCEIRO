@@ -18,6 +18,7 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
   const [formData, setFormData] = useState({
     comissao: COMISSOES[0],
     item: '',
+    quantidade: 1,
     detalhamento: '',
     semCusto: false,
     tipoSemCusto: OPCOES_SEM_CUSTO[0],
@@ -37,6 +38,7 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
       setFormData({
         comissao: demandaToEdit.comissao || COMISSOES[0],
         item: demandaToEdit.item || '',
+        quantidade: demandaToEdit.quantidade !== undefined && demandaToEdit.quantidade !== null ? demandaToEdit.quantidade : 1,
         detalhamento: demandaToEdit.detalhamento || '',
         semCusto: isSemCusto,
         tipoSemCusto: isCustom ? 'Outro (Personalizado)' : (demandaToEdit.tipoSemCusto || OPCOES_SEM_CUSTO[0]),
@@ -51,6 +53,7 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
       setFormData({
         comissao: COMISSOES[0],
         item: '',
+        quantidade: 1,
         detalhamento: '',
         semCusto: false,
         tipoSemCusto: OPCOES_SEM_CUSTO[0],
@@ -73,9 +76,13 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
       ? (formData.custoPersonalizado.trim() || 'A Definir')
       : formData.tipoSemCusto
 
+    const parsedQtd = parseFloat(formData.quantidade)
+    const quantidadeValida = !isNaN(parsedQtd) && parsedQtd > 0 ? parsedQtd : 1
+
     const payload = {
       ...formData,
       item: formData.item.trim(),
+      quantidade: quantidadeValida,
       detalhamento: formData.detalhamento.trim(),
       semCusto: formData.semCusto,
       tipoSemCusto: formData.semCusto ? rotuloFinalSemCusto : '',
@@ -110,17 +117,32 @@ export default function AddDemandaModal({ isOpen, onClose, demandaToEdit = null 
           </select>
         </div>
 
-        {/* Nome do Item */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Nome do Item / Necessidade *</label>
-          <input 
-            type="text" 
-            placeholder="Ex: Impressão de crachás, Aluguel de gerador, Kit primeiros socorros..."
-            required
-            value={formData.item}
-            onChange={(e) => setFormData({ ...formData, item: e.target.value })}
-            className="w-full px-3 py-2 border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
-          />
+        {/* Nome do Item & Quantidade */}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div className="sm:col-span-3">
+            <label className="block text-sm font-medium mb-1">Nome do Item / Necessidade *</label>
+            <input 
+              type="text" 
+              placeholder="Ex: Impressão de crachás, Aluguel de gerador, Kit primeiros socorros..."
+              required
+              value={formData.item}
+              onChange={(e) => setFormData({ ...formData, item: e.target.value })}
+              className="w-full px-3 py-2 border rounded-xl bg-background text-foreground focus:ring-2 focus:ring-primary outline-none"
+            />
+          </div>
+          <div className="sm:col-span-1">
+            <label className="block text-sm font-medium mb-1">Quantidade *</label>
+            <input 
+              type="number" 
+              min="0.01"
+              step="any"
+              required
+              placeholder="1"
+              value={formData.quantidade}
+              onChange={(e) => setFormData({ ...formData, quantidade: e.target.value })}
+              className="w-full px-3 py-2 border rounded-xl bg-background text-foreground font-semibold focus:ring-2 focus:ring-primary outline-none text-center sm:text-left"
+            />
+          </div>
         </div>
 
         {/* Detalhamento Separado */}

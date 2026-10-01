@@ -33,7 +33,7 @@ export default function PagarDemandaModal({ isOpen, onClose, demanda }) {
                 : `R$ ${Number(demanda.custo).toFixed(2)}`}
             </strong>
           </span>
-          <span className="font-semibold text-primary">({demanda.comissao})</span>
+          <span className="font-semibold text-primary">({demanda.comissao} • Qtd: {demanda.quantidade !== undefined && demanda.quantidade !== null ? demanda.quantidade : 1})</span>
         </div>
 
         {demanda.detalhamento && (
