@@ -14,13 +14,10 @@
 
 import crypto from 'node:crypto'
 
-export const ACCESS_TOKEN = process.env.REUNI_ACCESS_TOKEN || null
+export const ACCESS_TOKEN = process.env.REUNI_ACCESS_TOKEN || '304314'
 
-if (!ACCESS_TOKEN) {
-  console.warn(
-    '⚠️  REUNI_ACCESS_TOKEN não definido — todas as chamadas à API serão ' +
-    'rejeitadas (401) até essa variável de ambiente ser configurada.'
-  )
+if (!process.env.REUNI_ACCESS_TOKEN) {
+  console.log('ℹ️  REUNI_ACCESS_TOKEN não definido no ambiente — usando token padrão do projeto (304314).')
 }
 
 function timingSafeEqualStr(a, b) {
