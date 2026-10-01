@@ -100,37 +100,8 @@ export function FinanceProvider({ children }) {
     if (!data || typeof data !== 'object') return
     const incomingTimestamp = data.updatedAt || 0
 
-    // Verificar se o cliente local possui dados salvos
-    const hasLocalData = 
-      demandasRef.current.length > 0 ||
-      arrecadacoesRef.current.length > 0 ||
-      transacoesRef.current.length > 0 ||
-      bazarItemsRef.current.length > 0 ||
-      keepNotesRef.current.length > 0 ||
-      inventarioItemsRef.current.length > 0
-
-    // Se a resposta do servidor for vazia ou updatedAt = 0 (ex: reinício do servidor no Render)
-    if (!incomingTimestamp || incomingTimestamp === 0) {
-      if (hasLocalData) {
-        // Se o cliente tem dados mas o servidor está limpo (reinício/perda de disco),
-        // restaura as 6 coleções a partir do que este cliente tem localmente.
-        // Isso é uma substituição total INTENCIONAL (recuperação de desastre),
-        // diferente do bug de sobrescrita cega: só acontece quando o servidor
-        // não tem nenhum dado (updatedAt 0), nunca por cima de dado real de outro cliente.
-        pushStateToServer({}, [
-          { op: 'replaceAll', colecao: 'demandas', items: demandasRef.current },
-          { op: 'replaceAll', colecao: 'arrecadacoes', items: arrecadacoesRef.current },
-          { op: 'replaceAll', colecao: 'transacoes', items: transacoesRef.current },
-          { op: 'replaceAll', colecao: 'bazarItems', items: bazarItemsRef.current },
-          { op: 'replaceAll', colecao: 'keepNotes', items: keepNotesRef.current },
-          { op: 'replaceAll', colecao: 'inventarioItems', items: inventarioItemsRef.current }
-        ])
-      }
-      return
-    }
-
-    // Ignorar respostas do servidor que sejam mais antigas ou iguais ao timestamp local
-    if (incomingTimestamp <= lastServerTimestamp.current) {
+    // O servidor é a fonte única da verdade. Ignora payloads mais antigos ou iguais.
+    if (incomingTimestamp && incomingTimestamp <= lastServerTimestamp.current) {
       return
     }
 
@@ -235,18 +206,7 @@ export function FinanceProvider({ children }) {
         applyServerData(data)
       })
       .catch(() => {
-        // Se a API /api/data der erro ou offline, garante a sincronização dos dados locais
-        const hasLocal = demandasRef.current.length > 0 || transacoesRef.current.length > 0
-        if (hasLocal) {
-          pushStateToServer({}, [
-            { op: 'replaceAll', colecao: 'demandas', items: demandasRef.current },
-            { op: 'replaceAll', colecao: 'arrecadacoes', items: arrecadacoesRef.current },
-            { op: 'replaceAll', colecao: 'transacoes', items: transacoesRef.current },
-            { op: 'replaceAll', colecao: 'bazarItems', items: bazarItemsRef.current },
-            { op: 'replaceAll', colecao: 'keepNotes', items: keepNotesRef.current },
-            { op: 'replaceAll', colecao: 'inventarioItems', items: inventarioItemsRef.current }
-          ])
-        }
+        // Se a API /api/data der erro ou estiver offline, mantém os dados em cache sem sobrescrever o servidor
       })
 
     // EventSource nativo não manda header customizado, então o token vai
@@ -870,7 +830,7 @@ export function FinanceProvider({ children }) {
     })
   }
 
-  // Apaga o arquivo físico (local + SSD) quando a URL veio de
+  // Apaga o arquivo físico no servidor quando a URL veio de
   // /api/documents/upload. URLs data: (base64 embutido, ex.: comprovante
   // de venda de rifa) não têm arquivo no servidor — não faz nada nesse
   // caso, quem chamou só precisa limpar o campo comprovanteUrl do registro.

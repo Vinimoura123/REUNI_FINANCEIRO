@@ -180,7 +180,7 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, onOpenImport
             <div className="flex-1 min-w-0">
               <span className="font-semibold block truncate text-emerald-400">Sincronizado 24/7</span>
               <span className="text-[10px] opacity-80 block truncate text-emerald-500/80">
-                {lastSaved ? `Atualizado às ${lastSaved}` : 'Persistência SSD de 1TB'}
+                {lastSaved ? `Atualizado às ${lastSaved}` : 'Sincronizado na Nuvem'}
               </span>
             </div>
           </div>

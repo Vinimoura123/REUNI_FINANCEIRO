@@ -86,17 +86,20 @@ export function exportToExcel({ demandas = [], arrecadacoes = [], transacoes = [
     return (prioridadeOrder[a.prioridade] || 5) - (prioridadeOrder[b.prioridade] || 5)
   })
 
-  const demandasRows = demandasOrdenadas.map((d, index) => ({
-    'Nº': index + 1,
-    'Comissão': d.comissao || 'Geral',
-    'Item / Especificação': d.item,
-    'Quantidade': d.quantidade || 1,
-    'Custo Unitário (R$)': `R$ ${formatCurrency(Number(d.custo) / (Number(d.quantidade) || 1))}`,
-    'Custo Total (R$)': `R$ ${formatCurrency(d.custo)}`,
-    'Prioridade': d.prioridade,
-    'Status': d.status || 'Pendente',
-    'Observações': d.observacoes || '-'
-  }))
+  const demandasRows = demandasOrdenadas.map((d, index) => {
+    const isSemCusto = d.semCusto || Number(d.custo) === 0
+    const rotuloCusto = isSemCusto ? (d.tipoSemCusto || 'A Definir') : `R$ ${formatCurrency(d.custo)}`
+    return {
+      'Nº': index + 1,
+      'Comissão': d.comissao || 'Geral',
+      'Nome do Item': d.item,
+      'Detalhamento / Especificações': d.detalhamento || d.observacoes || '-',
+      'Custo Estimado': rotuloCusto,
+      'Prioridade': d.prioridade,
+      'Prazo Limite': d.prazoData ? (d.prazoHora ? `${d.prazoData} ${d.prazoHora}` : d.prazoData) : 'Sem prazo',
+      'Status': d.status || 'Pendente'
+    }
+  })
 
   const wsDemandas = XLSX.utils.json_to_sheet(demandasRows)
   wsDemandas['!cols'] = [

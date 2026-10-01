@@ -24,9 +24,24 @@ export default function PagarDemandaModal({ isOpen, onClose, demanda }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`Marcar como Pago: ${demanda.item}`}>
       <div className="space-y-4">
-        <div className="p-3 bg-secondary/50 rounded-xl text-xs text-muted-foreground">
-          Custo lançado: <strong className="text-foreground">R$ {Number(demanda.custo).toFixed(2)}</strong> ({demanda.comissao})
+        <div className="p-3 bg-secondary/50 rounded-xl text-xs text-muted-foreground flex items-center justify-between">
+          <span>
+            {demanda.semCusto || Number(demanda.custo) === 0 ? 'Condição da Demanda:' : 'Custo Lançado:'}{' '}
+            <strong className="text-foreground">
+              {demanda.semCusto || Number(demanda.custo) === 0
+                ? (demanda.tipoSemCusto || 'A Definir / Sob Cotação')
+                : `R$ ${Number(demanda.custo).toFixed(2)}`}
+            </strong>
+          </span>
+          <span className="font-semibold text-primary">({demanda.comissao})</span>
         </div>
+
+        {demanda.detalhamento && (
+          <div className="p-2.5 bg-secondary/30 rounded-xl text-[11px] text-muted-foreground">
+            <span className="font-semibold text-foreground">Detalhamento: </span>
+            <span className="line-clamp-2">{demanda.detalhamento}</span>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium mb-1">Comprovante (opcional)</label>

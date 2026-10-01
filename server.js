@@ -15,25 +15,12 @@ const dbPath = path.join(__dirname, 'data', 'reuni_db.json')
 const distDir = path.join(__dirname, 'dist')
 const localDocsDir = path.join(__dirname, 'data', 'comprovantes')
 
-// Detectar diretórios no SSD Externo de 1TB (Disco D:\)
-const SSD_ROOT = 'D:\\REUNI_STORAGE'
-const hasSSD = fs.existsSync(SSD_ROOT)
-
-const ssdDbDir = hasSSD ? path.join(SSD_ROOT, 'db') : null
-const ssdDocsDir = hasSSD ? path.join(SSD_ROOT, 'comprovantes') : null
-const ssdBackupsDir = hasSSD ? path.join(SSD_ROOT, 'backups') : null
-
-// Garantir criação das pastas locais e do SSD
+// Garantir criação das pastas locais da hospedagem
 const dataDir = path.dirname(dbPath)
+const localBackupsDir = path.join(__dirname, 'data', 'backups')
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 if (!fs.existsSync(localDocsDir)) fs.mkdirSync(localDocsDir, { recursive: true })
-
-if (hasSSD) {
-  if (!fs.existsSync(ssdDbDir)) fs.mkdirSync(ssdDbDir, { recursive: true })
-  if (!fs.existsSync(ssdDocsDir)) fs.mkdirSync(ssdDocsDir, { recursive: true })
-  if (!fs.existsSync(ssdBackupsDir)) fs.mkdirSync(ssdBackupsDir, { recursive: true })
-  console.log(`✅ SSD de 1 TB Detectado e Conectado: ${SSD_ROOT}`)
-}
+if (!fs.existsSync(localBackupsDir)) fs.mkdirSync(localBackupsDir, { recursive: true })
 
 if (!fs.existsSync(dbPath)) {
   const initialData = JSON.stringify({
@@ -47,15 +34,6 @@ if (!fs.existsSync(dbPath)) {
     updatedAt: 0
   }, null, 2)
   fs.writeFileSync(dbPath, initialData, 'utf-8')
-}
-
-// Se o SSD estiver presente mas sem o DB, copiar a versão inicial
-if (hasSSD && ssdDbDir && !fs.existsSync(path.join(ssdDbDir, 'reuni_db.json'))) {
-  try {
-    fs.copyFileSync(dbPath, path.join(ssdDbDir, 'reuni_db.json'))
-  } catch (err) {
-    console.error('Erro ao clonar DB para o SSD:', err.message)
-  }
 }
 
 let sseClients = []
@@ -83,26 +61,17 @@ const broadcast = (data) => {
   })
 }
 
-// Salvar cópias no SSD e criar backups versionados
-const syncToSSDAndBackups = (data) => {
-  if (!hasSSD || !ssdDbDir) return
-
+// Criar backups versionados no servidor local
+const syncBackups = (data) => {
   try {
-    // 1. Gravar no SSD de 1TB
-    fs.writeFileSync(path.join(ssdDbDir, 'reuni_db.json'), JSON.stringify(data, null, 2), 'utf-8')
-    
-    // 2. Snapshot de Backup no SSD
-    fs.writeFileSync(path.join(ssdBackupsDir, 'reuni_db_latest.json'), JSON.stringify(data, null, 2), 'utf-8')
-    
-    // 3. Backup Diário / Temporal (a cada 20 atualizações)
+    fs.writeFileSync(path.join(localBackupsDir, 'reuni_db_latest.json'), JSON.stringify(data, null, 2), 'utf-8')
     const backupName = `reuni_db_backup_${new Date().toISOString().replace(/[:.]/g, '-')}.json`
-    const backupFiles = fs.readdirSync(ssdBackupsDir).filter(f => f.startsWith('reuni_db_backup_'))
-    
+    const backupFiles = fs.readdirSync(localBackupsDir).filter(f => f.startsWith('reuni_db_backup_'))
     if (backupFiles.length < 50) {
-      fs.writeFileSync(path.join(ssdBackupsDir, backupName), JSON.stringify(data, null, 2), 'utf-8')
+      fs.writeFileSync(path.join(localBackupsDir, backupName), JSON.stringify(data, null, 2), 'utf-8')
     }
   } catch (err) {
-    console.error('Erro ao sincronizar com o SSD:', err.message)
+    console.error('Erro ao gravar backup no servidor:', err.message)
   }
 }
 
@@ -154,25 +123,19 @@ const server = http.createServer((req, res) => {
     return res.end(JSON.stringify({ ok: true }))
   }
 
-  // API Status & Telemetria do SSD
+  // API Status & Telemetria do Servidor
   if (urlPath === '/api/system/status' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json' })
     let localDocsCount = 0
-    let ssdDocsCount = 0
-
     try { localDocsCount = fs.readdirSync(localDocsDir).length } catch (e) {}
-    if (hasSSD && ssdDocsDir) {
-      try { ssdDocsCount = fs.readdirSync(ssdDocsDir).length } catch (e) {}
-    }
 
     return res.end(JSON.stringify({
-      ssdConnected: hasSSD,
-      ssdPath: hasSSD ? SSD_ROOT : null,
+      ssdConnected: false,
+      ssdPath: null,
       localDocsCount,
-      ssdDocsCount,
-      totalDocuments: Math.max(localDocsCount, ssdDocsCount),
+      totalDocuments: localDocsCount,
       status: 'online',
-      storageEngine: hasSSD ? 'SSD 1TB (Disco D:\\) + Fallback Cloud' : 'Cloud / Memory Local'
+      storageEngine: 'Armazenamento Centralizado no Servidor'
     }))
   }
 
@@ -238,8 +201,8 @@ const server = http.createServer((req, res) => {
         // 1. Grava no DB local
         fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
 
-        // 2. Grava no SSD e cria backup
-        syncToSSDAndBackups(current)
+        // 2. Grava backup no servidor
+        syncBackups(current)
 
         // 3. Notifica todos os navegadores em tempo real
         broadcast(current)
@@ -400,8 +363,5 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`🚀 Servidor REUNI Financeiro rodando 24/7 na porta ${PORT}`)
-  if (hasSSD) {
-    console.log(`💾 Armazenamento do SSD Ativo em: ${SSD_ROOT}`)
-  }
 })
 

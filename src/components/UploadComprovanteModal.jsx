@@ -27,7 +27,6 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
   const [comprovanteUrl, setComprovanteUrl] = useState('')
   const [nomeArquivo, setNomeArquivo] = useState('')
   const [isUploading, setIsUploading] = useState(false)
-  const [savedOnSSD, setSavedOnSSD] = useState(false)
 
   const handleFileUpload = async (e) => {
     const file = e.target.files?.[0]
@@ -41,7 +40,6 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
       const result = await uploadDocument(file)
       if (result && result.url) {
         setComprovanteUrl(result.url)
-        setSavedOnSSD(Boolean(result.savedOnSSD))
       }
     } catch (err) {
       alert(`Erro ao fazer upload do documento: ${err.message}`)
@@ -78,7 +76,6 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
     setCategoria('Rifa')
     setComprovanteUrl('')
     setNomeArquivo('')
-    setSavedOnSSD(false)
 
     onClose()
   }
@@ -203,7 +200,7 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
           {isUploading ? (
             <div className="p-6 border-2 border-dashed border-primary/50 rounded-2xl bg-primary/5 flex flex-col items-center justify-center gap-2 text-xs text-primary font-semibold">
               <Loader2 className="w-7 h-7 animate-spin" />
-              <span>Gravando documento no SSD D:\REUNI_STORAGE...</span>
+              <span>Enviando documento para o servidor...</span>
             </div>
           ) : comprovanteUrl ? (
             <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 bg-emerald-500/10 p-3.5 flex items-center gap-3">
@@ -217,7 +214,7 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
                 </span>
                 <span className="text-[10px] text-muted-foreground block flex items-center gap-1 mt-0.5">
                   <HardDrive className="w-3 h-3 text-emerald-500" />
-                  {savedOnSSD ? 'Salvo no SSD 1TB (D:\\REUNI_STORAGE)' : 'Salvo no Repositório de Documentos'}
+                  Salvo no Repositório do Servidor
                 </span>
               </div>
               <button
@@ -225,7 +222,6 @@ export default function UploadComprovanteModal({ isOpen, onClose }) {
                 onClick={() => {
                   setComprovanteUrl('')
                   setNomeArquivo('')
-                  setSavedOnSSD(false)
                 }}
                 className="p-2 text-muted-foreground hover:text-red-500 rounded-lg hover:bg-secondary transition-colors"
                 title="Remover Comprovante"
