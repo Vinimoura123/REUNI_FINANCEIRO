@@ -207,15 +207,19 @@ const server = http.createServer((req, res) => {
         // 3. Notifica todos os navegadores em tempo real
         broadcast(current)
 
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({
+        const payload = JSON.stringify({
           success: true,
           updatedAt: current.updatedAt,
           data: current,
-          ssdSynced: hasSSD
-        }))
+          serverSynced: true
+        })
+
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(payload)
       } catch (err) {
-        res.writeHead(400, { 'Content-Type': 'application/json' })
+        if (!res.headersSent) {
+          res.writeHead(400, { 'Content-Type': 'application/json' })
+        }
         res.end(JSON.stringify({ error: err.message }))
       }
     })
@@ -247,11 +251,10 @@ const server = http.createServer((req, res) => {
           : processarPagamentoDemanda(current, demandaId, extracao || null)
 
         fs.writeFileSync(dbPath, JSON.stringify(current, null, 2), 'utf-8')
-        syncToSSDAndBackups(current)
+        syncBackups(current)
         broadcast(current)
 
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({
+        const payload = JSON.stringify({
           success: true,
           updatedAt: current.updatedAt,
           data: current,
@@ -259,9 +262,14 @@ const server = http.createServer((req, res) => {
           avaliacao,
           transacaoCriada,
           erroExtracao: erroExtracao || null
-        }))
+        })
+
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(payload)
       } catch (err) {
-        res.writeHead(400, { 'Content-Type': 'application/json' })
+        if (!res.headersSent) {
+          res.writeHead(400, { 'Content-Type': 'application/json' })
+        }
         res.end(JSON.stringify({ error: err.message }))
       }
     })
@@ -285,8 +293,7 @@ const server = http.createServer((req, res) => {
         const fileExt = path.extname(fileName) || (fileType?.includes('pdf') ? '.pdf' : '.png')
         const { fileId, url: fileUrl, savedOnSSD } = salvarDocumento(buffer, fileExt)
 
-        res.writeHead(200, { 'Content-Type': 'application/json' })
-        res.end(JSON.stringify({
+        const payload = JSON.stringify({
           success: true,
           fileId,
           fileName,
@@ -294,9 +301,14 @@ const server = http.createServer((req, res) => {
           size: buffer.length,
           savedOnSSD,
           uploadedAt: new Date().toISOString()
-        }))
+        })
+
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(payload)
       } catch (err) {
-        res.writeHead(500, { 'Content-Type': 'application/json' })
+        if (!res.headersSent) {
+          res.writeHead(500, { 'Content-Type': 'application/json' })
+        }
         res.end(JSON.stringify({ error: err.message }))
       }
     })
