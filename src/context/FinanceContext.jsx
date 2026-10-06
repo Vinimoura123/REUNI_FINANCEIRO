@@ -173,38 +173,70 @@ export function FinanceProvider({ children }) {
       return
     }
 
-    // Se o servidor for mais novo que a nossa gravação local, aplica os dados do servidor
+    // PROTEÇÃO CRÍTICA ANTI-WIPE COLECIONAL:
+    // Mesclagem preservativa inteligente: se o cliente possui itens locais com IDs que o servidor não possui,
+    // preservamos os itens e sincronizamos de volta ao servidor, impedindo destruição acidental.
+    const mergeColecao = (serverList, localRefList, colecaoNome) => {
+      const serverArr = Array.isArray(serverList) ? serverList : []
+      const localArr = Array.isArray(localRefList) ? localRefList : []
+      
+      const serverIds = new Set(serverArr.map(item => item.id || item.descricao || item.item || JSON.stringify(item)))
+      const locaisFaltandoNoServer = localArr.filter(item => {
+        const key = item.id || item.descricao || item.item || JSON.stringify(item)
+        return !serverIds.has(key)
+      })
+
+      if (locaisFaltandoNoServer.length > 0) {
+        console.warn(`🛡️ [Proteção Anti-Wipe] Preservando ${locaisFaltandoNoServer.length} itens locais de ${colecaoNome} que faltavam no servidor`)
+        // Envia os itens locais faltantes para o servidor salvar
+        const ops = locaisFaltandoNoServer.map(item => ({ op: 'create', colecao: colecaoNome, item }))
+        fetch('/api/mutate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...authHeaders() },
+          body: JSON.stringify({ ops })
+        }).catch(() => {})
+        return [...serverArr, ...locaisFaltandoNoServer]
+      }
+      return serverArr
+    }
+
     lastServerTimestamp.current = incomingTimestamp
 
     if (Array.isArray(data.demandas)) {
-      demandasRef.current = data.demandas
-      setDemandas(data.demandas)
-      try { localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(data.demandas)) } catch (e) {}
+      const merged = mergeColecao(data.demandas, demandasRef.current, 'demandas')
+      demandasRef.current = merged
+      setDemandas(merged)
+      try { localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(merged)) } catch (e) {}
     }
     if (Array.isArray(data.arrecadacoes)) {
-      arrecadacoesRef.current = data.arrecadacoes
-      setArrecadacoes(data.arrecadacoes)
-      try { localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(data.arrecadacoes)) } catch (e) {}
+      const merged = mergeColecao(data.arrecadacoes, arrecadacoesRef.current, 'arrecadacoes')
+      arrecadacoesRef.current = merged
+      setArrecadacoes(merged)
+      try { localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(merged)) } catch (e) {}
     }
     if (Array.isArray(data.transacoes)) {
-      transacoesRef.current = data.transacoes
-      setTransacoes(data.transacoes)
-      try { localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(data.transacoes)) } catch (e) {}
+      const merged = mergeColecao(data.transacoes, transacoesRef.current, 'transacoes')
+      transacoesRef.current = merged
+      setTransacoes(merged)
+      try { localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(merged)) } catch (e) {}
     }
     if (Array.isArray(data.bazarItems)) {
-      bazarItemsRef.current = data.bazarItems
-      setBazarItems(data.bazarItems)
-      try { localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(data.bazarItems)) } catch (e) {}
+      const merged = mergeColecao(data.bazarItems, bazarItemsRef.current, 'bazarItems')
+      bazarItemsRef.current = merged
+      setBazarItems(merged)
+      try { localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(merged)) } catch (e) {}
     }
     if (Array.isArray(data.keepNotes)) {
-      keepNotesRef.current = data.keepNotes
-      setKeepNotes(data.keepNotes)
-      try { localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(data.keepNotes)) } catch (e) {}
+      const merged = mergeColecao(data.keepNotes, keepNotesRef.current, 'keepNotes')
+      keepNotesRef.current = merged
+      setKeepNotes(merged)
+      try { localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(merged)) } catch (e) {}
     }
     if (Array.isArray(data.inventarioItems)) {
-      inventarioItemsRef.current = data.inventarioItems
-      setInventarioItems(data.inventarioItems)
-      try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems)) } catch (e) {}
+      const merged = mergeColecao(data.inventarioItems, inventarioItemsRef.current, 'inventarioItems')
+      inventarioItemsRef.current = merged
+      setInventarioItems(merged)
+      try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(merged)) } catch (e) {}
     }
 
     // Snapshot de emergência para recuperação em caso de limpeza de cache
