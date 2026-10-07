@@ -231,8 +231,12 @@ export default function Bazar() {
                       </button>
 
                       <button
-                        onClick={() => deleteBazarItem(item.id)}
-                        className="p-1 text-muted-foreground hover:text-destructive rounded-lg transition-colors"
+                        onClick={() => {
+                          if (window.confirm(`Tem certeza que deseja excluir o item "${item.nome}" do bazar?`)) {
+                            deleteBazarItem(item.id)
+                          }
+                        }}
+                        className="p-1 text-muted-foreground hover:text-destructive rounded-lg transition-colors cursor-pointer"
                         title="Excluir do acervo"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

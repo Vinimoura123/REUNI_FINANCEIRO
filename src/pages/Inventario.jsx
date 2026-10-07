@@ -312,8 +312,12 @@ export default function Inventario() {
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => deleteInventarioItem(item.id)}
-                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-secondary rounded-lg transition-colors"
+                          onClick={() => {
+                            if (window.confirm(`Tem certeza que deseja excluir o item "${item.item}" do inventário?`)) {
+                              deleteInventarioItem(item.id)
+                            }
+                          }}
+                          className="p-2 text-muted-foreground hover:text-destructive hover:bg-secondary rounded-lg transition-colors cursor-pointer"
                           title="Excluir Item"
                         >
                           <Trash2 className="w-4 h-4" />

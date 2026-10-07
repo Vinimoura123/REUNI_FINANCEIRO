@@ -117,8 +117,12 @@ export default function Arrecadacao() {
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => deleteArrecadacao(item.id)}
-                        className="p-1 text-muted-foreground hover:text-destructive rounded-lg transition-colors"
+                        onClick={() => {
+                          if (window.confirm(`Tem certeza que deseja excluir a campanha "${item.nome}"?`)) {
+                            deleteArrecadacao(item.id)
+                          }
+                        }}
+                        className="p-1 text-muted-foreground hover:text-destructive rounded-lg transition-colors cursor-pointer"
                         title="Excluir Ação"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

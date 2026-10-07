@@ -285,8 +285,12 @@ export default function Caixa() {
                       </button>
 
                       <button
-                        onClick={() => deleteTransacao(t.id)}
-                        className="p-1.5 text-muted-foreground hover:text-destructive rounded-lg hover:bg-secondary transition-colors"
+                        onClick={() => {
+                          if (window.confirm(`Tem certeza que deseja excluir o lançamento "${t.descricao}"?`)) {
+                            deleteTransacao(t.id)
+                          }
+                        }}
+                        className="p-1.5 text-muted-foreground hover:text-destructive rounded-lg hover:bg-secondary transition-colors cursor-pointer"
                         title="Excluir Lançamento"
                       >
                         <Trash2 className="w-4 h-4" />

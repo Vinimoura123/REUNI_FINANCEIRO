@@ -34,12 +34,20 @@ export function applyOp(db, op) {
   if (kind === 'create') {
     if (!item || typeof item !== 'object') throw new Error('create exige "item"')
     db[colecao] = [item, ...db[colecao]]
+  } else if (kind === 'createMany') {
+    if (!Array.isArray(items)) throw new Error('createMany exige "items" (array)')
+    db[colecao] = [...items, ...db[colecao]]
   } else if (kind === 'update') {
     if (!id) throw new Error('update exige "id"')
     db[colecao] = db[colecao].map(entry => (entry.id === id ? { ...entry, ...(fields || {}) } : entry))
   } else if (kind === 'delete') {
     if (!id) throw new Error('delete exige "id"')
     db[colecao] = db[colecao].filter(entry => entry.id !== id)
+  } else if (kind === 'deleteMany') {
+    const targetIds = Array.isArray(ids) ? ids : (Array.isArray(items) ? items.map(i => i.id || i) : [])
+    if (targetIds.length === 0) throw new Error('deleteMany exige array de "ids"')
+    const idSet = new Set(targetIds)
+    db[colecao] = db[colecao].filter(entry => !idSet.has(entry.id))
   } else if (kind === 'replaceAll') {
     if (!Array.isArray(items)) throw new Error('replaceAll exige "items" (array)')
     db[colecao] = items

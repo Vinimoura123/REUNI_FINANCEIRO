@@ -187,8 +187,12 @@ export default function KeepNoteCard({ note, onEdit }) {
             {/* Delete Button */}
             <button
               type="button"
-              onClick={() => deleteKeepNote(note.id)}
-              className="p-1.5 hover:text-red-500 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+              onClick={() => {
+                if (window.confirm(`Tem certeza que deseja excluir a anotação "${note.titulo || 'sem título'}"?`)) {
+                  deleteKeepNote(note.id)
+                }
+              }}
+              className="p-1.5 hover:text-red-500 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer"
               title="Excluir nota"
             >
               <Trash2 className="w-4 h-4" />

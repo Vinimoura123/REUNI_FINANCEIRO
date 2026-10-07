@@ -1,65 +1,39 @@
 import React, { useState } from 'react'
 import Modal from './Modal'
 import { useFinance } from '../context/FinanceContext'
-import { Upload, FileSpreadsheet, CheckCircle2, AlertCircle, RefreshCw, ArrowRight, Layers, Sparkles, X } from 'lucide-react'
+import { Upload, FileSpreadsheet, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react'
+import * as XLSX from 'xlsx'
 
-// Helper to parse CSV lines taking into account quotes and Portuguese delimiters (; or ,)
-function parseCSV(text) {
-  const lines = text.split(/\r?\n/).filter(line => line.trim() !== '')
-  if (lines.length === 0) return []
-
-  // Detect delimiter: semicolon or comma or tab
-  const firstLine = lines[0]
-  let delimiter = ','
-  if (firstLine.includes(';')) delimiter = ';'
-  else if (firstLine.includes('\t')) delimiter = '\t'
-
-  const parseLine = (line) => {
-    const result = []
-    let current = ''
-    let inQuotes = false
-
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i]
-      if (char === '"') {
-        inQuotes = !inQuotes
-      } else if (char === delimiter && !inQuotes) {
-        result.push(current.trim().replace(/^"|"$/g, ''))
-        current = ''
-      } else {
-        current += char
-      }
-    }
-    result.push(current.trim().replace(/^"|"$/g, ''))
-    return result
+// Função auxiliar para parsing de valores monetários e numéricos no padrão pt-BR
+function parseCustoBR(val) {
+  if (typeof val === 'number') {
+    return { custo: val, semCusto: val === 0, tipoSemCusto: val === 0 ? 'Sem Custo' : '' }
   }
-
-  const headers = parseLine(lines[0]).map(h => h.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
-  const rows = []
-
-  for (let i = 1; i < lines.length; i++) {
-    const values = parseLine(lines[i])
-    if (values.length === 0 || (values.length === 1 && values[0] === '')) continue
-
-    const rowObj = {}
-    headers.forEach((header, idx) => {
-      rowObj[header] = values[idx] || ''
-    })
-    rows.push(rowObj)
+  if (!val) {
+    return { custo: 0, semCusto: true, tipoSemCusto: 'A Definir' }
   }
+  const str = String(val).trim()
+  if (str.toLowerCase().includes('definir') || str.toLowerCase().includes('cotação') || str.toLowerCase().includes('cotacao')) {
+    return { custo: 0, semCusto: true, tipoSemCusto: 'A Definir (Sob Cotação)' }
+  }
+  const clean = str.replace(/[R$\s+]/g, '').replace(/\./g, '').replace(',', '.')
+  const num = parseFloat(clean)
+  if (isNaN(num)) {
+    return { custo: 0, semCusto: true, tipoSemCusto: 'A Definir' }
+  }
+  return { custo: num, semCusto: num === 0, tipoSemCusto: num === 0 ? 'Sem Custo' : '' }
+}
 
-  return { headers, rows }
+function parseNumeroBR(val, fallback = 0) {
+  if (typeof val === 'number') return val
+  if (!val) return fallback
+  const clean = String(val).replace(/[R$\s+]/g, '').replace(/\./g, '').replace(',', '.')
+  const num = parseFloat(clean)
+  return isNaN(num) ? fallback : num
 }
 
 export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = 'auto' }) {
-  const { 
-    addDemanda, 
-    addArrecadacao, 
-    addBazarItem, 
-    addTransacao, 
-    addInventarioItem, 
-    addKeepNote 
-  } = useFinance()
+  const { importBatch, undoImportBatch } = useFinance()
 
   const [targetModule, setTargetModule] = useState(defaultModule) // 'auto' | 'demandas' | 'arrecadacao' | 'bazar' | 'caixa' | 'inventario' | 'keep'
   const [fileName, setFileName] = useState('')
@@ -72,8 +46,14 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
     inventario: [],
     keep: []
   })
-
   const [importSummary, setImportSummary] = useState(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [activeLoteId, setActiveLoteId] = useState(null)
+  const [undoSuccessMessage, setUndoSuccessMessage] = useState('')
+  const [hasRecentLote, setHasRecentLote] = useState(() => {
+    try { return !!localStorage.getItem('reuni_last_import_lote') } catch (e) { return false }
+  })
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0]
@@ -81,21 +61,150 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
 
     setFileName(file.name)
     setImportSummary(null)
+    setErrorMessage('')
+    setIsProcessing(true)
 
     const reader = new FileReader()
     reader.onload = (event) => {
       try {
-        const text = event.target.result
-        const { headers, rows } = parseCSV(text)
-        setParsedResult({ headers, rows })
+        const buffer = event.target.result
+        const workbook = XLSX.read(buffer, { type: 'array' })
 
-        // Auto Organize Rows into Modules
-        organizeRowsIntoModules(rows, headers, targetModule)
+        if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+          throw new Error('A planilha está vazia ou ilegível.')
+        }
+
+        // 1. Verificar se é uma planilha multi-aba exportada do ecossistema REUNI
+        const sheetNamesLower = workbook.SheetNames.map(s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+        const isReuniEcosystem = sheetNamesLower.some(s => s.includes('demandas') || s.includes('caixa') || s.includes('arrecadacao') || s.includes('bazar') || s.includes('inventario'))
+
+        if (isReuniEcosystem && targetModule === 'auto') {
+          processReuniMultiSheet(workbook)
+        } else {
+          // Processa a primeira aba ou a aba ativa
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
+          const rawRows = XLSX.utils.sheet_to_json(firstSheet, { defval: '' })
+          if (rawRows.length === 0) {
+            throw new Error('Nenhuma linha de dados encontrada na planilha.')
+          }
+          const headers = Object.keys(rawRows[0] || {}).map(h => h.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))
+          setParsedResult({ headers, rows: rawRows })
+          organizeRowsIntoModules(rawRows, headers, targetModule)
+        }
       } catch (err) {
-        alert('Erro ao ler a planilha. Verifique se o arquivo está no formato CSV válido.')
+        console.error('Erro ao ler planilha:', err)
+        setErrorMessage(err.message || 'Erro ao processar a planilha. Verifique se o formato é válido (.xlsx, .xls ou .csv).')
+      } finally {
+        setIsProcessing(false)
       }
     }
-    reader.readAsText(file, 'UTF-8')
+
+    reader.onerror = () => {
+      setErrorMessage('Erro ao ler o arquivo no navegador.')
+      setIsProcessing(false)
+    }
+
+    reader.readAsArrayBuffer(file)
+  }
+
+  // Processa planilhas oficiais com abas estruturadas
+  const processReuniMultiSheet = (workbook) => {
+    const result = {
+      demandas: [],
+      arrecadacoes: [],
+      bazar: [],
+      caixa: [],
+      inventario: [],
+      keep: []
+    }
+
+    let totalLinhas = 0
+
+    for (const sheetName of workbook.SheetNames) {
+      const sheetKey = sheetName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      const ws = workbook.Sheets[sheetName]
+      const rows = XLSX.utils.sheet_to_json(ws, { defval: '' })
+      totalLinhas += rows.length
+
+      if (sheetKey.includes('demanda')) {
+        rows.forEach(r => {
+          const itemNome = r['Nome do Item'] || r['Item'] || r['item'] || r['descricao'] || ''
+          if (!itemNome) return
+          const { custo, semCusto, tipoSemCusto } = parseCustoBR(r['Custo Estimado'] || r['Custo'] || r['custo'])
+          result.demandas.push({
+            item: itemNome,
+            comissao: r['Comissão'] || r['Comissao'] || r['comissao'] || 'Estrutura',
+            quantidade: parseInt(r['Quantidade'] || r['quantidade'] || r['Qtd'] || 1, 10) || 1,
+            detalhamento: r['Detalhamento / Especificações'] || r['Detalhamento'] || r['detalhamento'] || '',
+            custo,
+            semCusto,
+            tipoSemCusto,
+            prioridade: r['Prioridade'] || r['prioridade'] || 'Inegociável',
+            status: r['Status'] || r['status'] || 'Pendente',
+            prazoData: r['Prazo Limite'] || r['Prazo'] || ''
+          })
+        })
+      } else if (sheetKey.includes('caixa') || sheetKey.includes('transac')) {
+        rows.forEach(r => {
+          const desc = r['Descrição da Movimentação'] || r['Descricao'] || r['descricao'] || r['Item'] || ''
+          if (!desc) return
+          const valor = parseNumeroBR(r['Valor (R$)'] || r['Valor'] || r['valor'], 0)
+          const tipo = String(r['Tipo'] || r['tipo'] || '').toLowerCase().includes('saida') ? 'Saída' : 'Entrada'
+          result.caixa.push({
+            descricao: desc,
+            tipo,
+            valor,
+            categoria: r['Categoria / Comissão'] || r['Categoria'] || r['categoria'] || 'Geral',
+            data: r['Data'] || r['data'] || new Date().toISOString().split('T')[0]
+          })
+        })
+      } else if (sheetKey.includes('arrecadac')) {
+        rows.forEach(r => {
+          const nome = r['Nome da Campanha'] || r['Campanha'] || r['Nome'] || r['nome'] || ''
+          if (!nome) return
+          result.arrecadacoes.push({
+            nome,
+            tipo: r['Tipo / Categoria'] || r['Tipo'] || r['tipo'] || 'Rifa',
+            meta: parseNumeroBR(r['Meta (R$)'] || r['Meta'] || r['meta'], 100),
+            atual: parseNumeroBR(r['Arrecadado (R$)'] || r['Atual'] || r['atual'], 0),
+            status: r['Status'] || r['status'] || 'Em Andamento'
+          })
+        })
+      } else if (sheetKey.includes('bazar')) {
+        rows.forEach(r => {
+          const nome = r['Peça / Item'] || r['Nome'] || r['item'] || ''
+          if (!nome) return
+          result.bazar.push({
+            nome,
+            categoria: r['Categoria'] || r['categoria'] || 'Roupas',
+            precoAvaliado: parseNumeroBR(r['Preço Sugerido (R$)'] || r['Preco'] || r['precoAvaliado'], 10),
+            doador: r['Doador'] || r['doador'] || 'Anônimo',
+            tamanho: r['Tamanho'] || r['tamanho'] || 'M',
+            estado: r['Estado de Conservação'] || r['Estado'] || 'Excelente',
+            status: r['Status'] || 'Em Avaliação'
+          })
+        })
+      } else if (sheetKey.includes('inventario') || sheetKey.includes('patrimonio')) {
+        rows.forEach(r => {
+          const item = r['Material / Equipamento'] || r['Item'] || r['material'] || ''
+          if (!item) return
+          result.inventario.push({
+            item,
+            comissao: r['Comissão / Guarda'] || r['Comissao'] || r['comissao'] || 'Recreação',
+            quantidade: parseInt(r['Quantidade'] || r['quantidade'] || 1, 10) || 1,
+            unidade: r['Unidade'] || 'unidades',
+            estadoConservacao: r['Estado de Conservação'] || r['Estado'] || 'Excelente (Pronto)',
+            localArmazenamento: r['Local de Armazenamento'] || r['Local'] || 'Acervo REUNI',
+            responsavelGuarda: r['Responsável pela Guarda'] || r['Responsavel'] || '-',
+            valorEstimadoEconomizado: parseNumeroBR(r['Valor Economizado (R$)'] || r['Economia'], 0),
+            status: r['Status'] || 'Disponível para Uso'
+          })
+        })
+      }
+    }
+
+    setParsedResult({ headers: ['multi-sheet'], rows: new Array(totalLinhas).fill({}) })
+    setMappedData(result)
   }
 
   const organizeRowsIntoModules = (rows, headers, selectedModule) => {
@@ -112,128 +221,145 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
       const getVal = (...keys) => {
         for (const k of keys) {
           for (const headerKey of Object.keys(row)) {
-            if (headerKey.includes(k)) return row[headerKey]
+            const normKey = headerKey.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            if (normKey.includes(k)) {
+              return row[headerKey]
+            }
           }
         }
         return ''
       }
 
-      // If user selected a specific target module
       if (selectedModule !== 'auto') {
         if (selectedModule === 'demandas') {
+          const { custo, semCusto, tipoSemCusto } = parseCustoBR(getVal('custo', 'valor', 'preco', 'orcamento'))
           result.demandas.push({
-            item: getVal('item', 'descricao', 'nome', 'gasto') || 'Item de Demanda',
-            comissao: getVal('comissao', 'setor', 'departamento') || 'Estrutura',
-            custo: parseFloat(getVal('custo', 'valor', 'preco', 'orcamento').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-            prioridade: getVal('prioridade', 'nivel') || 'Inegociável',
-            status: getVal('status', 'situacao') || 'Pendente',
-            prazoData: getVal('prazo', 'data_limite') || ''
+            item: String(getVal('item', 'descricao', 'nome', 'gasto') || 'Item de Demanda'),
+            comissao: String(getVal('comissao', 'setor', 'departamento') || 'Estrutura'),
+            quantidade: parseInt(getVal('quantidade', 'qtd', 'num') || 1, 10) || 1,
+            detalhamento: String(getVal('detalhamento', 'especificacao', 'detalhe', 'observacao') || ''),
+            custo,
+            semCusto,
+            tipoSemCusto,
+            prioridade: String(getVal('prioridade', 'nivel') || 'Inegociável'),
+            status: String(getVal('status', 'situacao') || 'Pendente'),
+            prazoData: String(getVal('prazo', 'data_limite', 'limite') || '')
           })
         } else if (selectedModule === 'arrecadacao') {
           result.arrecadacoes.push({
-            nome: getVal('nome', 'campanha', 'titulo', 'item') || 'Campanha de Arrecadação',
-            tipo: getVal('tipo', 'categoria') || 'Rifa',
-            meta: parseFloat(getVal('meta', 'valor', 'alvo').replace('R$', '').replace('.', '').replace(',', '.')) || 100,
-            atual: parseFloat(getVal('atual', 'arrecadado', 'saldo').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-            status: getVal('status') || 'Em Andamento'
+            nome: String(getVal('nome', 'campanha', 'titulo', 'item') || 'Campanha de Arrecadação'),
+            tipo: String(getVal('tipo', 'categoria') || 'Rifa'),
+            meta: parseNumeroBR(getVal('meta', 'valor', 'alvo'), 100),
+            atual: parseNumeroBR(getVal('atual', 'arrecadado', 'saldo'), 0),
+            status: String(getVal('status') || 'Em Andamento')
           })
         } else if (selectedModule === 'bazar') {
           result.bazar.push({
-            nome: getVal('nome', 'item', 'peca', 'descricao') || 'Peça de Bazar',
-            categoria: getVal('categoria', 'tipo') || 'Roupas',
-            precoAvaliado: parseFloat(getVal('preco', 'valor', 'custo').replace('R$', '').replace('.', '').replace(',', '.')) || 10,
-            doador: getVal('doador', 'origem') || 'Anônimo',
-            tamanho: getVal('tamanho') || 'M',
-            estado: getVal('estado', 'conservacao') || 'Excelente',
-            status: getVal('status') || 'Em Avaliação'
+            nome: String(getVal('nome', 'item', 'peca', 'descricao') || 'Peça de Bazar'),
+            categoria: String(getVal('categoria', 'tipo') || 'Roupas'),
+            precoAvaliado: parseNumeroBR(getVal('preco', 'valor', 'custo'), 10),
+            doador: String(getVal('doador', 'origem') || 'Anônimo'),
+            tamanho: String(getVal('tamanho') || 'M'),
+            estado: String(getVal('estado', 'conservacao') || 'Excelente'),
+            status: String(getVal('status') || 'Em Avaliação')
           })
         } else if (selectedModule === 'caixa') {
+          const tipo = String(getVal('tipo', 'movimentacao') || '').toLowerCase().includes('saida') ? 'Saída' : 'Entrada'
           result.caixa.push({
-            descricao: getVal('descricao', 'item', 'historico', 'nome') || 'Lançamento de Caixa',
-            tipo: (getVal('tipo', 'movimentacao').toLowerCase().includes('saida') || getVal('tipo').toLowerCase().includes('despesa')) ? 'Saída' : 'Entrada',
-            valor: parseFloat(getVal('valor', 'quantia', 'preco').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-            categoria: getVal('categoria', 'comissao') || 'Geral',
-            data: getVal('data') || new Date().toISOString().split('T')[0]
+            descricao: String(getVal('descricao', 'item', 'historico', 'nome') || 'Lançamento de Caixa'),
+            tipo,
+            valor: parseNumeroBR(getVal('valor', 'quantia', 'preco'), 0),
+            categoria: String(getVal('categoria', 'comissao') || 'Geral'),
+            data: String(getVal('data') || new Date().toISOString().split('T')[0])
           })
         } else if (selectedModule === 'inventario') {
           result.inventario.push({
-            item: getVal('item', 'nome', 'material', 'equipamento') || 'Material de Inventário',
-            comissao: getVal('comissao', 'setor') || 'Estrutura',
-            quantidade: parseInt(getVal('quantidade', 'qtd', 'num'), 10) || 1,
-            unidade: getVal('unidade', 'medida') || 'unidades',
-            estadoConservacao: getVal('estado', 'conservacao') || 'Excelente (Pronto)',
-            localArmazenamento: getVal('local', 'armazenamento', 'sala') || 'Armário Central',
-            responsavelGuarda: getVal('responsavel', 'guarda') || 'Secretaria Geral',
-            valorEstimadoEconomizado: parseFloat(getVal('economia', 'valor', 'custo').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-            status: getVal('status') || 'Disponível para Uso'
+            item: String(getVal('item', 'nome', 'material', 'equipamento') || 'Material de Inventário'),
+            comissao: String(getVal('comissao', 'setor') || 'Estrutura'),
+            quantidade: parseInt(getVal('quantidade', 'qtd', 'num') || 1, 10) || 1,
+            unidade: String(getVal('unidade', 'medida') || 'unidades'),
+            estadoConservacao: String(getVal('estado', 'conservacao') || 'Excelente (Pronto)'),
+            localArmazenamento: String(getVal('local', 'armazenamento', 'sala') || 'Armário Central'),
+            responsavelGuarda: String(getVal('responsavel', 'guarda') || 'Secretaria Geral'),
+            valorEstimadoEconomizado: parseNumeroBR(getVal('economia', 'valor', 'custo'), 0),
+            status: String(getVal('status') || 'Disponível para Uso')
           })
         } else if (selectedModule === 'keep') {
           result.keep.push({
-            titulo: getVal('titulo', 'nome', 'assunto') || 'Nota Importada',
-            conteudo: getVal('conteudo', 'descricao', 'texto', 'nota') || '',
-            tags: [getVal('tag', 'categoria') || '#Importado'],
+            titulo: String(getVal('titulo', 'nome', 'assunto') || 'Nota Importada'),
+            conteudo: String(getVal('conteudo', 'descricao', 'texto', 'nota') || ''),
+            tags: [String(getVal('tag', 'categoria') || '#Importado')],
             isPinned: false
           })
         }
         return
       }
 
-      // AUTO-DETECTION HEURISTICS
+      // Detecção heurística inteligente para modo auto
       const rawText = JSON.stringify(row).toLowerCase()
 
-      if (rawText.includes('inventario') || rawText.includes('patrimonio') || rawText.includes('armazenamento') || rawText.includes('guarda') || rawText.includes('reuso')) {
+      if (rawText.includes('inventario') || rawText.includes('patrimonio') || rawText.includes('armazenamento') || rawText.includes('guarda')) {
         result.inventario.push({
-          item: getVal('item', 'nome', 'material', 'equipamento') || 'Material de Inventário',
-          comissao: getVal('comissao', 'setor') || 'Estrutura',
-          quantidade: parseInt(getVal('quantidade', 'qtd'), 10) || 1,
-          unidade: getVal('unidade') || 'unidades',
-          estadoConservacao: getVal('estado', 'conservacao') || 'Excelente (Pronto)',
-          localArmazenamento: getVal('local', 'armazenamento') || 'Acervo REUNI',
-          responsavelGuarda: getVal('responsavel', 'guarda') || 'Secretaria Geral',
-          valorEstimadoEconomizado: parseFloat(getVal('economia', 'valor').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-          status: getVal('status') || 'Disponível para Uso'
+          item: String(getVal('item', 'nome', 'material', 'equipamento') || 'Material de Inventário'),
+          comissao: String(getVal('comissao', 'setor') || 'Estrutura'),
+          quantidade: parseInt(getVal('quantidade', 'qtd') || 1, 10) || 1,
+          unidade: String(getVal('unidade') || 'unidades'),
+          estadoConservacao: String(getVal('estado', 'conservacao') || 'Excelente (Pronto)'),
+          localArmazenamento: String(getVal('local', 'armazenamento') || 'Acervo REUNI'),
+          responsavelGuarda: String(getVal('responsavel', 'guarda') || 'Secretaria Geral'),
+          valorEstimadoEconomizado: parseNumeroBR(getVal('economia', 'valor'), 0),
+          status: String(getVal('status') || 'Disponível para Uso')
         })
       } else if (rawText.includes('bazar') || rawText.includes('doador') || rawText.includes('tamanho')) {
         result.bazar.push({
-          nome: getVal('nome', 'item', 'peca') || 'Peça de Bazar',
-          categoria: getVal('categoria') || 'Roupas',
-          precoAvaliado: parseFloat(getVal('preco', 'valor').replace('R$', '').replace('.', '').replace(',', '.')) || 10,
-          doador: getVal('doador') || 'Anônimo',
-          tamanho: getVal('tamanho') || 'M',
-          estado: getVal('estado') || 'Excelente',
-          status: getVal('status') || 'Em Avaliação'
+          nome: String(getVal('nome', 'item', 'peca') || 'Peça de Bazar'),
+          categoria: String(getVal('categoria') || 'Roupas'),
+          precoAvaliado: parseNumeroBR(getVal('preco', 'valor'), 10),
+          doador: String(getVal('doador') || 'Anônimo'),
+          tamanho: String(getVal('tamanho') || 'M'),
+          estado: String(getVal('estado') || 'Excelente'),
+          status: String(getVal('status') || 'Em Avaliação')
         })
       } else if (rawText.includes('meta') || rawText.includes('arrecadado') || rawText.includes('campanha') || rawText.includes('rifa')) {
         result.arrecadacoes.push({
-          nome: getVal('nome', 'campanha', 'item') || 'Campanha de Arrecadação',
-          tipo: getVal('tipo') || 'Rifa',
-          meta: parseFloat(getVal('meta', 'alvo').replace('R$', '').replace('.', '').replace(',', '.')) || 100,
-          atual: parseFloat(getVal('atual', 'arrecadado').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-          status: getVal('status') || 'Em Andamento'
+          nome: String(getVal('nome', 'campanha', 'item') || 'Campanha de Arrecadação'),
+          tipo: String(getVal('tipo') || 'Rifa'),
+          meta: parseNumeroBR(getVal('meta', 'alvo'), 100),
+          atual: parseNumeroBR(getVal('atual', 'arrecadado'), 0),
+          status: String(getVal('status') || 'Em Andamento')
         })
       } else if (rawText.includes('demanda') || rawText.includes('custo') || rawText.includes('prioridade')) {
+        const { custo, semCusto, tipoSemCusto } = parseCustoBR(getVal('custo', 'valor'))
         result.demandas.push({
-          item: getVal('item', 'descricao', 'nome') || 'Item de Demanda',
-          comissao: getVal('comissao', 'setor') || 'Estrutura',
-          custo: parseFloat(getVal('custo', 'valor').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-          prioridade: getVal('prioridade') || 'Inegociável',
-          status: getVal('status') || 'Pendente',
-          prazoData: getVal('prazo') || ''
+          item: String(getVal('item', 'descricao', 'nome') || 'Item de Demanda'),
+          comissao: String(getVal('comissao', 'setor') || 'Estrutura'),
+          quantidade: parseInt(getVal('quantidade', 'qtd') || 1, 10) || 1,
+          detalhamento: String(getVal('detalhamento', 'especificacao', 'detalhe') || ''),
+          custo,
+          semCusto,
+          tipoSemCusto,
+          prioridade: String(getVal('prioridade') || 'Inegociável'),
+          status: String(getVal('status') || 'Pendente'),
+          prazoData: String(getVal('prazo') || '')
         })
       } else if (rawText.includes('entrada') || rawText.includes('saida') || rawText.includes('receita') || rawText.includes('despesa') || rawText.includes('extrato')) {
         result.caixa.push({
-          descricao: getVal('descricao', 'item', 'historico') || 'Lançamento de Caixa',
-          tipo: rawText.includes('saida') || rawText.includes('despesa') ? 'Saída' : 'Entrada',
-          valor: parseFloat(getVal('valor', 'quantia').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
-          categoria: getVal('categoria') || 'Geral',
-          data: getVal('data') || new Date().toISOString().split('T')[0]
+          descricao: String(getVal('descricao', 'item', 'historico') || 'Lançamento de Caixa'),
+          tipo: (rawText.includes('saida') || rawText.includes('despesa')) ? 'Saída' : 'Entrada',
+          valor: parseNumeroBR(getVal('valor', 'quantia'), 0),
+          categoria: String(getVal('categoria') || 'Geral'),
+          data: String(getVal('data') || new Date().toISOString().split('T')[0])
         })
       } else {
-        // Fallback default: Demanda
+        const { custo, semCusto, tipoSemCusto } = parseCustoBR(getVal('custo', 'valor', 'preco'))
         result.demandas.push({
-          item: getVal('item', 'nome', 'descricao') || 'Demanda Importada',
-          comissao: getVal('comissao') || 'Estrutura',
-          custo: parseFloat(getVal('custo', 'valor', 'preco').replace('R$', '').replace('.', '').replace(',', '.')) || 0,
+          item: String(getVal('item', 'nome', 'descricao') || 'Demanda Importada'),
+          comissao: String(getVal('comissao') || 'Estrutura'),
+          quantidade: parseInt(getVal('quantidade', 'qtd') || 1, 10) || 1,
+          detalhamento: String(getVal('detalhamento', 'especificacao') || ''),
+          custo,
+          semCusto,
+          tipoSemCusto,
           prioridade: 'Inegociável',
           status: 'Pendente'
         })
@@ -243,21 +369,46 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
     setMappedData(result)
   }
 
-  const handleConfirmImport = () => {
-    let totalImported = 0
-    const counts = { demandas: 0, arrecadacoes: 0, bazar: 0, caixa: 0, inventario: 0, keep: 0 }
+  const handleConfirmImport = async () => {
+    setIsProcessing(true)
+    setErrorMessage('')
+    setUndoSuccessMessage('')
+    try {
+      const res = await importBatch(mappedData)
+      setActiveLoteId(res.loteId)
+      setHasRecentLote(true)
+      setImportSummary({ total: res.total, counts: res.counts })
+    } catch (err) {
+      setErrorMessage('Erro ao persistir importação no sistema: ' + err.message)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
 
-    // Execute Imports
-    mappedData.demandas.forEach(item => { addDemanda(item); counts.demandas++ })
-    mappedData.arrecadacoes.forEach(item => { addArrecadacao(item); counts.arrecadacoes++ })
-    mappedData.bazar.forEach(item => { addBazarItem(item); counts.bazar++ })
-    mappedData.caixa.forEach(item => { addTransacao(item); counts.caixa++ })
-    mappedData.inventario.forEach(item => { addInventarioItem(item); counts.inventario++ })
-    mappedData.keep.forEach(item => { addKeepNote(item); counts.keep++ })
+  const handleUndoImport = (targetLote) => {
+    const lote = targetLote || activeLoteId || localStorage.getItem('reuni_last_import_lote')
+    if (!lote) return
+    if (!window.confirm('Tem certeza que deseja desfazer e excluir todos os itens adicionados por esta importação? Essa ação removerá os dados do banco.')) return
 
-    totalImported = Object.values(counts).reduce((a, b) => a + b, 0)
-
-    setImportSummary({ total: totalImported, counts })
+    setIsProcessing(true)
+    try {
+      const ok = undoImportBatch(lote)
+      if (ok) {
+        setImportSummary(null)
+        setParsedResult(null)
+        setFileName('')
+        setActiveLoteId(null)
+        setHasRecentLote(false)
+        setUndoSuccessMessage('Itens da planilha excluídos com sucesso do banco!')
+        setTimeout(() => setUndoSuccessMessage(''), 5000)
+      } else {
+        setErrorMessage('Nenhum item do lote encontrado para exclusão.')
+      }
+    } catch (err) {
+      setErrorMessage('Erro ao excluir importação: ' + err.message)
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   return (
@@ -269,7 +420,7 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
           <div className="flex items-center gap-2.5">
             <Sparkles className="w-5 h-5 text-primary shrink-0 animate-pulse" />
             <span>
-              <strong>Organização Automática de Dados:</strong> O sistema analisa as colunas e distribui automaticamente os itens da sua planilha entre os módulos de <strong>Demandas, Arrecadação, Bazar, Caixa e Inventário</strong>.
+              <strong>Organização Automática de Dados:</strong> Suporte completo a planilhas <strong>.xlsx, .xls e .csv</strong>. O sistema reconhece abas oficiais ou distribui os dados por colunas entre <strong>Demandas, Arrecadação, Bazar, Caixa e Inventário</strong>.
             </span>
           </div>
         </div>
@@ -283,13 +434,13 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
             value={targetModule}
             onChange={(e) => {
               setTargetModule(e.target.value)
-              if (parsedResult) {
+              if (parsedResult && parsedResult.rows) {
                 organizeRowsIntoModules(parsedResult.rows, parsedResult.headers, e.target.value)
               }
             }}
             className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-background text-foreground text-sm focus:ring-2 focus:ring-primary outline-none"
           >
-            <option value="auto">✨ Auto-Organizar por Colunas e Palavras-chave</option>
+            <option value="auto">✨ Auto-Organizar por Abas ou Colunas Oficiais</option>
             <option value="demandas">📌 Importar tudo para: Planejamento de Demandas</option>
             <option value="arrecadacao">💰 Importar tudo para: Arrecadação Estratégica</option>
             <option value="bazar">🛍️ Importar tudo para: Curadoria do Bazar</option>
@@ -302,20 +453,28 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
         {/* Upload Box */}
         <div>
           <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
-            Selecione o Arquivo (.CSV ou exportado do Excel / Google Sheets) *
+            Selecione o Arquivo (.XLSX, .XLS, .CSV ou Google Planilhas) *
           </label>
 
           <label className="flex flex-col items-center justify-center gap-2 p-7 border-2 border-dashed border-border rounded-2xl bg-secondary/20 hover:bg-secondary/40 cursor-pointer transition-all text-xs text-muted-foreground font-medium text-center group">
             <FileSpreadsheet className="w-9 h-9 text-primary group-hover:scale-110 transition-transform" />
             <span className="font-bold text-foreground">
-              {fileName ? `Arquivo Selecionado: ${fileName}` : 'Clique para selecionar a planilha (.CSV / .TXT)'}
+              {fileName ? `Arquivo Selecionado: ${fileName}` : 'Clique para selecionar a planilha (.XLSX / .XLS / .CSV)'}
             </span>
             <span className="text-[10px] opacity-70">
-              {parsedResult ? `${parsedResult.rows.length} linhas lidas da planilha` : 'Suporta arquivos salvos do Excel, LibreOffice e Google Planilhas'}
+              {parsedResult ? `${(mappedData.demandas.length + mappedData.caixa.length + mappedData.arrecadacoes.length + mappedData.bazar.length + mappedData.inventario.length + mappedData.keep.length)} itens identificados` : 'Compatível com Excel 2016-2026, LibreOffice Calc e Google Planilhas'}
             </span>
-            <input type="file" accept=".csv, .txt, .tsv" onChange={handleFileUpload} className="hidden" />
+            <input type="file" accept=".xlsx, .xls, .csv, .txt, .tsv" onChange={handleFileUpload} className="hidden" />
           </label>
         </div>
+
+        {/* Mensagem de Erro se houver */}
+        {errorMessage && (
+          <div className="p-4 rounded-xl border border-destructive/30 bg-destructive/10 text-destructive text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
 
         {/* Resumo da Auto-Organização */}
         {parsedResult && !importSummary && (
@@ -353,15 +512,47 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
           </div>
         )}
 
-        {/* Mensagem de Sucesso */}
+        {/* Mensagem de Sucesso com Ação de Desfazer */}
         {importSummary && (
-          <div className="p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 space-y-2 animate-in zoom-in-95 duration-200">
+          <div className="p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-500 space-y-3 animate-in zoom-in-95 duration-200">
             <div className="flex items-center gap-2 font-bold text-base">
               <CheckCircle2 className="w-5 h-5" /> Importação Concluída com Sucesso!
             </div>
             <p className="text-xs text-emerald-400">
-              Foram adicionados <strong>{importSummary.total} itens</strong> e organizados nos módulos correspondentes.
+              Foram adicionados <strong>{importSummary.total} itens</strong> e persistidos de forma atômica no servidor e no banco de dados.
             </p>
+            <div className="pt-2 flex items-center justify-between border-t border-emerald-500/20">
+              <span className="text-[11px] text-muted-foreground">Importou por engano ou deseja remover?</span>
+              <button
+                type="button"
+                onClick={() => handleUndoImport(activeLoteId)}
+                className="px-3 py-1.5 text-xs font-semibold text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer"
+              >
+                Desfazer / Excluir Esta Importação
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Mensagem de Desfeito com Sucesso */}
+        {undoSuccessMessage && (
+          <div className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>{undoSuccessMessage}</span>
+          </div>
+        )}
+
+        {/* Banner de Desfazer Lote Recente */}
+        {!importSummary && hasRecentLote && (
+          <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-500 text-xs flex items-center justify-between gap-2">
+            <span>Há itens de uma planilha importada recentemente no sistema.</span>
+            <button
+              type="button"
+              onClick={() => handleUndoImport(null)}
+              className="px-3 py-1 font-bold text-[11px] bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 rounded-lg transition-colors cursor-pointer"
+            >
+              Excluir Última Planilha Importada
+            </button>
           </div>
         )}
 
@@ -370,7 +561,7 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary rounded-xl transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary rounded-xl transition-colors cursor-pointer"
           >
             {importSummary ? 'Fechar' : 'Cancelar'}
           </button>
@@ -379,11 +570,11 @@ export default function ImportPlanilhaModal({ isOpen, onClose, defaultModule = '
             <button
               type="button"
               onClick={handleConfirmImport}
-              disabled={!parsedResult || parsedResult.rows.length === 0}
-              className="px-5 py-2 text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+              disabled={isProcessing || !parsedResult || (mappedData.demandas.length + mappedData.caixa.length + mappedData.arrecadacoes.length + mappedData.bazar.length + mappedData.inventario.length + mappedData.keep.length) === 0}
+              className="px-5 py-2 text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
             >
               <Upload className="w-4 h-4" />
-              Importar e Organizar Planilha
+              {isProcessing ? 'Processando e Gravando...' : 'Importar e Salvar Planilha'}
             </button>
           )}
         </div>

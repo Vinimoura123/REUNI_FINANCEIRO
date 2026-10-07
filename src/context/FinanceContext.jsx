@@ -17,63 +17,71 @@ const DEFAULT_BAZAR = []
 const DEFAULT_KEEP = []
 const DEFAULT_INVENTARIO = []
 
+const loadStorageWithFallback = (primaryKey, fallbackKeys = [], defaultVal = []) => {
+  try {
+    const saved = localStorage.getItem(primaryKey)
+    if (saved && saved !== '[]' && saved !== 'null') {
+      return JSON.parse(saved)
+    }
+    for (const fb of fallbackKeys) {
+      const fbSaved = localStorage.getItem(fb)
+      if (fbSaved && fbSaved !== '[]' && fbSaved !== 'null') {
+        const parsed = JSON.parse(fbSaved)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localStorage.setItem(primaryKey, JSON.stringify(parsed))
+          return parsed
+        }
+      }
+    }
+    const snap = localStorage.getItem('reuni_emergency_snapshot')
+    if (snap) {
+      const parsedSnap = JSON.parse(snap)
+      const data = parsedSnap.data || parsedSnap
+      const colMap = {
+        [STORAGE_KEY_DEMANDAS]: 'demandas',
+        [STORAGE_KEY_ARRECADACAO]: 'arrecadacoes',
+        [STORAGE_KEY_TRANSACOES]: 'transacoes',
+        [STORAGE_KEY_BAZAR]: 'bazarItems',
+        [STORAGE_KEY_KEEP]: 'keepNotes',
+        [STORAGE_KEY_INVENTARIO]: 'inventarioItems'
+      }
+      const colName = colMap[primaryKey]
+      if (colName && data && Array.isArray(data[colName]) && data[colName].length > 0) {
+        localStorage.setItem(primaryKey, JSON.stringify(data[colName]))
+        return data[colName]
+      }
+    }
+  } catch (e) {}
+  return defaultVal
+}
+
 export function FinanceProvider({ children }) {
   const [lastSaved, setLastSaved] = useState(null)
 
-  // Initialize state cleanly with empty fallback (no hypothetical pre-made items)
-  const [demandas, setDemandas] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_DEMANDAS)
-      return saved !== null ? JSON.parse(saved) : DEFAULT_DEMANDAS
-    } catch (e) {
-      return DEFAULT_DEMANDAS
-    }
-  })
+  // Initialize state with automated fallback to previous storage keys and snapshots
+  const [demandas, setDemandas] = useState(() => 
+    loadStorageWithFallback(STORAGE_KEY_DEMANDAS, ['reuni_financeiro_demandas', 'reuni_demandas'], DEFAULT_DEMANDAS)
+  )
 
-  const [arrecadacoes, setArrecadacoes] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_ARRECADACAO)
-      return saved !== null ? JSON.parse(saved) : DEFAULT_ARRECADACAO
-    } catch (e) {
-      return DEFAULT_ARRECADACAO
-    }
-  })
+  const [arrecadacoes, setArrecadacoes] = useState(() => 
+    loadStorageWithFallback(STORAGE_KEY_ARRECADACAO, ['reuni_financeiro_arrecadacao', 'reuni_arrecadacoes'], DEFAULT_ARRECADACAO)
+  )
 
-  const [transacoes, setTransacoes] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_TRANSACOES)
-      return saved !== null ? JSON.parse(saved) : DEFAULT_TRANSACOES
-    } catch (e) {
-      return DEFAULT_TRANSACOES
-    }
-  })
+  const [transacoes, setTransacoes] = useState(() => 
+    loadStorageWithFallback(STORAGE_KEY_TRANSACOES, ['reuni_financeiro_transacoes', 'reuni_transacoes'], DEFAULT_TRANSACOES)
+  )
 
-  const [bazarItems, setBazarItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_BAZAR)
-      return saved !== null ? JSON.parse(saved) : DEFAULT_BAZAR
-    } catch (e) {
-      return DEFAULT_BAZAR
-    }
-  })
+  const [bazarItems, setBazarItems] = useState(() => 
+    loadStorageWithFallback(STORAGE_KEY_BAZAR, ['reuni_financeiro_bazar', 'reuni_bazar'], DEFAULT_BAZAR)
+  )
 
-  const [keepNotes, setKeepNotes] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_KEEP)
-      return saved !== null ? JSON.parse(saved) : DEFAULT_KEEP
-    } catch (e) {
-      return DEFAULT_KEEP
-    }
-  })
+  const [keepNotes, setKeepNotes] = useState(() => 
+    loadStorageWithFallback(STORAGE_KEY_KEEP, ['reuni_keep_notes', 'reuni_keep'], DEFAULT_KEEP)
+  )
 
-  const [inventarioItems, setInventarioItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_INVENTARIO)
-      return saved !== null ? JSON.parse(saved) : DEFAULT_INVENTARIO
-    } catch (e) {
-      return DEFAULT_INVENTARIO
-    }
-  })
+  const [inventarioItems, setInventarioItems] = useState(() => 
+    loadStorageWithFallback(STORAGE_KEY_INVENTARIO, ['reuni_financeiro_inventario', 'reuni_inventario'], DEFAULT_INVENTARIO)
+  )
 
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('reuni_theme') || 'dark'
@@ -173,70 +181,37 @@ export function FinanceProvider({ children }) {
       return
     }
 
-    // PROTEÇÃO CRÍTICA ANTI-WIPE COLECIONAL:
-    // Mesclagem preservativa inteligente: se o cliente possui itens locais com IDs que o servidor não possui,
-    // preservamos os itens e sincronizamos de volta ao servidor, impedindo destruição acidental.
-    const mergeColecao = (serverList, localRefList, colecaoNome) => {
-      const serverArr = Array.isArray(serverList) ? serverList : []
-      const localArr = Array.isArray(localRefList) ? localRefList : []
-      
-      const serverIds = new Set(serverArr.map(item => item.id || item.descricao || item.item || JSON.stringify(item)))
-      const locaisFaltandoNoServer = localArr.filter(item => {
-        const key = item.id || item.descricao || item.item || JSON.stringify(item)
-        return !serverIds.has(key)
-      })
-
-      if (locaisFaltandoNoServer.length > 0) {
-        console.warn(`🛡️ [Proteção Anti-Wipe] Preservando ${locaisFaltandoNoServer.length} itens locais de ${colecaoNome} que faltavam no servidor`)
-        // Envia os itens locais faltantes para o servidor salvar
-        const ops = locaisFaltandoNoServer.map(item => ({ op: 'create', colecao: colecaoNome, item }))
-        fetch('/api/mutate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...authHeaders() },
-          body: JSON.stringify({ ops })
-        }).catch(() => {})
-        return [...serverArr, ...locaisFaltandoNoServer]
-      }
-      return serverArr
-    }
-
     lastServerTimestamp.current = incomingTimestamp
 
     if (Array.isArray(data.demandas)) {
-      const merged = mergeColecao(data.demandas, demandasRef.current, 'demandas')
-      demandasRef.current = merged
-      setDemandas(merged)
-      try { localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(merged)) } catch (e) {}
+      demandasRef.current = data.demandas
+      setDemandas(data.demandas)
+      try { localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(data.demandas)) } catch (e) {}
     }
     if (Array.isArray(data.arrecadacoes)) {
-      const merged = mergeColecao(data.arrecadacoes, arrecadacoesRef.current, 'arrecadacoes')
-      arrecadacoesRef.current = merged
-      setArrecadacoes(merged)
-      try { localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(merged)) } catch (e) {}
+      arrecadacoesRef.current = data.arrecadacoes
+      setArrecadacoes(data.arrecadacoes)
+      try { localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(data.arrecadacoes)) } catch (e) {}
     }
     if (Array.isArray(data.transacoes)) {
-      const merged = mergeColecao(data.transacoes, transacoesRef.current, 'transacoes')
-      transacoesRef.current = merged
-      setTransacoes(merged)
-      try { localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(merged)) } catch (e) {}
+      transacoesRef.current = data.transacoes
+      setTransacoes(data.transacoes)
+      try { localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(data.transacoes)) } catch (e) {}
     }
     if (Array.isArray(data.bazarItems)) {
-      const merged = mergeColecao(data.bazarItems, bazarItemsRef.current, 'bazarItems')
-      bazarItemsRef.current = merged
-      setBazarItems(merged)
-      try { localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(merged)) } catch (e) {}
+      bazarItemsRef.current = data.bazarItems
+      setBazarItems(data.bazarItems)
+      try { localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(data.bazarItems)) } catch (e) {}
     }
     if (Array.isArray(data.keepNotes)) {
-      const merged = mergeColecao(data.keepNotes, keepNotesRef.current, 'keepNotes')
-      keepNotesRef.current = merged
-      setKeepNotes(merged)
-      try { localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(merged)) } catch (e) {}
+      keepNotesRef.current = data.keepNotes
+      setKeepNotes(data.keepNotes)
+      try { localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(data.keepNotes)) } catch (e) {}
     }
     if (Array.isArray(data.inventarioItems)) {
-      const merged = mergeColecao(data.inventarioItems, inventarioItemsRef.current, 'inventarioItems')
-      inventarioItemsRef.current = merged
-      setInventarioItems(merged)
-      try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(merged)) } catch (e) {}
+      inventarioItemsRef.current = data.inventarioItems
+      setInventarioItems(data.inventarioItems)
+      try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems)) } catch (e) {}
     }
 
     // Snapshot de emergência para recuperação em caso de limpeza de cache
@@ -338,10 +313,12 @@ export function FinanceProvider({ children }) {
           return res.json()
         })
         .then(data => {
-          if (data) applyServerData(data)
+          if (data && data.updatedAt && data.updatedAt > lastServerTimestamp.current) {
+            applyServerData(data)
+          }
         })
         .catch(() => {})
-    }, 2000)
+    }, 25000)
 
     return () => {
       if (eventSource) eventSource.close()
@@ -953,6 +930,236 @@ export function FinanceProvider({ children }) {
     } catch (e) {}
   }
 
+  // Importação atômica em lote com identificador de lote e suporte a desfazer/excluir
+  const importBatch = async ({ demandas: impDemandas = [], arrecadacoes: impArrecadacoes = [], transacoes: impTransacoes = [], bazar: impBazar = [], inventario: impInventario = [], keep: impKeep = [] }) => {
+    const ops = []
+    const loteId = 'lote_' + Date.now()
+
+    let nextDemandas = demandasRef.current
+    if (impDemandas.length > 0) {
+      const formatted = impDemandas.map((d, idx) => ({
+        ...d,
+        id: d.id || ('demanda_imp_' + (idx + 1) + '_' + Date.now()),
+        data: d.data || new Date().toISOString().split('T')[0],
+        importLoteId: loteId,
+        origem: 'planilha'
+      }))
+      nextDemandas = [...formatted, ...nextDemandas]
+      demandasRef.current = nextDemandas
+      setDemandas(nextDemandas)
+      ops.push({ op: 'createMany', colecao: 'demandas', items: formatted })
+    }
+
+    let nextArrecadacoes = arrecadacoesRef.current
+    if (impArrecadacoes.length > 0) {
+      const formatted = impArrecadacoes.map((a, idx) => ({
+        ...a,
+        id: a.id || ('arrec_imp_' + (idx + 1) + '_' + Date.now()),
+        atual: Number(a.atual) || 0,
+        meta: Number(a.meta) || 0,
+        importLoteId: loteId,
+        origem: 'planilha'
+      }))
+      nextArrecadacoes = [...formatted, ...nextArrecadacoes]
+      arrecadacoesRef.current = nextArrecadacoes
+      setArrecadacoes(nextArrecadacoes)
+      ops.push({ op: 'createMany', colecao: 'arrecadacoes', items: formatted })
+    }
+
+    let nextTransacoes = transacoesRef.current
+    if (impTransacoes.length > 0) {
+      const formatted = impTransacoes.map((t, idx) => ({
+        ...t,
+        id: t.id || ('trans_imp_' + (idx + 1) + '_' + Date.now()),
+        data: t.data || new Date().toISOString().split('T')[0],
+        valor: Number(t.valor) || 0,
+        importLoteId: loteId,
+        origem: 'planilha'
+      }))
+      nextTransacoes = [...formatted, ...nextTransacoes]
+      transacoesRef.current = nextTransacoes
+      setTransacoes(nextTransacoes)
+      ops.push({ op: 'createMany', colecao: 'transacoes', items: formatted })
+    }
+
+    let nextBazar = bazarItemsRef.current
+    if (impBazar.length > 0) {
+      const formatted = impBazar.map((b, idx) => ({
+        ...b,
+        id: b.id || ('bazar_imp_' + (idx + 1) + '_' + Date.now()),
+        precoAvaliado: Number(b.precoAvaliado) || 0,
+        dataCadastro: b.dataCadastro || new Date().toISOString().split('T')[0],
+        importLoteId: loteId,
+        origem: 'planilha'
+      }))
+      nextBazar = [...formatted, ...nextBazar]
+      bazarItemsRef.current = nextBazar
+      setBazarItems(nextBazar)
+      ops.push({ op: 'createMany', colecao: 'bazarItems', items: formatted })
+    }
+
+    let nextInventario = inventarioItemsRef.current
+    if (impInventario.length > 0) {
+      const formatted = impInventario.map((i, idx) => ({
+        ...i,
+        id: i.id || ('inv_imp_' + (idx + 1) + '_' + Date.now()),
+        quantidade: Number(i.quantidade) || 1,
+        valorEstimadoEconomizado: Number(i.valorEstimadoEconomizado) || 0,
+        dataCadastro: i.dataCadastro || new Date().toISOString().split('T')[0],
+        importLoteId: loteId,
+        origem: 'planilha'
+      }))
+      nextInventario = [...formatted, ...nextInventario]
+      inventarioItemsRef.current = nextInventario
+      setInventarioItems(nextInventario)
+      ops.push({ op: 'createMany', colecao: 'inventarioItems', items: formatted })
+    }
+
+    let nextKeep = keepNotesRef.current
+    if (impKeep.length > 0) {
+      const formatted = impKeep.map((k, idx) => ({
+        ...k,
+        id: k.id || ('keep_imp_' + (idx + 1) + '_' + Date.now()),
+        dataCriacao: k.dataCriacao || new Date().toISOString().split('T')[0],
+        importLoteId: loteId,
+        origem: 'planilha'
+      }))
+      nextKeep = [...formatted, ...nextKeep]
+      keepNotesRef.current = nextKeep
+      setKeepNotes(nextKeep)
+      ops.push({ op: 'createMany', colecao: 'keepNotes', items: formatted })
+    }
+
+    try {
+      localStorage.setItem('reuni_last_import_lote', loteId)
+    } catch (e) {}
+
+    pushStateToServer({
+      demandas: nextDemandas,
+      arrecadacoes: nextArrecadacoes,
+      transacoes: nextTransacoes,
+      bazarItems: nextBazar,
+      inventarioItems: nextInventario,
+      keepNotes: nextKeep
+    }, ops)
+
+    return {
+      loteId,
+      total: impDemandas.length + impArrecadacoes.length + impTransacoes.length + impBazar.length + impInventario.length + impKeep.length,
+      counts: {
+        demandas: impDemandas.length,
+        arrecadacoes: impArrecadacoes.length,
+        transacoes: impTransacoes.length,
+        bazar: impBazar.length,
+        inventario: impInventario.length,
+        keep: impKeep.length
+      }
+    }
+  }
+
+  // Exclusão em lote otimizada de múltiplos IDs
+  const deleteBatch = (colecao, ids) => {
+    if (!Array.isArray(ids) || ids.length === 0) return
+    const idSet = new Set(ids)
+    
+    if (colecao === 'demandas') {
+      const updated = demandasRef.current.filter(d => !idSet.has(d.id))
+      demandasRef.current = updated
+      setDemandas(updated)
+      pushStateToServer({ demandas: updated }, [{ op: 'deleteMany', colecao: 'demandas', ids }])
+    } else if (colecao === 'arrecadacoes') {
+      const updated = arrecadacoesRef.current.filter(a => !idSet.has(a.id))
+      arrecadacoesRef.current = updated
+      setArrecadacoes(updated)
+      pushStateToServer({ arrecadacoes: updated }, [{ op: 'deleteMany', colecao: 'arrecadacoes', ids }])
+    } else if (colecao === 'transacoes') {
+      const updated = transacoesRef.current.filter(t => !idSet.has(t.id))
+      transacoesRef.current = updated
+      setTransacoes(updated)
+      pushStateToServer({ transacoes: updated }, [{ op: 'deleteMany', colecao: 'transacoes', ids }])
+    } else if (colecao === 'bazarItems') {
+      const updated = bazarItemsRef.current.filter(b => !idSet.has(b.id))
+      bazarItemsRef.current = updated
+      setBazarItems(updated)
+      pushStateToServer({ bazarItems: updated }, [{ op: 'deleteMany', colecao: 'bazarItems', ids }])
+    } else if (colecao === 'inventarioItems') {
+      const updated = inventarioItemsRef.current.filter(i => !idSet.has(i.id))
+      inventarioItemsRef.current = updated
+      setInventarioItems(updated)
+      pushStateToServer({ inventarioItems: updated }, [{ op: 'deleteMany', colecao: 'inventarioItems', ids }])
+    } else if (colecao === 'keepNotes') {
+      const updated = keepNotesRef.current.filter(k => !idSet.has(k.id))
+      keepNotesRef.current = updated
+      setKeepNotes(updated)
+      pushStateToServer({ keepNotes: updated }, [{ op: 'deleteMany', colecao: 'keepNotes', ids }])
+    }
+  }
+
+  // Desfazer uma importação de planilha completa pelo ID do lote
+  const undoImportBatch = (loteId) => {
+    if (!loteId) return false
+    const ops = []
+    const updatedState = {}
+
+    const filterLote = (list, colecaoNome) => {
+      const toDelete = list.filter(item => item.importLoteId === loteId)
+      if (toDelete.length > 0) {
+        const ids = toDelete.map(item => item.id)
+        ops.push({ op: 'deleteMany', colecao: colecaoNome, ids })
+        return list.filter(item => item.importLoteId !== loteId)
+      }
+      return list
+    }
+
+    const nextDemandas = filterLote(demandasRef.current, 'demandas')
+    if (nextDemandas !== demandasRef.current) {
+      demandasRef.current = nextDemandas
+      setDemandas(nextDemandas)
+      updatedState.demandas = nextDemandas
+    }
+    const nextArrecadacoes = filterLote(arrecadacoesRef.current, 'arrecadacoes')
+    if (nextArrecadacoes !== arrecadacoesRef.current) {
+      arrecadacoesRef.current = nextArrecadacoes
+      setArrecadacoes(nextArrecadacoes)
+      updatedState.arrecadacoes = nextArrecadacoes
+    }
+    const nextTransacoes = filterLote(transacoesRef.current, 'transacoes')
+    if (nextTransacoes !== transacoesRef.current) {
+      transacoesRef.current = nextTransacoes
+      setTransacoes(nextTransacoes)
+      updatedState.transacoes = nextTransacoes
+    }
+    const nextBazar = filterLote(bazarItemsRef.current, 'bazarItems')
+    if (nextBazar !== bazarItemsRef.current) {
+      bazarItemsRef.current = nextBazar
+      setBazarItems(nextBazar)
+      updatedState.bazarItems = nextBazar
+    }
+    const nextInventario = filterLote(inventarioItemsRef.current, 'inventarioItems')
+    if (nextInventario !== inventarioItemsRef.current) {
+      inventarioItemsRef.current = nextInventario
+      setInventarioItems(nextInventario)
+      updatedState.inventarioItems = nextInventario
+    }
+    const nextKeep = filterLote(keepNotesRef.current, 'keepNotes')
+    if (nextKeep !== keepNotesRef.current) {
+      keepNotesRef.current = nextKeep
+      setKeepNotes(nextKeep)
+      updatedState.keepNotes = nextKeep
+    }
+
+    if (ops.length > 0) {
+      pushStateToServer(updatedState, ops)
+      try {
+        if (localStorage.getItem('reuni_last_import_lote') === loteId) {
+          localStorage.removeItem('reuni_last_import_lote')
+        }
+      } catch (e) {}
+      return true
+    }
+    return false
+  }
+
   return (
     <FinanceContext.Provider value={{
       demandas,
@@ -966,6 +1173,9 @@ export function FinanceProvider({ children }) {
       toggleTheme,
       uploadDocument,
       deleteDocument,
+      importBatch,
+      deleteBatch,
+      undoImportBatch,
       addDemanda,
       updateDemanda,
       deleteDemanda,

@@ -295,7 +295,11 @@ export default function Demandas() {
                             <Edit3 className="w-4 h-4" />
                           </button>
                           <button 
-                            onClick={() => deleteDemanda(d.id)}
+                            onClick={() => {
+                              if (window.confirm(`Tem certeza que deseja excluir a demanda "${d.item}"?`)) {
+                                deleteDemanda(d.id)
+                              }
+                            }}
                             className="p-2 text-muted-foreground hover:text-destructive hover:bg-secondary rounded-lg transition-colors cursor-pointer"
                             title="Excluir Demanda"
                           >
