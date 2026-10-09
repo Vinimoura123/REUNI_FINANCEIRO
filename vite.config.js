@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 import fs from 'node:fs'
 import path from 'node:path'
-import { applyOps, emptyDb } from './dbOps.js'
+import { applyOps, emptyDb, purgeDeleted } from './dbOps.js'
 import { isAuthorized } from './auth.js'
 import { processarPagamentoDemanda, processarPagamentoDemandaComComprovante } from './pagamentoDemanda.js'
 import { salvarDocumento, localizarDocumento, apagarDocumento } from './armazenamentoDocumentos.js'
@@ -56,7 +56,7 @@ function syncServerPlugin() {
         const raw = fs.readFileSync(dbPath, 'utf-8')
         if (raw.trim()) {
           const parsed = JSON.parse(raw)
-          if (parsed && typeof parsed === 'object') return parsed
+          if (parsed && typeof parsed === 'object') return purgeDeleted(parsed)
         }
       } catch (e) {}
     }
@@ -66,8 +66,9 @@ function syncServerPlugin() {
         const raw = fs.readFileSync(latestBackup, 'utf-8')
         if (raw.trim()) {
           const parsed = JSON.parse(raw)
-          safeWriteDb(dbPath, parsed)
-          return parsed
+          const purged = purgeDeleted(parsed)
+          safeWriteDb(dbPath, purged)
+          return purged
         }
       } catch (e) {}
     }
@@ -76,8 +77,9 @@ function syncServerPlugin() {
         const raw = fs.readFileSync(seedDbPath, 'utf-8')
         if (raw.trim()) {
           const parsed = JSON.parse(raw)
-          safeWriteDb(dbPath, parsed)
-          return parsed
+          const purged = purgeDeleted(parsed)
+          safeWriteDb(dbPath, purged)
+          return purged
         }
       } catch (e) {}
     }

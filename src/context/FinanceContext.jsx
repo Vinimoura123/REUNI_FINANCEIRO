@@ -9,6 +9,7 @@ const STORAGE_KEY_TRANSACOES = 'reuni_transacoes_v2'
 const STORAGE_KEY_BAZAR = 'reuni_bazar_v2'
 const STORAGE_KEY_KEEP = 'reuni_keep_v2'
 const STORAGE_KEY_INVENTARIO = 'reuni_inventario_v2'
+const STORAGE_KEY_TOMBSTONES = 'reuni_tombstones_v2'
 
 const DEFAULT_DEMANDAS = []
 const DEFAULT_ARRECADACAO = []
@@ -17,19 +18,35 @@ const DEFAULT_BAZAR = []
 const DEFAULT_KEEP = []
 const DEFAULT_INVENTARIO = []
 
+const getStoredTombstones = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_TOMBSTONES)
+    if (raw) return JSON.parse(raw)
+  } catch (e) {}
+  return {}
+}
+
+const filterTombstoned = (items, tombstones) => {
+  if (!Array.isArray(items)) return items
+  if (!tombstones || Object.keys(tombstones).length === 0) return items
+  return items.filter(i => i && i.id && !tombstones[i.id])
+}
+
 const loadStorageWithFallback = (primaryKey, fallbackKeys = [], defaultVal = []) => {
+  const tombstones = getStoredTombstones()
   try {
     const saved = localStorage.getItem(primaryKey)
     if (saved && saved !== '[]' && saved !== 'null') {
-      return JSON.parse(saved)
+      return filterTombstoned(JSON.parse(saved), tombstones)
     }
     for (const fb of fallbackKeys) {
       const fbSaved = localStorage.getItem(fb)
       if (fbSaved && fbSaved !== '[]' && fbSaved !== 'null') {
         const parsed = JSON.parse(fbSaved)
         if (Array.isArray(parsed) && parsed.length > 0) {
-          localStorage.setItem(primaryKey, JSON.stringify(parsed))
-          return parsed
+          const sanitized = filterTombstoned(parsed, tombstones)
+          localStorage.setItem(primaryKey, JSON.stringify(sanitized))
+          return sanitized
         }
       }
     }
@@ -47,8 +64,9 @@ const loadStorageWithFallback = (primaryKey, fallbackKeys = [], defaultVal = [])
       }
       const colName = colMap[primaryKey]
       if (colName && data && Array.isArray(data[colName]) && data[colName].length > 0) {
-        localStorage.setItem(primaryKey, JSON.stringify(data[colName]))
-        return data[colName]
+        const sanitized = filterTombstoned(data[colName], tombstones)
+        localStorage.setItem(primaryKey, JSON.stringify(sanitized))
+        return sanitized
       }
     }
   } catch (e) {}
@@ -57,6 +75,49 @@ const loadStorageWithFallback = (primaryKey, fallbackKeys = [], defaultVal = [])
 
 export function FinanceProvider({ children }) {
   const [lastSaved, setLastSaved] = useState(null)
+
+  // Tombstones persistentes para garantia absoluta anti-ressurreição de itens deletados
+  const [tombstones, setTombstones] = useState(() => getStoredTombstones())
+  const tombstonesRef = useRef(tombstones)
+  useEffect(() => { tombstonesRef.current = tombstones }, [tombstones])
+
+  const registerTombstones = (ids) => {
+    const targetIds = Array.isArray(ids) ? ids : [ids]
+    if (targetIds.length === 0) return
+    const now = Date.now()
+    setTombstones(prev => {
+      const next = { ...prev }
+      targetIds.forEach(id => {
+        if (id) next[id] = now
+      })
+      try {
+        localStorage.setItem(STORAGE_KEY_TOMBSTONES, JSON.stringify(next))
+      } catch (e) {}
+      tombstonesRef.current = next
+      return next
+    })
+  }
+
+  const clearTombstones = (ids) => {
+    const targetIds = Array.isArray(ids) ? ids : [ids]
+    if (targetIds.length === 0) return
+    setTombstones(prev => {
+      let changed = false
+      const next = { ...prev }
+      targetIds.forEach(id => {
+        if (id && next[id]) {
+          delete next[id]
+          changed = true
+        }
+      })
+      if (!changed) return prev
+      try {
+        localStorage.setItem(STORAGE_KEY_TOMBSTONES, JSON.stringify(next))
+      } catch (e) {}
+      tombstonesRef.current = next
+      return next
+    })
+  }
 
   // Initialize state with automated fallback to previous storage keys and snapshots
   const [demandas, setDemandas] = useState(() => 
@@ -105,24 +166,33 @@ export function FinanceProvider({ children }) {
   const lastServerTimestamp = useRef(0)
 
   const autoRestoreServerFromLocal = () => {
+    const currentTombstones = tombstonesRef.current || {}
+    const filterLive = (list) => (Array.isArray(list) ? list.filter(i => i && i.id && !currentTombstones[i.id]) : [])
+
     const ops = []
-    if (demandasRef.current && demandasRef.current.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'demandas', items: demandasRef.current })
+    const liveDemandas = filterLive(demandasRef.current)
+    if (liveDemandas.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'demandas', items: liveDemandas })
     }
-    if (transacoesRef.current && transacoesRef.current.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'transacoes', items: transacoesRef.current })
+    const liveTransacoes = filterLive(transacoesRef.current)
+    if (liveTransacoes.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'transacoes', items: liveTransacoes })
     }
-    if (arrecadacoesRef.current && arrecadacoesRef.current.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'arrecadacoes', items: arrecadacoesRef.current })
+    const liveArrecadacoes = filterLive(arrecadacoesRef.current)
+    if (liveArrecadacoes.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'arrecadacoes', items: liveArrecadacoes })
     }
-    if (bazarItemsRef.current && bazarItemsRef.current.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'bazarItems', items: bazarItemsRef.current })
+    const liveBazar = filterLive(bazarItemsRef.current)
+    if (liveBazar.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'bazarItems', items: liveBazar })
     }
-    if (keepNotesRef.current && keepNotesRef.current.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'keepNotes', items: keepNotesRef.current })
+    const liveKeep = filterLive(keepNotesRef.current)
+    if (liveKeep.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'keepNotes', items: liveKeep })
     }
-    if (inventarioItemsRef.current && inventarioItemsRef.current.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'inventarioItems', items: inventarioItemsRef.current })
+    const liveInv = filterLive(inventarioItemsRef.current)
+    if (liveInv.length > 0) {
+      ops.push({ op: 'replaceAll', colecao: 'inventarioItems', items: liveInv })
     }
 
     if (ops.length > 0) {
@@ -148,10 +218,12 @@ export function FinanceProvider({ children }) {
     if (!data || typeof data !== 'object') return
     const incomingTimestamp = data.updatedAt || 0
 
-    // O servidor é a fonte única da verdade. Ignora payloads mais antigos ou iguais.
+    // O servidor é a fonte única da verdade, mas não se payload for antigo
     if (incomingTimestamp && incomingTimestamp <= lastServerTimestamp.current) {
       return
     }
+
+    const currentTombstones = tombstonesRef.current || {}
 
     // PROTEÇÃO CRÍTICA ANTI-WIPE:
     // Se o servidor estiver vazio (0 demandas, 0 transações, 0 arrecadações, etc.),
@@ -183,35 +255,83 @@ export function FinanceProvider({ children }) {
 
     lastServerTimestamp.current = incomingTimestamp
 
+    // Se o servidor trouxe dados de volta de um restart ou backup que inclui
+    // IDs de itens deletados anteriormente, NUNCA ressuscita no cliente,
+    // e agenda a exclusão desses IDs no servidor imediatamente!
+    const zombieOps = []
+    const syncMissingOps = []
+
+    const processCollection = (colName, serverList, currentLocalList, setter, storageKey) => {
+      if (!Array.isArray(serverList)) return currentLocalList
+
+      // 1. Filtra qualquer item deletado (Tombstone)
+      const cleanServer = []
+      const resurrectedIds = []
+
+      serverList.forEach(item => {
+        if (!item || !item.id) return
+        if (currentTombstones[item.id]) {
+          resurrectedIds.push(item.id)
+        } else {
+          cleanServer.push(item)
+        }
+      })
+
+      if (resurrectedIds.length > 0) {
+        zombieOps.push({ op: 'deleteMany', colecao: colName, ids: resurrectedIds })
+      }
+
+      // 2. Proteção Anti-Perda: Se o cliente cadastrou itens novos localmente
+      // que ainda não existem no servidor (ex: servidor reiniciou), PRESERVA os itens locais!
+      const cleanServerIdSet = new Set(cleanServer.map(i => i.id))
+      const missingOnServer = []
+
+      if (Array.isArray(currentLocalList)) {
+        currentLocalList.forEach(localItem => {
+          if (localItem && localItem.id && !currentTombstones[localItem.id] && !cleanServerIdSet.has(localItem.id)) {
+            missingOnServer.push(localItem)
+          }
+        })
+      }
+
+      if (missingOnServer.length > 0) {
+        syncMissingOps.push({ op: 'createMany', colecao: colName, items: missingOnServer })
+      }
+
+      const finalResult = [...missingOnServer, ...cleanServer]
+      setter(finalResult)
+      try { localStorage.setItem(storageKey, JSON.stringify(finalResult)) } catch (e) {}
+      return finalResult
+    }
+
     if (Array.isArray(data.demandas)) {
-      demandasRef.current = data.demandas
-      setDemandas(data.demandas)
-      try { localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(data.demandas)) } catch (e) {}
+      demandasRef.current = processCollection('demandas', data.demandas, demandasRef.current, setDemandas, STORAGE_KEY_DEMANDAS)
     }
     if (Array.isArray(data.arrecadacoes)) {
-      arrecadacoesRef.current = data.arrecadacoes
-      setArrecadacoes(data.arrecadacoes)
-      try { localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(data.arrecadacoes)) } catch (e) {}
+      arrecadacoesRef.current = processCollection('arrecadacoes', data.arrecadacoes, arrecadacoesRef.current, setArrecadacoes, STORAGE_KEY_ARRECADACAO)
     }
     if (Array.isArray(data.transacoes)) {
-      transacoesRef.current = data.transacoes
-      setTransacoes(data.transacoes)
-      try { localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(data.transacoes)) } catch (e) {}
+      transacoesRef.current = processCollection('transacoes', data.transacoes, transacoesRef.current, setTransacoes, STORAGE_KEY_TRANSACOES)
     }
     if (Array.isArray(data.bazarItems)) {
-      bazarItemsRef.current = data.bazarItems
-      setBazarItems(data.bazarItems)
-      try { localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(data.bazarItems)) } catch (e) {}
+      bazarItemsRef.current = processCollection('bazarItems', data.bazarItems, bazarItemsRef.current, setBazarItems, STORAGE_KEY_BAZAR)
     }
     if (Array.isArray(data.keepNotes)) {
-      keepNotesRef.current = data.keepNotes
-      setKeepNotes(data.keepNotes)
-      try { localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(data.keepNotes)) } catch (e) {}
+      keepNotesRef.current = processCollection('keepNotes', data.keepNotes, keepNotesRef.current, setKeepNotes, STORAGE_KEY_KEEP)
     }
     if (Array.isArray(data.inventarioItems)) {
-      inventarioItemsRef.current = data.inventarioItems
-      setInventarioItems(data.inventarioItems)
-      try { localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(data.inventarioItems)) } catch (e) {}
+      inventarioItemsRef.current = processCollection('inventarioItems', data.inventarioItems, inventarioItemsRef.current, setInventarioItems, STORAGE_KEY_INVENTARIO)
+    }
+
+    // Se foram detectados itens zumbis ou itens locais faltando no servidor,
+    // dispara a sincronização corretiva silenciosa para o servidor
+    const correctiveOps = [...zombieOps, ...syncMissingOps]
+    if (correctiveOps.length > 0) {
+      fetch('/api/mutate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ ops: correctiveOps })
+      }).catch(() => {})
     }
 
     // Snapshot de emergência para recuperação em caso de limpeza de cache
@@ -346,6 +466,7 @@ export function FinanceProvider({ children }) {
       id: Date.now().toString(),
       data: new Date().toISOString().split('T')[0]
     }
+    clearTombstones(newDemanda.id)
     const updated = [newDemanda, ...demandasRef.current]
     demandasRef.current = updated
     setDemandas(updated)
@@ -365,6 +486,7 @@ export function FinanceProvider({ children }) {
   }
 
   const deleteDemanda = (id) => {
+    registerTombstones(id)
     const updated = demandasRef.current.filter(d => d.id !== id)
     demandasRef.current = updated
     setDemandas(updated)
@@ -453,6 +575,7 @@ export function FinanceProvider({ children }) {
       atual: Number(item.atual) || 0,
       meta: Number(item.meta) || 0
     }
+    clearTombstones(newItem.id)
     const updated = [newItem, ...arrecadacoesRef.current]
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
@@ -509,6 +632,7 @@ export function FinanceProvider({ children }) {
           comprador: dadosVenda.comprador,
           dataHora: dataHoraFormatada
         }
+        clearTombstones(newTrans.id)
         newTransacoes = [newTrans, ...transacoesRef.current]
         transacoesRef.current = newTransacoes
         setTransacoes(newTransacoes)
@@ -528,6 +652,7 @@ export function FinanceProvider({ children }) {
   }
 
   const deleteArrecadacao = (id) => {
+    registerTombstones(id)
     const updated = arrecadacoesRef.current.filter(a => a.id !== id)
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
@@ -547,6 +672,7 @@ export function FinanceProvider({ children }) {
       dataCadastro: new Date().toISOString().split('T')[0],
       dataHoraRecebimento: dataHoraNow
     }
+    clearTombstones(newItem.id)
     const updated = [newItem, ...bazarItemsRef.current]
     bazarItemsRef.current = updated
     setBazarItems(updated)
@@ -608,6 +734,7 @@ export function FinanceProvider({ children }) {
           comprador: comprador,
           dataHora: dataHoraVenda
         }
+        clearTombstones(newTrans.id)
         newTransacoes = [newTrans, ...transacoesRef.current]
         transacoesRef.current = newTransacoes
         setTransacoes(newTransacoes)
@@ -637,6 +764,7 @@ export function FinanceProvider({ children }) {
   }
 
   const deleteBazarItem = (id) => {
+    registerTombstones(id)
     const updated = bazarItemsRef.current.filter(b => b.id !== id)
     bazarItemsRef.current = updated
     setBazarItems(updated)
@@ -651,6 +779,7 @@ export function FinanceProvider({ children }) {
       data: transacao.data || new Date().toISOString().split('T')[0],
       valor: Number(transacao.valor)
     }
+    clearTombstones(newTransacao.id)
     const updated = [newTransacao, ...transacoesRef.current]
     transacoesRef.current = updated
     setTransacoes(updated)
@@ -674,6 +803,7 @@ export function FinanceProvider({ children }) {
   }
 
   const deleteTransacao = (id) => {
+    registerTombstones(id)
     const updated = transacoesRef.current.filter(t => t.id !== id)
     transacoesRef.current = updated
     setTransacoes(updated)
@@ -702,6 +832,7 @@ export function FinanceProvider({ children }) {
       isPinned: note.isPinned || false,
       tags: note.tags || []
     }
+    clearTombstones(newNote.id)
     const updated = [newNote, ...keepNotesRef.current]
     keepNotesRef.current = updated
     setKeepNotes(updated)
@@ -737,6 +868,7 @@ export function FinanceProvider({ children }) {
   }
 
   const deleteKeepNote = (id) => {
+    registerTombstones(id)
     const updated = keepNotesRef.current.filter(note => note.id !== id)
     keepNotesRef.current = updated
     setKeepNotes(updated)
@@ -774,6 +906,7 @@ export function FinanceProvider({ children }) {
       valorEstimadoEconomizado: Number(item.valorEstimadoEconomizado) || 0,
       dataCadastro: new Date().toISOString().split('T')[0]
     }
+    clearTombstones(newItem.id)
     const updated = [newItem, ...inventarioItemsRef.current]
     inventarioItemsRef.current = updated
     setInventarioItems(updated)
@@ -798,6 +931,7 @@ export function FinanceProvider({ children }) {
   }
 
   const deleteInventarioItem = (id) => {
+    registerTombstones(id)
     const updated = inventarioItemsRef.current.filter(item => item.id !== id)
     inventarioItemsRef.current = updated
     setInventarioItems(updated)
@@ -805,6 +939,16 @@ export function FinanceProvider({ children }) {
   }
 
   const resetToDefault = () => {
+    const allIds = [
+      ...demandasRef.current.map(d => d.id),
+      ...arrecadacoesRef.current.map(a => a.id),
+      ...transacoesRef.current.map(t => t.id),
+      ...bazarItemsRef.current.map(b => b.id),
+      ...keepNotesRef.current.map(k => k.id),
+      ...inventarioItemsRef.current.map(i => i.id)
+    ].filter(Boolean)
+    if (allIds.length > 0) registerTombstones(allIds)
+
     demandasRef.current = []
     arrecadacoesRef.current = []
     transacoesRef.current = []
@@ -837,6 +981,16 @@ export function FinanceProvider({ children }) {
   }
 
   const clearAllData = () => {
+    const allIds = [
+      ...demandasRef.current.map(d => d.id),
+      ...arrecadacoesRef.current.map(a => a.id),
+      ...transacoesRef.current.map(t => t.id),
+      ...bazarItemsRef.current.map(b => b.id),
+      ...keepNotesRef.current.map(k => k.id),
+      ...inventarioItemsRef.current.map(i => i.id)
+    ].filter(Boolean)
+    if (allIds.length > 0) registerTombstones(allIds)
+
     demandasRef.current = []
     arrecadacoesRef.current = []
     transacoesRef.current = []
@@ -934,6 +1088,7 @@ export function FinanceProvider({ children }) {
   const importBatch = async ({ demandas: impDemandas = [], arrecadacoes: impArrecadacoes = [], transacoes: impTransacoes = [], bazar: impBazar = [], inventario: impInventario = [], keep: impKeep = [] }) => {
     const ops = []
     const loteId = 'lote_' + Date.now()
+    const allNewIds = []
 
     let nextDemandas = demandasRef.current
     if (impDemandas.length > 0) {
@@ -944,6 +1099,7 @@ export function FinanceProvider({ children }) {
         importLoteId: loteId,
         origem: 'planilha'
       }))
+      formatted.forEach(item => allNewIds.push(item.id))
       nextDemandas = [...formatted, ...nextDemandas]
       demandasRef.current = nextDemandas
       setDemandas(nextDemandas)
@@ -960,6 +1116,7 @@ export function FinanceProvider({ children }) {
         importLoteId: loteId,
         origem: 'planilha'
       }))
+      formatted.forEach(item => allNewIds.push(item.id))
       nextArrecadacoes = [...formatted, ...nextArrecadacoes]
       arrecadacoesRef.current = nextArrecadacoes
       setArrecadacoes(nextArrecadacoes)
@@ -976,6 +1133,7 @@ export function FinanceProvider({ children }) {
         importLoteId: loteId,
         origem: 'planilha'
       }))
+      formatted.forEach(item => allNewIds.push(item.id))
       nextTransacoes = [...formatted, ...nextTransacoes]
       transacoesRef.current = nextTransacoes
       setTransacoes(nextTransacoes)
@@ -992,6 +1150,7 @@ export function FinanceProvider({ children }) {
         importLoteId: loteId,
         origem: 'planilha'
       }))
+      formatted.forEach(item => allNewIds.push(item.id))
       nextBazar = [...formatted, ...nextBazar]
       bazarItemsRef.current = nextBazar
       setBazarItems(nextBazar)
@@ -1009,6 +1168,7 @@ export function FinanceProvider({ children }) {
         importLoteId: loteId,
         origem: 'planilha'
       }))
+      formatted.forEach(item => allNewIds.push(item.id))
       nextInventario = [...formatted, ...nextInventario]
       inventarioItemsRef.current = nextInventario
       setInventarioItems(nextInventario)
@@ -1024,10 +1184,15 @@ export function FinanceProvider({ children }) {
         importLoteId: loteId,
         origem: 'planilha'
       }))
+      formatted.forEach(item => allNewIds.push(item.id))
       nextKeep = [...formatted, ...nextKeep]
       keepNotesRef.current = nextKeep
       setKeepNotes(nextKeep)
       ops.push({ op: 'createMany', colecao: 'keepNotes', items: formatted })
+    }
+
+    if (allNewIds.length > 0) {
+      clearTombstones(allNewIds)
     }
 
     try {
@@ -1057,9 +1222,10 @@ export function FinanceProvider({ children }) {
     }
   }
 
-  // Exclusão em lote otimizada de múltiplos IDs
+  // Exclusão em lote otimizada de múltiplos IDs com garantia de tombstone
   const deleteBatch = (colecao, ids) => {
     if (!Array.isArray(ids) || ids.length === 0) return
+    registerTombstones(ids)
     const idSet = new Set(ids)
     
     if (colecao === 'demandas') {
@@ -1095,7 +1261,7 @@ export function FinanceProvider({ children }) {
     }
   }
 
-  // Desfazer uma importação de planilha completa pelo ID do lote
+  // Desfazer uma importação de planilha completa pelo ID do lote com sepultamento permanente dos IDs
   const undoImportBatch = (loteId) => {
     if (!loteId) return false
     const ops = []
@@ -1105,6 +1271,7 @@ export function FinanceProvider({ children }) {
       const toDelete = list.filter(item => item.importLoteId === loteId)
       if (toDelete.length > 0) {
         const ids = toDelete.map(item => item.id)
+        registerTombstones(ids)
         ops.push({ op: 'deleteMany', colecao: colecaoNome, ids })
         return list.filter(item => item.importLoteId !== loteId)
       }

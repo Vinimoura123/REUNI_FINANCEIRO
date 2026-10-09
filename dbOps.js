@@ -23,8 +23,19 @@ export const ALLOWED_COLLECTIONS = [
   'inventarioItems'
 ]
 
+export function purgeDeleted(db) {
+  if (!db || typeof db !== 'object') return db
+  if (!db.deletedIds || typeof db.deletedIds !== 'object') return db
+  for (const col of ALLOWED_COLLECTIONS) {
+    if (Array.isArray(db[col])) {
+      db[col] = db[col].filter(entry => entry && entry.id && !db.deletedIds[entry.id])
+    }
+  }
+  return db
+}
+
 export function applyOp(db, op) {
-  const { op: kind, colecao, id, item, fields, items } = op || {}
+  const { op: kind, colecao, id, item, fields, items, ids } = op || {}
 
   if (!ALLOWED_COLLECTIONS.includes(colecao)) {
     throw new Error(`Coleção inválida: ${colecao}`)
@@ -33,9 +44,16 @@ export function applyOp(db, op) {
 
   if (kind === 'create') {
     if (!item || typeof item !== 'object') throw new Error('create exige "item"')
+    // Se o item estava na lista de deletados anteriormente, remove o tombstone
+    if (db.deletedIds && db.deletedIds[item.id]) {
+      delete db.deletedIds[item.id]
+    }
     db[colecao] = [item, ...db[colecao]]
   } else if (kind === 'createMany') {
     if (!Array.isArray(items)) throw new Error('createMany exige "items" (array)')
+    if (db.deletedIds) {
+      items.forEach(i => { if (i && i.id && db.deletedIds[i.id]) delete db.deletedIds[i.id] })
+    }
     db[colecao] = [...items, ...db[colecao]]
   } else if (kind === 'update') {
     if (!id) throw new Error('update exige "id"')
@@ -43,11 +61,15 @@ export function applyOp(db, op) {
   } else if (kind === 'delete') {
     if (!id) throw new Error('delete exige "id"')
     db[colecao] = db[colecao].filter(entry => entry.id !== id)
+    if (!db.deletedIds || typeof db.deletedIds !== 'object') db.deletedIds = {}
+    db.deletedIds[id] = Date.now()
   } else if (kind === 'deleteMany') {
     const targetIds = Array.isArray(ids) ? ids : (Array.isArray(items) ? items.map(i => i.id || i) : [])
     if (targetIds.length === 0) throw new Error('deleteMany exige array de "ids"')
     const idSet = new Set(targetIds)
     db[colecao] = db[colecao].filter(entry => !idSet.has(entry.id))
+    if (!db.deletedIds || typeof db.deletedIds !== 'object') db.deletedIds = {}
+    targetIds.forEach(targetId => { db.deletedIds[targetId] = Date.now() })
   } else if (kind === 'replaceAll') {
     if (!Array.isArray(items)) throw new Error('replaceAll exige "items" (array)')
     db[colecao] = items
@@ -57,7 +79,9 @@ export function applyOp(db, op) {
 }
 
 export function applyOps(db, ops) {
+  if (!db.deletedIds || typeof db.deletedIds !== 'object') db.deletedIds = {}
   for (const op of ops) applyOp(db, op)
+  purgeDeleted(db)
   return db
 }
 
@@ -70,6 +94,7 @@ export function emptyDb() {
     keepNotes: [],
     inventarioItems: [],
     documents: [],
+    deletedIds: {},
     updatedAt: 0
   }
 }

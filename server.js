@@ -2,7 +2,7 @@ import http from 'node:http'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { applyOps, emptyDb } from './dbOps.js'
+import { applyOps, emptyDb, purgeDeleted } from './dbOps.js'
 import { isAuthorized } from './auth.js'
 import { processarPagamentoDemanda, processarPagamentoDemandaComComprovante } from './pagamentoDemanda.js'
 import { salvarDocumento, localizarDocumento, apagarDocumento } from './armazenamentoDocumentos.js'
@@ -40,7 +40,7 @@ const initDb = () => {
       const raw = fs.readFileSync(dbPath, 'utf-8')
       if (raw.trim()) {
         const parsed = JSON.parse(raw)
-        if (parsed && typeof parsed === 'object') restored = parsed
+        if (parsed && typeof parsed === 'object') restored = purgeDeleted(parsed)
       }
     } catch (e) {
       console.warn('⚠️ [Auto-Recovery] reuni_db.json principal corrompido, tentando restaurar de backup...')
@@ -55,9 +55,10 @@ const initDb = () => {
       if (raw.trim()) {
         const parsed = JSON.parse(raw)
         if (parsed && typeof parsed === 'object') {
-          safeWriteDb(dbPath, parsed)
+          const purged = purgeDeleted(parsed)
+          safeWriteDb(dbPath, purged)
           console.log('✅ [Auto-Recovery] Restaurado com sucesso de data/backups/reuni_db_latest.json')
-          restored = parsed
+          restored = purged
         }
       }
     } catch (e) {}
@@ -70,9 +71,10 @@ const initDb = () => {
       if (raw.trim()) {
         const parsed = JSON.parse(raw)
         if (parsed && typeof parsed === 'object') {
-          safeWriteDb(dbPath, parsed)
+          const purged = purgeDeleted(parsed)
+          safeWriteDb(dbPath, purged)
           console.log('✅ [Auto-Recovery] Restaurado com sucesso de data/reuni_db.seed.json')
-          restored = parsed
+          restored = purged
         }
       }
     } catch (e) {}
@@ -88,6 +90,7 @@ const initDb = () => {
       keepNotes: [],
       inventarioItems: [],
       documents: [],
+      deletedIds: {},
       updatedAt: 0
     }
     safeWriteDb(dbPath, initialData)
@@ -99,14 +102,14 @@ initDb()
 
 let sseClients = []
 
-// Lê o estado ATUAL do disco com tolerância a falhas
+// Lê o estado ATUAL do disco com tolerância a falhas e expurga deletados
 const readCurrentDb = () => {
   if (fs.existsSync(dbPath)) {
     try {
       const raw = fs.readFileSync(dbPath, 'utf-8')
       if (raw.trim()) {
         const parsed = JSON.parse(raw)
-        if (parsed && typeof parsed === 'object') return parsed
+        if (parsed && typeof parsed === 'object') return purgeDeleted(parsed)
       }
     } catch (e) {
       console.error('⚠️ [Auto-Recovery] Erro ao ler reuni_db.json, buscando backup...')
@@ -120,8 +123,9 @@ const readCurrentDb = () => {
       const raw = fs.readFileSync(latestBackup, 'utf-8')
       if (raw.trim()) {
         const parsed = JSON.parse(raw)
-        safeWriteDb(dbPath, parsed)
-        return parsed
+        const purged = purgeDeleted(parsed)
+        safeWriteDb(dbPath, purged)
+        return purged
       }
     } catch (e) {}
   }
@@ -132,8 +136,9 @@ const readCurrentDb = () => {
       const raw = fs.readFileSync(seedDbPath, 'utf-8')
       if (raw.trim()) {
         const parsed = JSON.parse(raw)
-        safeWriteDb(dbPath, parsed)
-        return parsed
+        const purged = purgeDeleted(parsed)
+        safeWriteDb(dbPath, purged)
+        return purged
       }
     } catch (e) {}
   }
