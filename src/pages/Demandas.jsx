@@ -124,7 +124,7 @@ export default function Demandas() {
 
       {/* Table */}
       <div className="rounded-2xl border border-border bg-card glass-panel overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto focus:outline-none" tabIndex={0}>
           <table className="w-full text-sm text-left">
             <thead className="text-xs uppercase bg-secondary/60 text-muted-foreground border-b border-border font-bold tracking-wider">
               <tr>

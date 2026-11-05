@@ -7,5 +7,6 @@ export const COMISSOES = [
   'Credenciamento',
   'Programação',
   'Financeiro',
-  'Secretaria Geral'
+  'Secretaria Geral',
+  'Monitoria'
 ]

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { 
   LayoutDashboard, Wallet, ArrowRightLeft, HandCoins, Building2, 
@@ -303,6 +303,116 @@ function Layout({ children }) {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const location = useLocation()
   const { theme, toggleTheme } = useFinance()
+  const hoveredElementRef = useRef(null)
+
+  // Controle global de barras de rolagem (horizontal e vertical) pelas setas do teclado
+  useEffect(() => {
+    const handleMouseOver = (e) => {
+      hoveredElementRef.current = e.target
+    }
+
+    const isHorizontallyScrollable = (el) => {
+      if (!el || el === document.body || el === document.documentElement) return false
+      if (el.scrollWidth <= el.clientWidth + 1) return false
+      const style = window.getComputedStyle(el)
+      return style.overflowX === 'auto' || style.overflowX === 'scroll'
+    }
+
+    const isVerticallyScrollable = (el) => {
+      if (!el || el === document.body || el === document.documentElement) return false
+      if (el.scrollHeight <= el.clientHeight + 1) return false
+      const style = window.getComputedStyle(el)
+      return style.overflowY === 'auto' || style.overflowY === 'scroll'
+    }
+
+    const findScrollableAncestor = (startEl, checkFn) => {
+      let el = startEl
+      while (el && el !== document.body && el !== document.documentElement) {
+        if (checkFn(el)) return el
+        el = el.parentElement
+      }
+      return null
+    }
+
+    const findBestHorizontalTarget = () => {
+      const fromActive = findScrollableAncestor(document.activeElement, isHorizontallyScrollable)
+      if (fromActive) return fromActive
+
+      const fromHover = findScrollableAncestor(hoveredElementRef.current, isHorizontallyScrollable)
+      if (fromHover) return fromHover
+
+      const candidates = Array.from(document.querySelectorAll('.overflow-x-auto, [style*="overflow-x"]'))
+        .filter(el => isHorizontallyScrollable(el) && el.offsetParent !== null)
+
+      if (candidates.length > 0) {
+        candidates.sort((a, b) => (b.clientWidth * b.clientHeight) - (a.clientWidth * a.clientHeight))
+        return candidates[0]
+      }
+
+      if (document.scrollingElement && document.scrollingElement.scrollWidth > document.scrollingElement.clientWidth + 1) {
+        return document.scrollingElement
+      }
+      return null
+    }
+
+    const findBestVerticalTarget = () => {
+      const fromHover = findScrollableAncestor(hoveredElementRef.current, isVerticallyScrollable)
+      if (fromHover) return fromHover
+
+      const fromActive = findScrollableAncestor(document.activeElement, isVerticallyScrollable)
+      if (fromActive) return fromActive
+
+      return document.scrollingElement || document.documentElement
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return
+
+      const active = document.activeElement
+      if (active) {
+        const tag = active.tagName
+        if (
+          tag === 'INPUT' ||
+          tag === 'TEXTAREA' ||
+          tag === 'SELECT' ||
+          active.isContentEditable
+        ) {
+          return
+        }
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        const target = findBestHorizontalTarget()
+        if (target) {
+          e.preventDefault()
+          const step = e.repeat ? 90 : 160
+          const delta = e.key === 'ArrowRight' ? step : -step
+          target.scrollBy({
+            left: delta,
+            behavior: e.repeat ? 'auto' : 'smooth'
+          })
+        }
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const target = findBestVerticalTarget()
+        if (target) {
+          e.preventDefault()
+          const step = e.repeat ? 80 : 140
+          const delta = e.key === 'ArrowDown' ? step : -step
+          target.scrollBy({
+            top: delta,
+            behavior: e.repeat ? 'auto' : 'smooth'
+          })
+        }
+      }
+    }
+
+    window.addEventListener('mouseover', handleMouseOver, { passive: true })
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('mouseover', handleMouseOver)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
 
   // Fechar menu mobile ao mudar de rota
   useEffect(() => {
