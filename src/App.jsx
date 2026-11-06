@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { 
   LayoutDashboard, Wallet, ArrowRightLeft, HandCoins, Building2, 
-  ShoppingBag, StickyNote, Sun, Moon, RotateCcw, CheckCircle2, 
+  ShoppingBag, StickyNote, Sun, Moon, RotateCcw, CheckCircle2, RefreshCw, AlertTriangle,
   Trash2, Menu, X, PanelLeftClose, PanelLeftOpen, ChevronRight, Layers, Boxes, FileSpreadsheet, Download
 } from 'lucide-react'
 import { FinanceProvider, useFinance } from './context/FinanceContext'
@@ -55,7 +55,7 @@ const ALL_NAV_ITEMS = NAV_SECTIONS.flatMap(s => s.items)
 function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, onOpenImport }) {
   const location = useLocation()
   const financeData = useFinance()
-  const { theme, toggleTheme, resetToDefault, clearAllData, lastSaved } = financeData
+  const { theme, toggleTheme, resetToDefault, clearAllData, lastSaved, syncStatus, pendingOpsCount, forceSyncNow } = financeData
 
   const handleExportExcel = () => {
     if (closeMobile) closeMobile()
@@ -173,16 +173,65 @@ function SidebarContent({ isCollapsed, toggleCollapse, closeMobile, onOpenImport
 
       {/* Rodapé da Sidebar */}
       <div className={cn("p-4 border-t border-[#302A24] space-y-2.5 shrink-0 bg-[#141210]", isCollapsed ? "p-2 space-y-2" : "")}>
-        {/* Status de Salvamento */}
+        {/* Status Real de Sincronização com a Nuvem + Botão de Reconciliação Manual */}
         {!isCollapsed && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-[#1E7A4B]/10 border border-[#1E7A4B]/30 rounded-lg text-xs text-[#1E7A4B]">
-            <CheckCircle2 className="w-3.5 h-3.5 text-[#1E7A4B] animate-pulse shrink-0" />
+          <div className={cn(
+            "flex items-center gap-2 px-3 py-2 border rounded-lg text-xs transition-colors",
+            syncStatus === 'synced'
+              ? "bg-[#1E7A4B]/10 border-[#1E7A4B]/30 text-[#1E7A4B]"
+              : syncStatus === 'auth_error'
+                ? "bg-red-500/10 border-red-500/30 text-red-400"
+                : "bg-amber-500/10 border-amber-500/30 text-amber-400"
+          )}>
+            {syncStatus === 'synced' ? (
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#1E7A4B] shrink-0" />
+            ) : syncStatus === 'syncing' ? (
+              <RefreshCw className="w-3.5 h-3.5 text-amber-400 animate-spin shrink-0" />
+            ) : (
+              <AlertTriangle className={cn("w-3.5 h-3.5 shrink-0", syncStatus === 'auth_error' ? "text-red-400" : "text-amber-400")} />
+            )}
             <div className="flex-1 min-w-0">
-              <span className="font-semibold block truncate text-emerald-400">Sincronizado 24/7</span>
-              <span className="text-[10px] opacity-80 block truncate text-emerald-500/80">
-                {lastSaved ? `Atualizado às ${lastSaved}` : 'Sincronizado na Nuvem'}
+              <span className={cn(
+                "font-semibold block truncate",
+                syncStatus === 'synced'
+                  ? "text-emerald-400"
+                  : syncStatus === 'auth_error'
+                    ? "text-red-400"
+                    : "text-amber-300"
+              )}>
+                {syncStatus === 'synced'
+                  ? 'Sincronizado 24/7'
+                  : syncStatus === 'syncing'
+                    ? 'Sincronizando nuvem...'
+                    : syncStatus === 'auth_error'
+                      ? 'Token inválido (401)'
+                      : pendingOpsCount > 0
+                        ? `Envio pendente (${pendingOpsCount})`
+                        : 'Modo local · Reconectando'}
+              </span>
+              <span className={cn(
+                "text-[10px] opacity-80 block truncate",
+                syncStatus === 'synced'
+                  ? "text-emerald-500/80"
+                  : syncStatus === 'auth_error'
+                    ? "text-red-400/80"
+                    : "text-amber-400/80"
+              )}>
+                {syncStatus === 'auth_error'
+                  ? 'Refaça login para sincronizar'
+                  : lastSaved
+                    ? `Confirmado · ${lastSaved}`
+                    : 'Aguardando confirmação do servidor'}
               </span>
             </div>
+            <button
+              type="button"
+              onClick={forceSyncNow}
+              className="p-1 rounded-md hover:bg-white/10 transition-colors shrink-0"
+              title="Forçar sincronização imediata com o servidor"
+            >
+              <RefreshCw className={cn("w-3.5 h-3.5 opacity-80 hover:opacity-100", syncStatus === 'syncing' ? "animate-spin" : "")} />
+            </button>
           </div>
         )}
 

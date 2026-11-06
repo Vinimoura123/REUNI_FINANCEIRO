@@ -1,5 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { authHeaders, getAccessToken } from '../lib/auth'
+import {
+  computeServerSignature,
+  markLocalCreated,
+  markLocalUpdated,
+  reconcileStateWithServer,
+  SYNC_COLLECTIONS
+} from '../lib/syncEngine'
 
 const FinanceContext = createContext()
 
@@ -10,6 +17,11 @@ const STORAGE_KEY_BAZAR = 'reuni_bazar_v2'
 const STORAGE_KEY_KEEP = 'reuni_keep_v2'
 const STORAGE_KEY_INVENTARIO = 'reuni_inventario_v2'
 const STORAGE_KEY_TOMBSTONES = 'reuni_tombstones_v2'
+const STORAGE_KEY_PENDING_OPS = 'reuni_pending_ops_v2'
+const STORAGE_KEY_SYNCED_BASE = 'reuni_synced_base_v2'
+const STORAGE_KEY_SYNCED_BASE_REV = 'reuni_synced_base_rev_v2'
+const STORAGE_KEY_SYNCED_BASE_TS = 'reuni_synced_base_ts_v2'
+const STORAGE_KEY_V3_INITIALIZED = 'reuni_sync_v3_initialized'
 
 const DEFAULT_DEMANDAS = []
 const DEFAULT_ARRECADACAO = []
@@ -22,8 +34,57 @@ const getStoredTombstones = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_TOMBSTONES)
     if (raw) return JSON.parse(raw)
-  } catch (e) {}
+  } catch {}
   return {}
+}
+
+const getStoredPendingOps = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PENDING_OPS)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      if (Array.isArray(parsed)) return parsed
+    }
+  } catch {}
+  return []
+}
+
+const getInitialSyncedBase = () => {
+  try {
+    const savedBase = localStorage.getItem(STORAGE_KEY_SYNCED_BASE)
+    if (savedBase) {
+      const parsed = JSON.parse(savedBase)
+      if (parsed && typeof parsed === 'object') return parsed
+    }
+    // Migração suave: aproveita o último snapshot de servidor conhecido pré-v3
+    const legacySnap = localStorage.getItem('reuni_emergency_snapshot')
+    if (legacySnap) {
+      const parsedSnap = JSON.parse(legacySnap)
+      const data = parsedSnap?.data || parsedSnap
+      if (data && typeof data === 'object') {
+        const extracted = {}
+        for (const col of SYNC_COLLECTIONS) {
+          if (Array.isArray(data[col])) extracted[col] = data[col]
+        }
+        return extracted
+      }
+    }
+  } catch {}
+  return null
+}
+
+const getInitialBaseUpdatedAt = () => {
+  try {
+    const savedTs = localStorage.getItem(STORAGE_KEY_SYNCED_BASE_TS)
+    if (savedTs) return Number(savedTs) || 0
+    const legacySnap = localStorage.getItem('reuni_emergency_snapshot')
+    if (legacySnap) {
+      const parsedSnap = JSON.parse(legacySnap)
+      const data = parsedSnap?.data || parsedSnap
+      return Number(data?.updatedAt) || 0
+    }
+  } catch {}
+  return 0
 }
 
 const filterTombstoned = (items, tombstones) => {
@@ -69,12 +130,16 @@ const loadStorageWithFallback = (primaryKey, fallbackKeys = [], defaultVal = [])
         return sanitized
       }
     }
-  } catch (e) {}
+  } catch {}
   return defaultVal
 }
 
 export function FinanceProvider({ children }) {
   const [lastSaved, setLastSaved] = useState(null)
+  const [pendingOpsCount, setPendingOpsCount] = useState(() => getStoredPendingOps().length)
+  const [syncStatus, setSyncStatus] = useState(() =>
+    getStoredPendingOps().length > 0 ? 'pending' : 'syncing'
+  )
 
   // Tombstones persistentes para garantia absoluta anti-ressurreição de itens deletados
   const [tombstones, setTombstones] = useState(() => getStoredTombstones())
@@ -92,7 +157,7 @@ export function FinanceProvider({ children }) {
       })
       try {
         localStorage.setItem(STORAGE_KEY_TOMBSTONES, JSON.stringify(next))
-      } catch (e) {}
+      } catch {}
       tombstonesRef.current = next
       return next
     })
@@ -113,34 +178,34 @@ export function FinanceProvider({ children }) {
       if (!changed) return prev
       try {
         localStorage.setItem(STORAGE_KEY_TOMBSTONES, JSON.stringify(next))
-      } catch (e) {}
+      } catch {}
       tombstonesRef.current = next
       return next
     })
   }
 
   // Initialize state with automated fallback to previous storage keys and snapshots
-  const [demandas, setDemandas] = useState(() => 
+  const [demandas, setDemandas] = useState(() =>
     loadStorageWithFallback(STORAGE_KEY_DEMANDAS, ['reuni_financeiro_demandas', 'reuni_demandas'], DEFAULT_DEMANDAS)
   )
 
-  const [arrecadacoes, setArrecadacoes] = useState(() => 
+  const [arrecadacoes, setArrecadacoes] = useState(() =>
     loadStorageWithFallback(STORAGE_KEY_ARRECADACAO, ['reuni_financeiro_arrecadacao', 'reuni_arrecadacoes'], DEFAULT_ARRECADACAO)
   )
 
-  const [transacoes, setTransacoes] = useState(() => 
+  const [transacoes, setTransacoes] = useState(() =>
     loadStorageWithFallback(STORAGE_KEY_TRANSACOES, ['reuni_financeiro_transacoes', 'reuni_transacoes'], DEFAULT_TRANSACOES)
   )
 
-  const [bazarItems, setBazarItems] = useState(() => 
+  const [bazarItems, setBazarItems] = useState(() =>
     loadStorageWithFallback(STORAGE_KEY_BAZAR, ['reuni_financeiro_bazar', 'reuni_bazar'], DEFAULT_BAZAR)
   )
 
-  const [keepNotes, setKeepNotes] = useState(() => 
+  const [keepNotes, setKeepNotes] = useState(() =>
     loadStorageWithFallback(STORAGE_KEY_KEEP, ['reuni_keep_notes', 'reuni_keep'], DEFAULT_KEEP)
   )
 
-  const [inventarioItems, setInventarioItems] = useState(() => 
+  const [inventarioItems, setInventarioItems] = useState(() =>
     loadStorageWithFallback(STORAGE_KEY_INVENTARIO, ['reuni_financeiro_inventario', 'reuni_inventario'], DEFAULT_INVENTARIO)
   )
 
@@ -163,254 +228,312 @@ export function FinanceProvider({ children }) {
   useEffect(() => { keepNotesRef.current = keepNotes }, [keepNotes])
   useEffect(() => { inventarioItemsRef.current = inventarioItems }, [inventarioItems])
 
-  const lastServerTimestamp = useRef(0)
+  // Controle de base sincronizada, fila persistente (Outbox) e assinatura lógica (sem depender de Date.now() do cliente)
+  const syncedBaseRef = useRef(getInitialSyncedBase())
+  const baseRevisionRef = useRef(Number(localStorage.getItem(STORAGE_KEY_SYNCED_BASE_REV)) || 0)
+  const baseUpdatedAtRef = useRef(getInitialBaseUpdatedAt())
+  const hasSyncedV3Ref = useRef(localStorage.getItem(STORAGE_KEY_V3_INITIALIZED) === '1')
+  const lastAppliedSignatureRef = useRef('')
+  const pendingOpsRef = useRef(getStoredPendingOps())
+  const isFlushingRef = useRef(false)
+  const retryTimeoutRef = useRef(null)
 
-  const autoRestoreServerFromLocal = () => {
-    const currentTombstones = tombstonesRef.current || {}
-    const filterLive = (list) => (Array.isArray(list) ? list.filter(i => i && i.id && !currentTombstones[i.id]) : [])
+  const savePendingOpsQueue = (nextQueue) => {
+    pendingOpsRef.current = nextQueue
+    setPendingOpsCount(nextQueue.length)
+    try {
+      localStorage.setItem(STORAGE_KEY_PENDING_OPS, JSON.stringify(nextQueue))
+    } catch {}
+  }
 
-    const ops = []
-    const liveDemandas = filterLive(demandasRef.current)
-    if (liveDemandas.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'demandas', items: liveDemandas })
-    }
-    const liveTransacoes = filterLive(transacoesRef.current)
-    if (liveTransacoes.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'transacoes', items: liveTransacoes })
-    }
-    const liveArrecadacoes = filterLive(arrecadacoesRef.current)
-    if (liveArrecadacoes.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'arrecadacoes', items: liveArrecadacoes })
-    }
-    const liveBazar = filterLive(bazarItemsRef.current)
-    if (liveBazar.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'bazarItems', items: liveBazar })
-    }
-    const liveKeep = filterLive(keepNotesRef.current)
-    if (liveKeep.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'keepNotes', items: liveKeep })
-    }
-    const liveInv = filterLive(inventarioItemsRef.current)
-    if (liveInv.length > 0) {
-      ops.push({ op: 'replaceAll', colecao: 'inventarioItems', items: liveInv })
-    }
-
-    if (ops.length > 0) {
-      console.warn('🛡️ [Proteção Anti-Wipe] Servidor vazio detectado. Restaurando dados locais no servidor automaticamente...')
-      fetch('/api/mutate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify({ ops })
+  const enqueueOps = (ops, tag = 'mutation') => {
+    if (!Array.isArray(ops) || ops.length === 0) return
+    const currentQueue = [...pendingOpsRef.current]
+    if (tag === 'corrective') {
+      const filtered = currentQueue.filter(entry => entry.tag !== 'corrective')
+      filtered.push({
+        batchId: `corr_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        tag: 'corrective',
+        minRevision: baseRevisionRef.current,
+        ops
       })
-        .then(res => res.json())
-        .then(result => {
-          if (result && result.success) {
-            console.log('✅ [Proteção Anti-Wipe] Banco do servidor restaurado com sucesso a partir dos dados locais!')
-          }
-        })
-        .catch(err => {
-          console.error('Falha ao restaurar banco do servidor:', err)
-        })
+      savePendingOpsQueue(filtered)
+      return
+    }
+    currentQueue.push({
+      batchId: `mut_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      tag,
+      minRevision: baseRevisionRef.current,
+      ops
+    })
+    savePendingOpsQueue(currentQueue)
+  }
+
+  const hasAnyDirtyLocalItem = () => {
+    const allLists = [
+      demandasRef.current,
+      arrecadacoesRef.current,
+      transacoesRef.current,
+      bazarItemsRef.current,
+      keepNotesRef.current,
+      inventarioItemsRef.current
+    ]
+    return allLists.some(list => Array.isArray(list) && list.some(item => item && item._dirty))
+  }
+
+  const persistAllCollectionsToStorage = (stateObj) => {
+    try {
+      localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(stateObj.demandas))
+      localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(stateObj.arrecadacoes))
+      localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(stateObj.transacoes))
+      localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(stateObj.bazarItems))
+      localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(stateObj.keepNotes))
+      localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(stateObj.inventarioItems))
+    } catch {}
+  }
+
+  const scheduleFlushRetry = (delayMs = 4000) => {
+    if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current)
+    retryTimeoutRef.current = setTimeout(() => {
+      retryTimeoutRef.current = null
+      flushPendingOps()
+    }, delayMs)
+  }
+
+  const flushPendingOps = async () => {
+    if (isFlushingRef.current) return
+    const snapshotQueue = [...pendingOpsRef.current]
+    if (snapshotQueue.length === 0) return
+
+    isFlushingRef.current = true
+    setSyncStatus('syncing')
+
+    const batchIdsToAck = new Set(snapshotQueue.map(b => b.batchId))
+    const flatOps = snapshotQueue.flatMap(b => b.ops || [])
+    const maxMinRev = snapshotQueue.reduce(
+      (acc, b) => Math.max(acc, Number(b.minRevision) || 0),
+      baseRevisionRef.current
+    )
+
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 20000)
+      const res = await fetch('/api/mutate', {
+        method: 'POST',
+        cache: 'no-store',
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
+        body: JSON.stringify({ ops: flatOps, minRevision: maxMinRev })
+      })
+      clearTimeout(timeoutId)
+
+      if (res.status === 401) {
+        setSyncStatus('auth_error')
+        isFlushingRef.current = false
+        return
+      }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`)
+      }
+
+      const result = await res.json()
+      if (result && result.success && result.data) {
+        const remaining = pendingOpsRef.current.filter(b => !batchIdsToAck.has(b.batchId))
+        savePendingOpsQueue(remaining)
+        isFlushingRef.current = false
+        applyServerData(result.data, { fromMutationAck: true })
+        if (remaining.length > 0) {
+          flushPendingOps()
+        }
+        return
+      }
+      throw new Error(result?.error || 'Resposta inválida do servidor')
+    } catch {
+      isFlushingRef.current = false
+      setSyncStatus('pending')
+      scheduleFlushRetry(4000)
     }
   }
 
-  const applyServerData = (data) => {
+  const applyServerData = (data, options = {}) => {
     if (!data || typeof data !== 'object') return
-    const incomingTimestamp = data.updatedAt || 0
 
-    // O servidor é a fonte única da verdade, mas não se payload for antigo
-    if (incomingTimestamp && incomingTimestamp <= lastServerTimestamp.current) {
+    const incomingSignature = computeServerSignature(data)
+    if (
+      !options.force &&
+      !options.fromMutationAck &&
+      hasSyncedV3Ref.current &&
+      incomingSignature === lastAppliedSignatureRef.current &&
+      pendingOpsRef.current.length === 0 &&
+      !hasAnyDirtyLocalItem()
+    ) {
+      setSyncStatus('synced')
       return
     }
 
-    const currentTombstones = tombstonesRef.current || {}
-
-    // PROTEÇÃO CRÍTICA ANTI-WIPE:
-    // Se o servidor estiver vazio (0 demandas, 0 transações, 0 arrecadações, etc.),
-    // mas o cliente local já possui dados no cache/localStorage, NÃO permitir que
-    // o servidor vazio destrua as informações do usuário. Em vez disso, envia os dados
-    // do cliente para repovoar o servidor automaticamente!
-    const serverVazio = (
-      (!data.demandas || data.demandas.length === 0) &&
-      (!data.transacoes || data.transacoes.length === 0) &&
-      (!data.arrecadacoes || data.arrecadacoes.length === 0) &&
-      (!data.bazarItems || data.bazarItems.length === 0) &&
-      (!data.keepNotes || data.keepNotes.length === 0) &&
-      (!data.inventarioItems || data.inventarioItems.length === 0)
-    )
-
-    const clienteTemDados = (
-      (demandasRef.current && demandasRef.current.length > 0) ||
-      (transacoesRef.current && transacoesRef.current.length > 0) ||
-      (arrecadacoesRef.current && arrecadacoesRef.current.length > 0) ||
-      (bazarItemsRef.current && bazarItemsRef.current.length > 0) ||
-      (keepNotesRef.current && keepNotesRef.current.length > 0) ||
-      (inventarioItemsRef.current && inventarioItemsRef.current.length > 0)
-    )
-
-    if (serverVazio && clienteTemDados) {
-      autoRestoreServerFromLocal()
-      return
+    const currentLocalState = {
+      demandas: demandasRef.current,
+      arrecadacoes: arrecadacoesRef.current,
+      transacoes: transacoesRef.current,
+      bazarItems: bazarItemsRef.current,
+      keepNotes: keepNotesRef.current,
+      inventarioItems: inventarioItemsRef.current
     }
 
-    lastServerTimestamp.current = incomingTimestamp
+    const {
+      mergedState,
+      mergedTombstones,
+      tombstonesChanged,
+      correctiveOps,
+      cleanBaseCandidate,
+      nextBaseRevision
+    } = reconcileStateWithServer({
+      localState: currentLocalState,
+      baseState: syncedBaseRef.current,
+      baseRevision: baseRevisionRef.current,
+      baseUpdatedAt: baseUpdatedAtRef.current,
+      serverData: data,
+      localTombstones: tombstonesRef.current,
+      hasSyncedV3Before: hasSyncedV3Ref.current
+    })
 
-    // Se o servidor trouxe dados de volta de um restart ou backup que inclui
-    // IDs de itens deletados anteriormente, NUNCA ressuscita no cliente,
-    // e agenda a exclusão desses IDs no servidor imediatamente!
-    const zombieOps = []
-    const syncMissingOps = []
-
-    const processCollection = (colName, serverList, currentLocalList, setter, storageKey) => {
-      if (!Array.isArray(serverList)) return currentLocalList
-
-      // 1. Filtra qualquer item deletado (Tombstone)
-      const cleanServer = []
-      const resurrectedIds = []
-
-      serverList.forEach(item => {
-        if (!item || !item.id) return
-        if (currentTombstones[item.id]) {
-          resurrectedIds.push(item.id)
-        } else {
-          cleanServer.push(item)
-        }
-      })
-
-      if (resurrectedIds.length > 0) {
-        zombieOps.push({ op: 'deleteMany', colecao: colName, ids: resurrectedIds })
-      }
-
-      // 2. Proteção Anti-Perda: Se o cliente cadastrou itens novos localmente
-      // que ainda não existem no servidor (ex: servidor reiniciou), PRESERVA os itens locais!
-      const cleanServerIdSet = new Set(cleanServer.map(i => i.id))
-      const missingOnServer = []
-
-      if (Array.isArray(currentLocalList)) {
-        currentLocalList.forEach(localItem => {
-          if (localItem && localItem.id && !currentTombstones[localItem.id] && !cleanServerIdSet.has(localItem.id)) {
-            missingOnServer.push(localItem)
-          }
-        })
-      }
-
-      if (missingOnServer.length > 0) {
-        syncMissingOps.push({ op: 'createMany', colecao: colName, items: missingOnServer })
-      }
-
-      const finalResult = [...missingOnServer, ...cleanServer]
-      setter(finalResult)
-      try { localStorage.setItem(storageKey, JSON.stringify(finalResult)) } catch (e) {}
-      return finalResult
+    if (tombstonesChanged) {
+      tombstonesRef.current = mergedTombstones
+      setTombstones(mergedTombstones)
+      try {
+        localStorage.setItem(STORAGE_KEY_TOMBSTONES, JSON.stringify(mergedTombstones))
+      } catch {}
     }
 
-    if (Array.isArray(data.demandas)) {
-      demandasRef.current = processCollection('demandas', data.demandas, demandasRef.current, setDemandas, STORAGE_KEY_DEMANDAS)
-    }
-    if (Array.isArray(data.arrecadacoes)) {
-      arrecadacoesRef.current = processCollection('arrecadacoes', data.arrecadacoes, arrecadacoesRef.current, setArrecadacoes, STORAGE_KEY_ARRECADACAO)
-    }
-    if (Array.isArray(data.transacoes)) {
-      transacoesRef.current = processCollection('transacoes', data.transacoes, transacoesRef.current, setTransacoes, STORAGE_KEY_TRANSACOES)
-    }
-    if (Array.isArray(data.bazarItems)) {
-      bazarItemsRef.current = processCollection('bazarItems', data.bazarItems, bazarItemsRef.current, setBazarItems, STORAGE_KEY_BAZAR)
-    }
-    if (Array.isArray(data.keepNotes)) {
-      keepNotesRef.current = processCollection('keepNotes', data.keepNotes, keepNotesRef.current, setKeepNotes, STORAGE_KEY_KEEP)
-    }
-    if (Array.isArray(data.inventarioItems)) {
-      inventarioItemsRef.current = processCollection('inventarioItems', data.inventarioItems, inventarioItemsRef.current, setInventarioItems, STORAGE_KEY_INVENTARIO)
-    }
+    demandasRef.current = mergedState.demandas
+    arrecadacoesRef.current = mergedState.arrecadacoes
+    transacoesRef.current = mergedState.transacoes
+    bazarItemsRef.current = mergedState.bazarItems
+    keepNotesRef.current = mergedState.keepNotes
+    inventarioItemsRef.current = mergedState.inventarioItems
 
-    // Se foram detectados itens zumbis ou itens locais faltando no servidor,
-    // dispara a sincronização corretiva silenciosa para o servidor
-    const correctiveOps = [...zombieOps, ...syncMissingOps]
+    setDemandas(mergedState.demandas)
+    setArrecadacoes(mergedState.arrecadacoes)
+    setTransacoes(mergedState.transacoes)
+    setBazarItems(mergedState.bazarItems)
+    setKeepNotes(mergedState.keepNotes)
+    setInventarioItems(mergedState.inventarioItems)
+
+    persistAllCollectionsToStorage(mergedState)
+    lastAppliedSignatureRef.current = incomingSignature
+
     if (correctiveOps.length > 0) {
-      fetch('/api/mutate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify({ ops: correctiveOps })
-      }).catch(() => {})
+      enqueueOps(correctiveOps, 'corrective')
+      flushPendingOps()
+      return
     }
 
-    // Snapshot de emergência para recuperação em caso de limpeza de cache
+    if (pendingOpsRef.current.length > 0) {
+      flushPendingOps()
+      return
+    }
+
+    // Convergência total atingida entre este dispositivo e o servidor!
+    syncedBaseRef.current = cleanBaseCandidate
+    baseRevisionRef.current = nextBaseRevision
+    baseUpdatedAtRef.current = Number(data.updatedAt) || baseUpdatedAtRef.current
+    hasSyncedV3Ref.current = true
+
     try {
+      localStorage.setItem(STORAGE_KEY_SYNCED_BASE, JSON.stringify(cleanBaseCandidate))
+      localStorage.setItem(STORAGE_KEY_SYNCED_BASE_REV, String(nextBaseRevision))
+      localStorage.setItem(STORAGE_KEY_SYNCED_BASE_TS, String(baseUpdatedAtRef.current))
+      localStorage.setItem(STORAGE_KEY_V3_INITIALIZED, '1')
       localStorage.setItem('reuni_emergency_snapshot', JSON.stringify({
-        data,
+        data: { ...cleanBaseCandidate, revision: nextBaseRevision, updatedAt: baseUpdatedAtRef.current },
         timestamp: Date.now()
       }))
-    } catch (e) {}
+    } catch {}
 
-    setLastSaved(`Ao vivo: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`)
+    setSyncStatus('synced')
+    const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    setLastSaved(`Rev #${nextBaseRevision || 1} · ${hora}`)
   }
 
   const pushStateToServer = (updatedState = {}, ops = []) => {
-    const now = Date.now()
-    lastServerTimestamp.current = now
+    const nextState = {
+      demandas: updatedState.demandas !== undefined ? updatedState.demandas : demandasRef.current,
+      arrecadacoes: updatedState.arrecadacoes !== undefined ? updatedState.arrecadacoes : arrecadacoesRef.current,
+      transacoes: updatedState.transacoes !== undefined ? updatedState.transacoes : transacoesRef.current,
+      bazarItems: updatedState.bazarItems !== undefined ? updatedState.bazarItems : bazarItemsRef.current,
+      keepNotes: updatedState.keepNotes !== undefined ? updatedState.keepNotes : keepNotesRef.current,
+      inventarioItems: updatedState.inventarioItems !== undefined ? updatedState.inventarioItems : inventarioItemsRef.current
+    }
 
-    const nextDemandas = updatedState.demandas !== undefined ? updatedState.demandas : demandasRef.current
-    const nextArrecadacoes = updatedState.arrecadacoes !== undefined ? updatedState.arrecadacoes : arrecadacoesRef.current
-    const nextTransacoes = updatedState.transacoes !== undefined ? updatedState.transacoes : transacoesRef.current
-    const nextBazarItems = updatedState.bazarItems !== undefined ? updatedState.bazarItems : bazarItemsRef.current
-    const nextKeepNotes = updatedState.keepNotes !== undefined ? updatedState.keepNotes : keepNotesRef.current
-    const nextInventarioItems = updatedState.inventarioItems !== undefined ? updatedState.inventarioItems : inventarioItemsRef.current
+    demandasRef.current = nextState.demandas
+    arrecadacoesRef.current = nextState.arrecadacoes
+    transacoesRef.current = nextState.transacoes
+    bazarItemsRef.current = nextState.bazarItems
+    keepNotesRef.current = nextState.keepNotes
+    inventarioItemsRef.current = nextState.inventarioItems
 
-    demandasRef.current = nextDemandas
-    arrecadacoesRef.current = nextArrecadacoes
-    transacoesRef.current = nextTransacoes
-    bazarItemsRef.current = nextBazarItems
-    keepNotesRef.current = nextKeepNotes
-    inventarioItemsRef.current = nextInventarioItems
+    // 1. Persiste imediatamente no localStorage (latência zero)
+    persistAllCollectionsToStorage(nextState)
 
-    // 1. GARANTIR SALVAMENTO NO LOCALSTORAGE PRIMEIRO (PERSISTÊNCIA INDESTRUTÍVEL)
-    try {
-      localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(nextDemandas))
-      localStorage.setItem(STORAGE_KEY_ARRECADACAO, JSON.stringify(nextArrecadacoes))
-      localStorage.setItem(STORAGE_KEY_TRANSACOES, JSON.stringify(nextTransacoes))
-      localStorage.setItem(STORAGE_KEY_BAZAR, JSON.stringify(nextBazarItems))
-      localStorage.setItem(STORAGE_KEY_KEEP, JSON.stringify(nextKeepNotes))
-      localStorage.setItem(STORAGE_KEY_INVENTARIO, JSON.stringify(nextInventarioItems))
-    } catch (e) {}
-
-    setLastSaved(new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }))
-
-    // 2. SINCRONIZAR COM O SERVIDOR BACKEND (SE DISPONÍVEL)
-    // Manda só a operação (criar/atualizar/apagar um item, ou substituir uma
-    // coleção inteira de propósito) — o servidor aplica em cima do estado
-    // ATUAL dele, nunca do array completo que este cliente lembra ter.
-    // Isso evita que um cliente com cópia local desatualizada apague
-    // silenciosamente o lançamento de outro (ver dbOps.js).
+    // 2. Grava na fila persistente Outbox antes da rede e dispara envio atômico com retry
     if (ops.length > 0) {
-      fetch('/api/mutate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...authHeaders() },
-        body: JSON.stringify({ ops })
-      })
-        .then(res => res.json())
-        .then(result => {
-          if (result && result.success && result.data) {
-            applyServerData(result.data)
-          }
-        })
-        .catch(() => {})
+      enqueueOps(ops, 'mutation')
+      flushPendingOps()
     }
   }
 
-  // Real-time EventSource connection & initial load & polling heartbeat
+  const forceSyncNow = async () => {
+    setSyncStatus('syncing')
+    if (pendingOpsRef.current.length > 0) {
+      await flushPendingOps()
+    }
+    try {
+      const res = await fetch('/api/data', {
+        cache: 'no-store',
+        headers: { ...authHeaders() }
+      })
+      if (res.status === 401) {
+        setSyncStatus('auth_error')
+        return false
+      }
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+      applyServerData(data, { force: true })
+      return true
+    } catch {
+      setSyncStatus(pendingOpsRef.current.length > 0 ? 'pending' : 'offline')
+      return false
+    }
+  }
+
+  // Real-time EventSource connection, initial reconciliation, online/visibility recovery & heartbeat
   useEffect(() => {
-    // Sincronizar inicialmente com dados do servidor se houver
-    fetch('/api/data', { headers: { ...authHeaders() } })
-      .then(res => {
-        if (!res.ok) throw new Error('Servidor sem rota estática')
-        return res.json()
+    const syncFromServer = (force = false) => {
+      if (pendingOpsRef.current.length > 0) {
+        flushPendingOps()
+      }
+      fetch('/api/data', {
+        cache: 'no-store',
+        headers: { ...authHeaders() }
       })
-      .then(data => {
-        applyServerData(data)
-      })
-      .catch(() => {
-        // Se a API /api/data der erro ou estiver offline, mantém os dados em cache sem sobrescrever o servidor
-      })
+        .then(res => {
+          if (res.status === 401) {
+            setSyncStatus('auth_error')
+            return null
+          }
+          if (!res.ok) throw new Error('Falha ao consultar /api/data')
+          return res.json()
+        })
+        .then(data => {
+          if (data) applyServerData(data, { force })
+        })
+        .catch(() => {
+          setSyncStatus(pendingOpsRef.current.length > 0 ? 'pending' : 'offline')
+        })
+    }
+
+    syncFromServer(true)
 
     // EventSource nativo não manda header customizado, então o token vai
     // como query string aqui (mesmo mecanismo de auth.js, aceito via ?token=)
@@ -422,26 +545,29 @@ export function FinanceProvider({ children }) {
         try {
           const data = JSON.parse(e.data)
           applyServerData(data)
-        } catch (err) {}
+        } catch {}
       }
-    } catch (err) {}
+    } catch {}
+
+    const handleOnline = () => syncFromServer(true)
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        syncFromServer(false)
+      }
+    }
+
+    window.addEventListener('online', handleOnline)
+    document.addEventListener('visibilitychange', handleVisibility)
 
     const intervalId = setInterval(() => {
-      fetch('/api/data', { headers: { ...authHeaders() } })
-        .then(res => {
-          if (!res.ok) return null
-          return res.json()
-        })
-        .then(data => {
-          if (data && data.updatedAt && data.updatedAt > lastServerTimestamp.current) {
-            applyServerData(data)
-          }
-        })
-        .catch(() => {})
-    }, 25000)
+      syncFromServer(false)
+    }, 20000)
 
     return () => {
       if (eventSource) eventSource.close()
+      if (retryTimeoutRef.current) clearTimeout(retryTimeoutRef.current)
+      window.removeEventListener('online', handleOnline)
+      document.removeEventListener('visibilitychange', handleVisibility)
       clearInterval(intervalId)
     }
   }, [])
@@ -461,11 +587,11 @@ export function FinanceProvider({ children }) {
 
   // Demanda handlers
   const addDemanda = (demanda) => {
-    const newDemanda = {
+    const newDemanda = markLocalCreated({
       ...demanda,
       id: Date.now().toString(),
       data: new Date().toISOString().split('T')[0]
-    }
+    })
     clearTombstones(newDemanda.id)
     const updated = [newDemanda, ...demandasRef.current]
     demandasRef.current = updated
@@ -474,12 +600,7 @@ export function FinanceProvider({ children }) {
   }
 
   const updateDemanda = (id, updatedFields) => {
-    const updated = demandasRef.current.map(d => {
-      if (d.id === id) {
-        return { ...d, ...updatedFields }
-      }
-      return d
-    })
+    const updated = demandasRef.current.map(d => (d.id === id ? markLocalUpdated(d, updatedFields) : d))
     demandasRef.current = updated
     setDemandas(updated)
     pushStateToServer({ demandas: updated }, [{ op: 'update', colecao: 'demandas', id, fields: updatedFields }])
@@ -503,20 +624,30 @@ export function FinanceProvider({ children }) {
     const demandaAtual = demandasRef.current.find(d => d.id === id)
     if (!demandaAtual || demandaAtual.status === 'Pago') return
 
-    const updatedOtimista = demandasRef.current.map(d => d.id === id ? { ...d, status: 'Pago' } : d)
+    const updatedOtimista = demandasRef.current.map(d =>
+      d.id === id ? markLocalUpdated(d, { status: 'Pago' }) : d
+    )
     demandasRef.current = updatedOtimista
     setDemandas(updatedOtimista)
+    try {
+      localStorage.setItem(STORAGE_KEY_DEMANDAS, JSON.stringify(updatedOtimista))
+    } catch {}
+    setSyncStatus('syncing')
 
     const enviar = (comprovantePayload) => {
       fetch('/api/demandas/pagar', {
         method: 'POST',
+        cache: 'no-store',
         headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ demandaId: id, ...(comprovantePayload ? { comprovante: comprovantePayload } : {}) })
       })
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          return res.json()
+        })
         .then(result => {
           if (result && result.success && result.data) {
-            applyServerData(result.data)
+            applyServerData(result.data, { fromMutationAck: true })
             if (result.erroExtracao) {
               alert(
                 `Comprovante anexado, mas a extração automática falhou:\n\n${result.erroExtracao}\n\n` +
@@ -535,7 +666,11 @@ export function FinanceProvider({ children }) {
             alert(`Não foi possível processar o pagamento: ${result.error}`)
           }
         })
-        .catch(() => {})
+        .catch(() => {
+          enqueueOps([{ op: 'update', colecao: 'demandas', id, fields: { status: 'Pago' } }], 'mutation')
+          setSyncStatus('pending')
+          scheduleFlushRetry(4000)
+        })
     }
 
     if (comprovanteFile) {
@@ -559,9 +694,9 @@ export function FinanceProvider({ children }) {
       return
     }
 
-    // Qualquer outra transição de status (não envolve criar transação
-    // automática) segue o caminho normal de update.
-    const updated = demandasRef.current.map(d => d.id === id ? { ...d, status: newStatus } : d)
+    const updated = demandasRef.current.map(d =>
+      d.id === id ? markLocalUpdated(d, { status: newStatus }) : d
+    )
     demandasRef.current = updated
     setDemandas(updated)
     pushStateToServer({ demandas: updated }, [{ op: 'update', colecao: 'demandas', id, fields: { status: newStatus } }])
@@ -569,12 +704,12 @@ export function FinanceProvider({ children }) {
 
   // Arrecadacao handlers
   const addArrecadacao = (item) => {
-    const newItem = {
+    const newItem = markLocalCreated({
       ...item,
       id: Date.now().toString(),
       atual: Number(item.atual) || 0,
       meta: Number(item.meta) || 0
-    }
+    })
     clearTombstones(newItem.id)
     const updated = [newItem, ...arrecadacoesRef.current]
     arrecadacoesRef.current = updated
@@ -588,12 +723,9 @@ export function FinanceProvider({ children }) {
       ...(updatedFields.meta !== undefined ? { meta: Number(updatedFields.meta) } : {}),
       ...(updatedFields.atual !== undefined ? { atual: Number(updatedFields.atual) } : {})
     }
-    const updated = arrecadacoesRef.current.map(item => {
-      if (item.id === id) {
-        return { ...item, ...computedFields }
-      }
-      return item
-    })
+    const updated = arrecadacoesRef.current.map(item =>
+      item.id === id ? markLocalUpdated(item, computedFields) : item
+    )
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
     pushStateToServer({ arrecadacoes: updated }, [{ op: 'update', colecao: 'arrecadacoes', id, fields: computedFields }])
@@ -617,8 +749,8 @@ export function FinanceProvider({ children }) {
           if (dadosVenda.numerosBilhetes) descDetalhada += ` [Nº ${dadosVenda.numerosBilhetes}]`
           descDetalhada += `)`
         }
-        
-        const newTrans = {
+
+        const newTrans = markLocalCreated({
           id: Date.now().toString(),
           data: new Date().toISOString().split('T')[0],
           descricao: descDetalhada,
@@ -631,7 +763,7 @@ export function FinanceProvider({ children }) {
           numerosBilhetes: dadosVenda.numerosBilhetes,
           comprador: dadosVenda.comprador,
           dataHora: dataHoraFormatada
-        }
+        })
         clearTombstones(newTrans.id)
         newTransacoes = [newTrans, ...transacoesRef.current]
         transacoesRef.current = newTransacoes
@@ -639,16 +771,18 @@ export function FinanceProvider({ children }) {
         transacaoCriada = newTrans
         arrecadacaoFieldsAtualizados = { atual: novoAtual, status: novoStatus }
 
-        return { ...item, atual: novoAtual, status: novoStatus }
+        return markLocalUpdated(item, arrecadacaoFieldsAtualizados)
       }
       return item
     })
     arrecadacoesRef.current = updated
     setArrecadacoes(updated)
-    pushStateToServer({ arrecadacoes: updated, transacoes: newTransacoes }, [
-      { op: 'update', colecao: 'arrecadacoes', id, fields: arrecadacaoFieldsAtualizados },
-      { op: 'create', colecao: 'transacoes', item: transacaoCriada }
-    ])
+    if (arrecadacaoFieldsAtualizados && transacaoCriada) {
+      pushStateToServer({ arrecadacoes: updated, transacoes: newTransacoes }, [
+        { op: 'update', colecao: 'arrecadacoes', id, fields: arrecadacaoFieldsAtualizados },
+        { op: 'create', colecao: 'transacoes', item: transacaoCriada }
+      ])
+    }
   }
 
   const deleteArrecadacao = (id) => {
@@ -664,14 +798,14 @@ export function FinanceProvider({ children }) {
     const now = new Date()
     const dataHoraNow = item.dataHoraRecebimento || `${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
 
-    const newItem = {
+    const newItem = markLocalCreated({
       ...item,
       id: Date.now().toString(),
       precoAvaliado: Number(item.precoAvaliado) || 0,
       status: item.status || 'Em Avaliação',
       dataCadastro: new Date().toISOString().split('T')[0],
       dataHoraRecebimento: dataHoraNow
-    }
+    })
     clearTombstones(newItem.id)
     const updated = [newItem, ...bazarItemsRef.current]
     bazarItemsRef.current = updated
@@ -684,24 +818,18 @@ export function FinanceProvider({ children }) {
       ...updatedFields,
       ...(updatedFields.precoAvaliado !== undefined ? { precoAvaliado: Number(updatedFields.precoAvaliado) } : {})
     }
-    const updated = bazarItemsRef.current.map(item => {
-      if (item.id === id) {
-        return { ...item, ...computedFields }
-      }
-      return item
-    })
+    const updated = bazarItemsRef.current.map(item =>
+      item.id === id ? markLocalUpdated(item, computedFields) : item
+    )
     bazarItemsRef.current = updated
     setBazarItems(updated)
     pushStateToServer({ bazarItems: updated }, [{ op: 'update', colecao: 'bazarItems', id, fields: computedFields }])
   }
 
   const updateBazarItemStatus = (id, newStatus) => {
-    const updated = bazarItemsRef.current.map(item => {
-      if (item.id === id) {
-        return { ...item, status: newStatus }
-      }
-      return item
-    })
+    const updated = bazarItemsRef.current.map(item =>
+      item.id === id ? markLocalUpdated(item, { status: newStatus }) : item
+    )
     bazarItemsRef.current = updated
     setBazarItems(updated)
     pushStateToServer({ bazarItems: updated }, [{ op: 'update', colecao: 'bazarItems', id, fields: { status: newStatus } }])
@@ -722,7 +850,7 @@ export function FinanceProvider({ children }) {
         if (vendedorBalcao) descTransacao += ` (Vendedor no Balcão: ${vendedorBalcao})`
         if (comprador) descTransacao += ` (Comprador: ${comprador})`
 
-        const newTrans = {
+        const newTrans = markLocalCreated({
           id: Date.now().toString(),
           data: new Date().toISOString().split('T')[0],
           descricao: descTransacao,
@@ -733,7 +861,7 @@ export function FinanceProvider({ children }) {
           vendedor: vendedorBalcao,
           comprador: comprador,
           dataHora: dataHoraVenda
-        }
+        })
         clearTombstones(newTrans.id)
         newTransacoes = [newTrans, ...transacoesRef.current]
         transacoesRef.current = newTransacoes
@@ -751,16 +879,18 @@ export function FinanceProvider({ children }) {
         }
         bazarItemFieldsAtualizados = camposAtualizados
 
-        return { ...item, ...camposAtualizados }
+        return markLocalUpdated(item, camposAtualizados)
       }
       return item
     })
     bazarItemsRef.current = updated
     setBazarItems(updated)
-    pushStateToServer({ bazarItems: updated, transacoes: newTransacoes }, [
-      { op: 'update', colecao: 'bazarItems', id, fields: bazarItemFieldsAtualizados },
-      { op: 'create', colecao: 'transacoes', item: transacaoCriada }
-    ])
+    if (bazarItemFieldsAtualizados && transacaoCriada) {
+      pushStateToServer({ bazarItems: updated, transacoes: newTransacoes }, [
+        { op: 'update', colecao: 'bazarItems', id, fields: bazarItemFieldsAtualizados },
+        { op: 'create', colecao: 'transacoes', item: transacaoCriada }
+      ])
+    }
   }
 
   const deleteBazarItem = (id) => {
@@ -773,12 +903,12 @@ export function FinanceProvider({ children }) {
 
   // Transacoes handlers
   const addTransacao = (transacao) => {
-    const newTransacao = {
+    const newTransacao = markLocalCreated({
       ...transacao,
       id: Date.now().toString(),
       data: transacao.data || new Date().toISOString().split('T')[0],
       valor: Number(transacao.valor)
-    }
+    })
     clearTombstones(newTransacao.id)
     const updated = [newTransacao, ...transacoesRef.current]
     transacoesRef.current = updated
@@ -791,12 +921,9 @@ export function FinanceProvider({ children }) {
       ...updatedFields,
       ...(updatedFields.valor !== undefined ? { valor: Number(updatedFields.valor) } : {})
     }
-    const updated = transacoesRef.current.map(t => {
-      if (t.id === id) {
-        return { ...t, ...computedFields }
-      }
-      return t
-    })
+    const updated = transacoesRef.current.map(t =>
+      t.id === id ? markLocalUpdated(t, computedFields) : t
+    )
     transacoesRef.current = updated
     setTransacoes(updated)
     pushStateToServer({ transacoes: updated }, [{ op: 'update', colecao: 'transacoes', id, fields: computedFields }])
@@ -811,12 +938,9 @@ export function FinanceProvider({ children }) {
   }
 
   const attachComprovanteToTransacao = (transacaoId, comprovanteUrl) => {
-    const updated = transacoesRef.current.map(t => {
-      if (t.id === transacaoId) {
-        return { ...t, comprovanteUrl }
-      }
-      return t
-    })
+    const updated = transacoesRef.current.map(t =>
+      t.id === transacaoId ? markLocalUpdated(t, { comprovanteUrl }) : t
+    )
     transacoesRef.current = updated
     setTransacoes(updated)
     pushStateToServer({ transacoes: updated }, [{ op: 'update', colecao: 'transacoes', id: transacaoId, fields: { comprovanteUrl } }])
@@ -824,14 +948,14 @@ export function FinanceProvider({ children }) {
 
   // Keep / Informações Handlers
   const addKeepNote = (note) => {
-    const newNote = {
+    const newNote = markLocalCreated({
       ...note,
       id: Date.now().toString(),
       dataCriacao: new Date().toISOString().split('T')[0],
       cor: note.cor || 'default',
       isPinned: note.isPinned || false,
       tags: note.tags || []
-    }
+    })
     clearTombstones(newNote.id)
     const updated = [newNote, ...keepNotesRef.current]
     keepNotesRef.current = updated
@@ -840,12 +964,9 @@ export function FinanceProvider({ children }) {
   }
 
   const updateKeepNote = (id, updatedFields) => {
-    const updated = keepNotesRef.current.map(note => {
-      if (note.id === id) {
-        return { ...note, ...updatedFields }
-      }
-      return note
-    })
+    const updated = keepNotesRef.current.map(note =>
+      note.id === id ? markLocalUpdated(note, updatedFields) : note
+    )
     keepNotesRef.current = updated
     setKeepNotes(updated)
     pushStateToServer({ keepNotes: updated }, [{ op: 'update', colecao: 'keepNotes', id, fields: updatedFields }])
@@ -856,7 +977,7 @@ export function FinanceProvider({ children }) {
     const updated = keepNotesRef.current.map(note => {
       if (note.id === id) {
         novoIsPinned = !note.isPinned
-        return { ...note, isPinned: novoIsPinned }
+        return markLocalUpdated(note, { isPinned: novoIsPinned })
       }
       return note
     })
@@ -886,7 +1007,7 @@ export function FinanceProvider({ children }) {
           return item
         })
         checklistItemsAtualizado = updatedItems
-        return { ...note, checklistItems: updatedItems }
+        return markLocalUpdated(note, { checklistItems: updatedItems })
       }
       return note
     })
@@ -899,13 +1020,13 @@ export function FinanceProvider({ children }) {
 
   // Inventário Handlers
   const addInventarioItem = (item) => {
-    const newItem = {
+    const newItem = markLocalCreated({
       ...item,
       id: Date.now().toString(),
       quantidade: Number(item.quantidade) || 1,
       valorEstimadoEconomizado: Number(item.valorEstimadoEconomizado) || 0,
       dataCadastro: new Date().toISOString().split('T')[0]
-    }
+    })
     clearTombstones(newItem.id)
     const updated = [newItem, ...inventarioItemsRef.current]
     inventarioItemsRef.current = updated
@@ -919,12 +1040,9 @@ export function FinanceProvider({ children }) {
       ...(updatedFields.quantidade !== undefined ? { quantidade: Number(updatedFields.quantidade) } : {}),
       ...(updatedFields.valorEstimadoEconomizado !== undefined ? { valorEstimadoEconomizado: Number(updatedFields.valorEstimadoEconomizado) } : {})
     }
-    const updated = inventarioItemsRef.current.map(item => {
-      if (item.id === id) {
-        return { ...item, ...computedFields }
-      }
-      return item
-    })
+    const updated = inventarioItemsRef.current.map(item =>
+      item.id === id ? markLocalUpdated(item, computedFields) : item
+    )
     inventarioItemsRef.current = updated
     setInventarioItems(updated)
     pushStateToServer({ inventarioItems: updated }, [{ op: 'update', colecao: 'inventarioItems', id, fields: computedFields }])
@@ -938,15 +1056,25 @@ export function FinanceProvider({ children }) {
     pushStateToServer({ inventarioItems: updated }, [{ op: 'delete', colecao: 'inventarioItems', id }])
   }
 
-  const resetToDefault = () => {
-    const allIds = [
-      ...demandasRef.current.map(d => d.id),
-      ...arrecadacoesRef.current.map(a => a.id),
-      ...transacoesRef.current.map(t => t.id),
-      ...bazarItemsRef.current.map(b => b.id),
-      ...keepNotesRef.current.map(k => k.id),
-      ...inventarioItemsRef.current.map(i => i.id)
-    ].filter(Boolean)
+  const wipeAllCollectionsAndTombstone = () => {
+    const ops = []
+    const collectionsWithRefs = [
+      ['demandas', demandasRef.current],
+      ['arrecadacoes', arrecadacoesRef.current],
+      ['transacoes', transacoesRef.current],
+      ['bazarItems', bazarItemsRef.current],
+      ['keepNotes', keepNotesRef.current],
+      ['inventarioItems', inventarioItemsRef.current]
+    ]
+    const allIds = []
+    for (const [col, arr] of collectionsWithRefs) {
+      const ids = (arr || []).map(i => i?.id).filter(Boolean)
+      if (ids.length > 0) {
+        allIds.push(...ids)
+        ops.push({ op: 'deleteMany', colecao: col, ids })
+      }
+      ops.push({ op: 'replaceAll', colecao: col, items: [] })
+    }
     if (allIds.length > 0) registerTombstones(allIds)
 
     demandasRef.current = []
@@ -970,57 +1098,11 @@ export function FinanceProvider({ children }) {
       bazarItems: [],
       keepNotes: [],
       inventarioItems: []
-    }, [
-      { op: 'replaceAll', colecao: 'demandas', items: [] },
-      { op: 'replaceAll', colecao: 'arrecadacoes', items: [] },
-      { op: 'replaceAll', colecao: 'transacoes', items: [] },
-      { op: 'replaceAll', colecao: 'bazarItems', items: [] },
-      { op: 'replaceAll', colecao: 'keepNotes', items: [] },
-      { op: 'replaceAll', colecao: 'inventarioItems', items: [] }
-    ])
+    }, ops)
   }
 
-  const clearAllData = () => {
-    const allIds = [
-      ...demandasRef.current.map(d => d.id),
-      ...arrecadacoesRef.current.map(a => a.id),
-      ...transacoesRef.current.map(t => t.id),
-      ...bazarItemsRef.current.map(b => b.id),
-      ...keepNotesRef.current.map(k => k.id),
-      ...inventarioItemsRef.current.map(i => i.id)
-    ].filter(Boolean)
-    if (allIds.length > 0) registerTombstones(allIds)
-
-    demandasRef.current = []
-    arrecadacoesRef.current = []
-    transacoesRef.current = []
-    bazarItemsRef.current = []
-    keepNotesRef.current = []
-    inventarioItemsRef.current = []
-
-    setDemandas([])
-    setArrecadacoes([])
-    setTransacoes([])
-    setBazarItems([])
-    setKeepNotes([])
-    setInventarioItems([])
-
-    pushStateToServer({
-      demandas: [],
-      arrecadacoes: [],
-      transacoes: [],
-      bazarItems: [],
-      keepNotes: [],
-      inventarioItems: []
-    }, [
-      { op: 'replaceAll', colecao: 'demandas', items: [] },
-      { op: 'replaceAll', colecao: 'arrecadacoes', items: [] },
-      { op: 'replaceAll', colecao: 'transacoes', items: [] },
-      { op: 'replaceAll', colecao: 'bazarItems', items: [] },
-      { op: 'replaceAll', colecao: 'keepNotes', items: [] },
-      { op: 'replaceAll', colecao: 'inventarioItems', items: [] }
-    ])
-  }
+  const resetToDefault = () => wipeAllCollectionsAndTombstone()
+  const clearAllData = () => wipeAllCollectionsAndTombstone()
 
   // Calculated values
   const totalArrecadado = transacoes
@@ -1047,6 +1129,7 @@ export function FinanceProvider({ children }) {
           const base64 = reader.result
           const res = await fetch('/api/documents/upload', {
             method: 'POST',
+            cache: 'no-store',
             headers: { 'Content-Type': 'application/json', ...authHeaders() },
             body: JSON.stringify({
               fileName: file.name,
@@ -1069,19 +1152,16 @@ export function FinanceProvider({ children }) {
     })
   }
 
-  // Apaga o arquivo físico no servidor quando a URL veio de
-  // /api/documents/upload. URLs data: (base64 embutido, ex.: comprovante
-  // de venda de rifa) não têm arquivo no servidor — não faz nada nesse
-  // caso, quem chamou só precisa limpar o campo comprovanteUrl do registro.
   const deleteDocument = async (comprovanteUrl) => {
     if (!comprovanteUrl || !comprovanteUrl.startsWith('/api/documents/')) return
     const fileId = comprovanteUrl.split('/').pop().split('?')[0]
     try {
       await fetch(`/api/documents/${fileId}`, {
         method: 'DELETE',
+        cache: 'no-store',
         headers: { ...authHeaders() }
       })
-    } catch (e) {}
+    } catch {}
   }
 
   // Importação atômica em lote com identificador de lote e suporte a desfazer/excluir
@@ -1092,7 +1172,7 @@ export function FinanceProvider({ children }) {
 
     let nextDemandas = demandasRef.current
     if (impDemandas.length > 0) {
-      const formatted = impDemandas.map((d, idx) => ({
+      const formatted = impDemandas.map((d, idx) => markLocalCreated({
         ...d,
         id: d.id || ('demanda_imp_' + (idx + 1) + '_' + Date.now()),
         data: d.data || new Date().toISOString().split('T')[0],
@@ -1108,7 +1188,7 @@ export function FinanceProvider({ children }) {
 
     let nextArrecadacoes = arrecadacoesRef.current
     if (impArrecadacoes.length > 0) {
-      const formatted = impArrecadacoes.map((a, idx) => ({
+      const formatted = impArrecadacoes.map((a, idx) => markLocalCreated({
         ...a,
         id: a.id || ('arrec_imp_' + (idx + 1) + '_' + Date.now()),
         atual: Number(a.atual) || 0,
@@ -1125,7 +1205,7 @@ export function FinanceProvider({ children }) {
 
     let nextTransacoes = transacoesRef.current
     if (impTransacoes.length > 0) {
-      const formatted = impTransacoes.map((t, idx) => ({
+      const formatted = impTransacoes.map((t, idx) => markLocalCreated({
         ...t,
         id: t.id || ('trans_imp_' + (idx + 1) + '_' + Date.now()),
         data: t.data || new Date().toISOString().split('T')[0],
@@ -1142,7 +1222,7 @@ export function FinanceProvider({ children }) {
 
     let nextBazar = bazarItemsRef.current
     if (impBazar.length > 0) {
-      const formatted = impBazar.map((b, idx) => ({
+      const formatted = impBazar.map((b, idx) => markLocalCreated({
         ...b,
         id: b.id || ('bazar_imp_' + (idx + 1) + '_' + Date.now()),
         precoAvaliado: Number(b.precoAvaliado) || 0,
@@ -1159,7 +1239,7 @@ export function FinanceProvider({ children }) {
 
     let nextInventario = inventarioItemsRef.current
     if (impInventario.length > 0) {
-      const formatted = impInventario.map((i, idx) => ({
+      const formatted = impInventario.map((i, idx) => markLocalCreated({
         ...i,
         id: i.id || ('inv_imp_' + (idx + 1) + '_' + Date.now()),
         quantidade: Number(i.quantidade) || 1,
@@ -1177,7 +1257,7 @@ export function FinanceProvider({ children }) {
 
     let nextKeep = keepNotesRef.current
     if (impKeep.length > 0) {
-      const formatted = impKeep.map((k, idx) => ({
+      const formatted = impKeep.map((k, idx) => markLocalCreated({
         ...k,
         id: k.id || ('keep_imp_' + (idx + 1) + '_' + Date.now()),
         dataCriacao: k.dataCriacao || new Date().toISOString().split('T')[0],
@@ -1197,7 +1277,7 @@ export function FinanceProvider({ children }) {
 
     try {
       localStorage.setItem('reuni_last_import_lote', loteId)
-    } catch (e) {}
+    } catch {}
 
     pushStateToServer({
       demandas: nextDemandas,
@@ -1227,7 +1307,7 @@ export function FinanceProvider({ children }) {
     if (!Array.isArray(ids) || ids.length === 0) return
     registerTombstones(ids)
     const idSet = new Set(ids)
-    
+
     if (colecao === 'demandas') {
       const updated = demandasRef.current.filter(d => !idSet.has(d.id))
       demandasRef.current = updated
@@ -1321,7 +1401,7 @@ export function FinanceProvider({ children }) {
         if (localStorage.getItem('reuni_last_import_lote') === loteId) {
           localStorage.removeItem('reuni_last_import_lote')
         }
-      } catch (e) {}
+      } catch {}
       return true
     }
     return false
@@ -1337,6 +1417,9 @@ export function FinanceProvider({ children }) {
       inventarioItems,
       theme,
       lastSaved,
+      syncStatus,
+      pendingOpsCount,
+      forceSyncNow,
       toggleTheme,
       uploadDocument,
       deleteDocument,

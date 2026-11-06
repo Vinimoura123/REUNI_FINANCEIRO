@@ -53,8 +53,6 @@ export function processarPagamentoDemanda(db, demandaId, extracao = null, orcame
     transacaoCriada = aplicarPlanoAprovado(db, plano)
   }
 
-  db.updatedAt = Date.now()
-
   registrarDecisao({
     timestamp: new Date().toISOString(),
     subAgente: 'avaliador-financeiro',

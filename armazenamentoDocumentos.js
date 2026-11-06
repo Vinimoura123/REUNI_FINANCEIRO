@@ -7,7 +7,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const localDocsDir = path.join(__dirname, 'data', 'comprovantes')
+const customDataDir = (process.env.REUNI_DATA_DIR || '').trim()
+const localDocsDir = customDataDir
+  ? path.join(path.resolve(customDataDir), 'comprovantes')
+  : path.join(__dirname, 'data', 'comprovantes')
 
 if (!fs.existsSync(localDocsDir)) fs.mkdirSync(localDocsDir, { recursive: true })
 

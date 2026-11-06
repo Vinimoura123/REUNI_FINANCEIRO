@@ -9,6 +9,13 @@ import { isAuthorized } from './auth.js'
 import { processarPagamentoDemanda, processarPagamentoDemandaComComprovante } from './pagamentoDemanda.js'
 import { salvarDocumento, localizarDocumento, apagarDocumento } from './armazenamentoDocumentos.js'
 
+const NO_STORE_JSON_HEADERS = {
+  'Content-Type': 'application/json; charset=UTF-8',
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  Pragma: 'no-cache',
+  Expires: '0'
+}
+
 function syncServerPlugin() {
   const dbPath = fileURLToPath(new URL('./data/reuni_db.json', import.meta.url))
   const seedDbPath = fileURLToPath(new URL('./data/reuni_db.seed.json', import.meta.url))
@@ -44,9 +51,9 @@ function syncServerPlugin() {
   // Migrate or recover db if present and new db does not exist yet
   if (!fs.existsSync(dbPath)) {
     if (fs.existsSync(seedDbPath)) {
-      try { fs.copyFileSync(seedDbPath, dbPath) } catch (e) {}
+      try { fs.copyFileSync(seedDbPath, dbPath) } catch {}
     } else if (fs.existsSync(oldDbPath)) {
-      try { fs.copyFileSync(oldDbPath, dbPath) } catch (e) {}
+      try { fs.copyFileSync(oldDbPath, dbPath) } catch {}
     }
   }
 
@@ -58,7 +65,7 @@ function syncServerPlugin() {
           const parsed = JSON.parse(raw)
           if (parsed && typeof parsed === 'object') return purgeDeleted(parsed)
         }
-      } catch (e) {}
+      } catch {}
     }
     const latestBackup = path.join(localBackupsDir, 'reuni_db_latest.json')
     if (fs.existsSync(latestBackup)) {
@@ -70,7 +77,7 @@ function syncServerPlugin() {
           safeWriteDb(dbPath, purged)
           return purged
         }
-      } catch (e) {}
+      } catch {}
     }
     if (fs.existsSync(seedDbPath)) {
       try {
@@ -81,7 +88,7 @@ function syncServerPlugin() {
           safeWriteDb(dbPath, purged)
           return purged
         }
-      } catch (e) {}
+      } catch {}
     }
     return emptyDb()
   }
@@ -94,7 +101,7 @@ function syncServerPlugin() {
       try {
         clientRes.write(payload)
         return true
-      } catch (e) {
+      } catch {
         return false
       }
     })
@@ -104,7 +111,7 @@ function syncServerPlugin() {
     '.html': 'text/html; charset=UTF-8',
     '.js': 'application/javascript; charset=UTF-8',
     '.css': 'text/css; charset=UTF-8',
-    '.json': 'application/json',
+    '.json': 'application/json; charset=UTF-8',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
     '.jpeg': 'image/jpeg',
@@ -133,34 +140,39 @@ function syncServerPlugin() {
           (url.startsWith('/api/documents/') && url !== '/api/documents/upload' && (req.method === 'GET' || req.method === 'DELETE'))
 
         if (precisaAutorizacao && !isAuthorized(req, parsedUrl)) {
-          res.writeHead(401, { 'Content-Type': 'application/json' })
+          res.writeHead(401, NO_STORE_JSON_HEADERS)
           return res.end(JSON.stringify({ error: 'Não autorizado' }))
         }
 
         if (url === '/api/auth/verify' && req.method === 'POST') {
-          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.writeHead(200, NO_STORE_JSON_HEADERS)
           return res.end(JSON.stringify({ ok: true }))
         }
 
         if (url === '/api/system/status' && req.method === 'GET') {
           let localDocsCount = 0
-          try { localDocsCount = fs.readdirSync(localDocsDir).length } catch (e) {}
-          res.writeHead(200, { 'Content-Type': 'application/json' })
+          try { localDocsCount = fs.readdirSync(localDocsDir).length } catch {}
+          const currentData = readCurrentDb() || emptyDb()
+          res.writeHead(200, NO_STORE_JSON_HEADERS)
           return res.end(JSON.stringify({
             ssdConnected: false,
             ssdPath: null,
             localDocsCount,
             totalDocuments: localDocsCount,
             status: 'online',
-            storageEngine: 'Vite Dev Server (Paridade Atômica)'
+            revision: currentData.revision || 0,
+            updatedAt: currentData.updatedAt || 0,
+            connectedClients: sseClients.length,
+            storageEngine: 'Vite Dev Server (Paridade Atômica + Revisão Monotônica)'
           }))
         }
 
         if (url === '/api/events') {
           res.writeHead(200, {
-            'Content-Type': 'text/event-stream',
-            'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive'
+            'Content-Type': 'text/event-stream; charset=UTF-8',
+            'Cache-Control': 'no-cache, no-transform',
+            Connection: 'keep-alive',
+            'X-Accel-Buffering': 'no'
           })
           res.write('retry: 1500\n\n')
           sseClients.push(res)
@@ -170,7 +182,17 @@ function syncServerPlugin() {
             res.write(`data: ${JSON.stringify(currentData)}\n\n`)
           }
 
+          const keepAliveTimer = setInterval(() => {
+            try {
+              res.write(': keepalive\n\n')
+            } catch {
+              clearInterval(keepAliveTimer)
+            }
+          }, 20000)
+          if (keepAliveTimer.unref) keepAliveTimer.unref()
+
           req.on('close', () => {
+            clearInterval(keepAliveTimer)
             sseClients = sseClients.filter(c => c !== res)
           })
           return
@@ -178,7 +200,7 @@ function syncServerPlugin() {
 
         if (url === '/api/data' && req.method === 'GET') {
           const currentData = readCurrentDb()
-          res.writeHead(200, { 'Content-Type': 'application/json' })
+          res.writeHead(200, NO_STORE_JSON_HEADERS)
           return res.end(JSON.stringify(currentData))
         }
 
@@ -187,24 +209,29 @@ function syncServerPlugin() {
           req.on('data', chunk => { body += chunk })
           req.on('end', () => {
             try {
-              const { ops } = JSON.parse(body)
+              const { ops, minRevision } = JSON.parse(body)
               if (!Array.isArray(ops) || ops.length === 0) {
-                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.writeHead(400, NO_STORE_JSON_HEADERS)
                 return res.end(JSON.stringify({ error: '"ops" precisa ser um array não vazio' }))
               }
 
               const current = readCurrentDb() || emptyDb()
-              applyOps(current, ops)
-              current.updatedAt = Date.now()
+              applyOps(current, ops, { minRevision })
 
               safeWriteDb(dbPath, current)
               syncBackups(current)
               broadcast(current)
-              res.writeHead(200, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current }))
+              res.writeHead(200, NO_STORE_JSON_HEADERS)
+              res.end(JSON.stringify({
+                success: true,
+                revision: current.revision,
+                updatedAt: current.updatedAt,
+                data: current,
+                serverSynced: true
+              }))
             } catch (err) {
               if (!res.headersSent) {
-                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.writeHead(400, NO_STORE_JSON_HEADERS)
               }
               res.end(JSON.stringify({ error: err.message }))
             }
@@ -219,7 +246,7 @@ function syncServerPlugin() {
             try {
               const { demandaId, extracao, comprovante } = JSON.parse(body)
               if (!demandaId) {
-                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.writeHead(400, NO_STORE_JSON_HEADERS)
                 return res.end(JSON.stringify({ error: '"demandaId" é obrigatório' }))
               }
 
@@ -231,11 +258,20 @@ function syncServerPlugin() {
               safeWriteDb(dbPath, current)
               syncBackups(current)
               broadcast(current)
-              res.writeHead(200, { 'Content-Type': 'application/json' })
-              res.end(JSON.stringify({ success: true, updatedAt: current.updatedAt, data: current, plano, avaliacao, transacaoCriada, erroExtracao }))
+              res.writeHead(200, NO_STORE_JSON_HEADERS)
+              res.end(JSON.stringify({
+                success: true,
+                revision: current.revision,
+                updatedAt: current.updatedAt,
+                data: current,
+                plano,
+                avaliacao,
+                transacaoCriada,
+                erroExtracao
+              }))
             } catch (err) {
               if (!res.headersSent) {
-                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.writeHead(400, NO_STORE_JSON_HEADERS)
               }
               res.end(JSON.stringify({ error: err.message }))
             }
@@ -251,7 +287,7 @@ function syncServerPlugin() {
             try {
               const { fileName, fileType, base64 } = JSON.parse(body)
               if (!fileName || !base64) {
-                res.writeHead(400, { 'Content-Type': 'application/json' })
+                res.writeHead(400, NO_STORE_JSON_HEADERS)
                 return res.end(JSON.stringify({ error: 'Parâmetros inválidos' }))
               }
               const cleanBase64 = base64.replace(/^data:[^;]+;base64,/, '')
@@ -259,7 +295,7 @@ function syncServerPlugin() {
               const fileExt = path.extname(fileName) || (fileType?.includes('pdf') ? '.pdf' : '.png')
               const { fileId, url: fileUrl, savedOnSSD } = salvarDocumento(buffer, fileExt)
 
-              res.writeHead(200, { 'Content-Type': 'application/json' })
+              res.writeHead(200, NO_STORE_JSON_HEADERS)
               res.end(JSON.stringify({
                 success: true,
                 fileId,
@@ -270,7 +306,7 @@ function syncServerPlugin() {
                 uploadedAt: new Date().toISOString()
               }))
             } catch (err) {
-              if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'application/json' })
+              if (!res.headersSent) res.writeHead(500, NO_STORE_JSON_HEADERS)
               res.end(JSON.stringify({ error: err.message }))
             }
           })
@@ -294,17 +330,16 @@ function syncServerPlugin() {
               }
             })
             return
-          } else {
-            res.writeHead(404, { 'Content-Type': 'application/json' })
-            return res.end(JSON.stringify({ error: 'Documento não encontrado' }))
           }
+          res.writeHead(404, NO_STORE_JSON_HEADERS)
+          return res.end(JSON.stringify({ error: 'Documento não encontrado' }))
         }
 
         // Excluir comprovante no Dev Server
         if (url.startsWith('/api/documents/') && url !== '/api/documents/upload' && req.method === 'DELETE') {
           const fileId = url.replace('/api/documents/', '')
           const apagou = apagarDocumento(fileId)
-          res.writeHead(apagou ? 200 : 404, { 'Content-Type': 'application/json' })
+          res.writeHead(apagou ? 200 : 404, NO_STORE_JSON_HEADERS)
           return res.end(JSON.stringify({ success: apagou }))
         }
 

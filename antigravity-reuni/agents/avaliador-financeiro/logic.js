@@ -71,6 +71,5 @@ export function aplicarPlanoAprovado(db, plano) {
     ...plano.dados
   }
   applyOps(db, [{ op: 'create', colecao: 'transacoes', item }])
-  db.updatedAt = Date.now()
   return item
 }
